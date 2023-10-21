@@ -15,7 +15,7 @@ class HeyWeatherTheme {
     indicatorColor: const Color(0xFF62626C), // background icon
 
     appBarTheme: const AppBarTheme(
-      systemOverlayStyle: SystemUiOverlayStyle.dark,
+      systemOverlayStyle: SystemUiOverlayStyle.light,
       foregroundColor: Color(0xFFE4E4E5),
       backgroundColor: Color(0xFF17171B),
     ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hey_weather/common/IconUtils.dart';
 import 'package:hey_weather/common/theme.dart';
 
 void main() {
@@ -107,6 +108,9 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.displayMedium,
             ),
+            IconUtils.basic(context, 'alarm'),
+            IconUtils.weather(context, 'blizzard_off'),
+            IconUtils.weather(context, 'blizzard_on'),
           ],
         ),
       ),

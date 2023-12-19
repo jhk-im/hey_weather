@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hey_weather/common/constants.dart';
 
 class HeyWeatherTheme {
   HeyWeatherTheme(this.context);
@@ -47,106 +48,106 @@ class HeyWeatherTheme {
       labelSmall: TextStyle(
         fontSize: 11,
         color: Color(0xFFE4E4E5),
-        fontFamily: 'PretendardRegular',
+        fontFamily: kPretendardRegular,
       ),
 
       // Caption1
       labelMedium: TextStyle(
         fontSize: 12,
         color: Color(0xFFE4E4E5),
-        fontFamily: 'PretendardRegular',
+        fontFamily: kPretendardRegular,
       ),
 
       // Footnote
       labelLarge: TextStyle(
         fontSize: 13,
         color: Color(0xFFE4E4E5),
-        fontFamily: 'PretendardRegular',
+        fontFamily: kPretendardRegular,
       ),
 
       // CallOut
       bodySmall: TextStyle(
         fontSize: 15,
         color: Color(0xFFE4E4E5),
-        fontFamily: 'PretendardRegular',
+        fontFamily: kPretendardRegular,
       ),
 
       // Body
       bodyMedium: TextStyle(
         fontSize: 16,
         color: Color(0xFFE4E4E5),
-        fontFamily: 'PretendardRegular',
+        fontFamily: kPretendardRegular,
       ),
 
       bodyLarge: TextStyle(
         fontSize: 17,
         color: Color(0xFFE4E4E5),
-        fontFamily: 'PretendardRegular',
+        fontFamily: kPretendardRegular,
       ),
 
       // SubHeadline
       headlineSmall: TextStyle(
         fontSize: 15,
         color: Color(0xFFE4E4E5),
-        fontFamily: 'PretendardSemiBold',
+        fontFamily: kPretendardSemiBold,
       ),
 
       // Headline
       headlineMedium: TextStyle(
         fontSize: 17,
         color: Color(0xFFE4E4E5),
-        fontFamily: 'PretendardSemiBold',
+        fontFamily: kPretendardSemiBold,
       ),
 
       // Title3
       headlineLarge: TextStyle(
         fontSize: 20,
         color: Color(0xFFE4E4E5),
-        fontFamily: 'PretendardBold',
+        fontFamily: kPretendardBold,
       ),
 
       // Title2
       titleSmall: TextStyle(
         fontSize: 22,
         color: Color(0xFFE4E4E5),
-        fontFamily: 'PretendardBold',
+        fontFamily: kPretendardBold,
       ),
 
       // Title1
       titleMedium: TextStyle(
         fontSize: 28,
         color: Color(0xFFE4E4E5),
-        fontFamily: 'PretendardBold',
+        fontFamily: kPretendardBold,
       ),
 
       // LargeTitle
       titleLarge: TextStyle(
         fontSize: 34,
         color: Color(0xFFE4E4E5),
-        fontFamily: 'PretendardBold',
+        fontFamily: kPretendardBold,
       ),
 
 
       displaySmall: TextStyle(
         fontSize: 13,
         color: Color(0xFFE4E4E5),
-        fontFamily: 'PretendardLight',
+        fontFamily: kPretendardLight,
       ),
 
       // Body
       displayMedium: TextStyle(
         fontSize: 15,
         color: Color(0xFFE4E4E5),
-        fontFamily: 'PretendardLight',
+        fontFamily: kPretendardLight,
       ),
 
       displayLarge: TextStyle(
         fontSize: 17,
         color: Color(0xFFE4E4E5),
-        fontFamily: 'PretendardLight',
+        fontFamily: kPretendardLight,
       ),
     ),
   );
 
-  //ThemeData light() => ThemeData();
+  ThemeData light() => ThemeData();
 }

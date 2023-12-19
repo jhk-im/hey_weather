@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class IconUtils extends SvgPicture {
+class ImageUtils extends SvgPicture {
 
-  IconUtils.basic(BuildContext context, String name, {
+  ImageUtils.icon(BuildContext context, String name, {
     super.key,
     super.width = 24,
     super.height = 24,
@@ -18,7 +18,7 @@ class IconUtils extends SvgPicture {
     ): null,
   );
 
-  IconUtils.weather(BuildContext context, String name, {
+  ImageUtils.weatherIcon(BuildContext context, String name, {
     super.key,
     super.width = 32,
     super.height = 32,
@@ -27,6 +27,21 @@ class IconUtils extends SvgPicture {
     Color? color,
   }) : super.asset(
     'assets/images/icons/weather/icon_$name.svg',
+    colorFilter: color != null ? ColorFilter.mode(
+      color,
+      BlendMode.srcIn,
+    ): null,
+  );
+
+  ImageUtils.svg(BuildContext context, String name, {
+    super.key,
+    super.width = 24,
+    super.height = 24,
+    super.fit,
+    super.allowDrawingOutsideViewBox,
+    Color? color,
+  }) : super.asset(
+    'assets/images/svg/$name.svg',
     colorFilter: color != null ? ColorFilter.mode(
       color,
       BlendMode.srcIn,

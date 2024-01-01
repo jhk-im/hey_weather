@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:hey_weather/common/ImageUtils.dart';
+import 'package:hey_weather/common/image_utils.dart';
 import 'package:hey_weather/pages/splash_controller.dart';
 
 class SplashPage extends GetView<SplashController> {

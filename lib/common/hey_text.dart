@@ -10,13 +10,147 @@ class HeyText extends Text {
     super.textAlign,
   });
 
-  factory HeyText.bodyBold(String text, Color? color, double? fontSize) {
+  // Regular
+  factory HeyText.caption2(String text, Color? color, double? fontSize) {
     return HeyText(
       text,
       style: TextStyle(
-        fontFamily: kPretendardBold,
+        fontFamily: kPretendardRegular,
         color: color,
-        fontSize: fontSize,
+        fontSize: kFont11,
+      ),
+    );
+  }
+
+  factory HeyText.caption1(String text, Color? color, double? fontSize) {
+    return HeyText(
+      text,
+      style: TextStyle(
+        fontFamily: kPretendardRegular,
+        color: color,
+        fontSize: kFont12,
+      ),
+    );
+  }
+
+  factory HeyText.footnote(String text, Color? color, double? fontSize) {
+    return HeyText(
+      text,
+      style: TextStyle(
+        fontFamily: kPretendardRegular,
+        color: color,
+        fontSize: kFont13,
+      ),
+    );
+  }
+
+  factory HeyText.subHeadline(String text, Color? color, double? fontSize) {
+    return HeyText(
+      text,
+      style: TextStyle(
+        fontFamily: kPretendardRegular,
+        color: color,
+        fontSize: kFont15,
+      ),
+    );
+  }
+
+  factory HeyText.callOut(String text, Color? color, double? fontSize) {
+    return HeyText(
+      text,
+      style: TextStyle(
+        fontFamily: kPretendardRegular,
+        color: color,
+        fontSize: kFont16,
+      ),
+    );
+  }
+
+  factory HeyText.body(String text, Color? color, double? fontSize) {
+    return HeyText(
+      text,
+      style: TextStyle(
+        fontFamily: kPretendardRegular,
+        color: color,
+        fontSize: kFont17,
+      ),
+    );
+  }
+
+  factory HeyText.title3(String text, Color? color, double? fontSize) {
+    return HeyText(
+      text,
+      style: TextStyle(
+        fontFamily: kPretendardRegular,
+        color: color,
+        fontSize: kFont20,
+      ),
+    );
+  }
+
+  factory HeyText.title2(String text, Color? color, double? fontSize) {
+    return HeyText(
+      text,
+      style: TextStyle(
+        fontFamily: kPretendardRegular,
+        color: color,
+        fontSize: kFont22,
+      ),
+    );
+  }
+
+  factory HeyText.title1(String text, Color? color, double? fontSize) {
+    return HeyText(
+      text,
+      style: TextStyle(
+        fontFamily: kPretendardRegular,
+        color: color,
+        fontSize: kFont28,
+      ),
+    );
+  }
+
+  factory HeyText.largeTitle(String text, Color? color, double? fontSize) {
+    return HeyText(
+      text,
+      style: TextStyle(
+        fontFamily: kPretendardRegular,
+        color: color,
+        fontSize: kFont34,
+      ),
+    );
+  }
+
+  // Semi Bold
+  factory HeyText.footnoteSemiBold(String text, Color? color, double? fontSize) {
+    return HeyText(
+      text,
+      style: TextStyle(
+        fontFamily: kPretendardSemiBold,
+        color: color,
+        fontSize: kFont13,
+      ),
+    );
+  }
+
+  factory HeyText.subHeadlineSemiBold(String text, Color? color, double? fontSize) {
+    return HeyText(
+      text,
+      style: TextStyle(
+        fontFamily: kPretendardSemiBold,
+        color: color,
+        fontSize: kFont15,
+      ),
+    );
+  }
+
+  factory HeyText.callOutSemiBold(String text, Color? color, double? fontSize) {
+    return HeyText(
+      text,
+      style: TextStyle(
+        fontFamily: kPretendardSemiBold,
+        color: color,
+        fontSize: kFont16,
       ),
     );
   }
@@ -27,40 +161,52 @@ class HeyText extends Text {
       style: TextStyle(
         fontFamily: kPretendardSemiBold,
         color: color,
-        fontSize: fontSize,
+        fontSize: kFont17,
       ),
     );
   }
 
-  factory HeyText.bodyMedium(String text, Color? color, double? fontSize) {
+  // Bold
+  factory HeyText.title3Bold(String text, Color? color, double? fontSize) {
     return HeyText(
       text,
       style: TextStyle(
-        fontFamily: kPretendardMedium,
+        fontFamily: kPretendardBold,
         color: color,
-        fontSize: fontSize,
+        fontSize: kFont20,
       ),
     );
   }
 
-  factory HeyText.bodyRegular(String text, Color? color, double? fontSize) {
+  factory HeyText.title2Bold(String text, Color? color, double? fontSize) {
     return HeyText(
       text,
       style: TextStyle(
-        fontFamily: kPretendardRegular,
+        fontFamily: kPretendardBold,
         color: color,
-        fontSize: fontSize,
+        fontSize: kFont22,
       ),
     );
   }
 
-  factory HeyText.bodyLight(String text, Color? color, double? fontSize) {
+  factory HeyText.title1Bold(String text, Color? color, double? fontSize) {
     return HeyText(
       text,
       style: TextStyle(
-        fontFamily: kPretendardLight,
+        fontFamily: kPretendardBold,
         color: color,
-        fontSize: fontSize,
+        fontSize: kFont28,
+      ),
+    );
+  }
+
+  factory HeyText.largeTitleBold(String text, Color? color, double? fontSize) {
+    return HeyText(
+      text,
+      style: TextStyle(
+        fontFamily: kPretendardBold,
+        color: color,
+        fontSize: kFont34,
       ),
     );
   }

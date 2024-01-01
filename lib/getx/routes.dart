@@ -6,11 +6,11 @@ import 'package:hey_weather/pages/splash_page.dart';
 
 class Routes {
   static const String routeRoot = '/';
-  static const String routeRootHome = '/home';
+  static const String routeHome = '/home';
 
   static List<GetPage> pages = [
     GetPage(name: routeRoot, page: () => const SplashPage()),
-    GetPage(name: routeRootHome, page: () => const HomePage(), binding: HomeBinding()),
+    GetPage(name: routeHome, page: () => const HomePage(), binding: HomeBinding()),
   ];
 
   static List<Widget> navigationPages = const [

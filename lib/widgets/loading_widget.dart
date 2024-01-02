@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hey_weather/common/constants.dart';
 
 class LoadingWidget extends StatelessWidget {
   const LoadingWidget(this.isVisible, {super.key});
@@ -10,9 +11,11 @@ class LoadingWidget extends StatelessWidget {
     return Visibility(
       visible: isVisible,
       child: Container(
-        color: Colors.white.withOpacity(0.5),
+        color: kElevationColor.withOpacity(0.5),
         child: const Center(
-          child: CircularProgressIndicator(),
+          child: CircularProgressIndicator(
+            color: kPrimaryDarkerColor,
+          ),
         ),
       ),
     );

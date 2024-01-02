@@ -13,7 +13,8 @@ class HomeController extends GetxController {
 
   Future<void> getData() async {
     _isLoading(true);
-    // get data
-    _isLoading(false);
+    Future.delayed(const Duration(seconds: 1), () {
+      _isLoading(false);
+    });
   }
 }

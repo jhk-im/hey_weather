@@ -228,7 +228,7 @@ class HeyElevatedButton extends ElevatedButton {
           const Spacer(),
           ImageUtils.icon(
             context,
-            iconName ?? 'icon_plus',
+            iconName ?? 'plus',
             width: 16,
             height: 16,
             color: onPressed != null ? kTextSecondaryColor : kIconColor,
@@ -275,7 +275,7 @@ class HeyElevatedButton extends ElevatedButton {
       ),
       child: ImageUtils.icon(
         context,
-        iconName ?? 'icon_plus',
+        iconName ?? 'plus',
         width: 16,
         height: 16,
         color: onPressed != null ? kTextSecondaryColor : kIconColor,
@@ -320,7 +320,7 @@ class HeyElevatedButton extends ElevatedButton {
           if (isLeftIcon) ... {
             ImageUtils.icon(
               context,
-              iconName ?? 'icon_plus',
+              iconName ?? 'plus',
               width: 16,
               height: 16,
               color: onPressed != null ? Colors.white : kIconColor,
@@ -336,7 +336,7 @@ class HeyElevatedButton extends ElevatedButton {
             const SizedBox(width: 8),
             ImageUtils.icon(
               context,
-              iconName ?? 'icon_plus',
+              iconName ?? 'plus',
               width: 16,
               height: 16,
               color: onPressed != null ? Colors.white : kIconColor,
@@ -384,7 +384,7 @@ class HeyElevatedButton extends ElevatedButton {
             if (isLeftIcon) ... {
               ImageUtils.icon(
                 context,
-                iconName ?? 'icon_plus',
+                iconName ?? 'plus',
                 width: 16,
                 height: 16,
                 color: onPressed != null ? kTextSecondaryColor : kIconColor,
@@ -400,7 +400,7 @@ class HeyElevatedButton extends ElevatedButton {
               const SizedBox(width: 8),
               ImageUtils.icon(
                 context,
-                iconName ?? 'icon_plus',
+                iconName ?? 'plus',
                 width: 16,
                 height: 16,
                 color: onPressed != null ? kTextSecondaryColor : kIconColor,

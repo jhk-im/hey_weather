@@ -9,10 +9,38 @@ class TranslationsInfo extends Translations {
   };
 
   final Map<String, String> enUS = {
-    'title': 'Hey, Weather',
   };
 
   final Map<String, String> ko = {
     'title': '헤이, 날씨',
+    'than_yesterday' : '어제보다',
+    'none' : '없음',
+    'low' : '낮음',
+    'good' : '좋음',
+    'weak' : '약함',
+    'high' : '높음',
+    'normal' : '보통',
+    'bad' : '나쁨',
+    'very_high' : '매우 높음',
+    'strong' : '강함',
+    'danger' : '위험',
+    'very_bad' : '매우 나쁨',
+    'very_good' : '최고 좋음',
+    'highest' : '최고',
+    'lowest' : '최저',
+    'within' : '이내',
+    'no_forecast' : '예보 없음',
+    'sunrise_sunset' : '일출일몰',
+    'am' : '오전',
+    'pm' : '오후',
+    'same_yesterday' : '어제와 동일',
+
+    'humidity' : '습도',
+    'wind' : '바람',
+    'rain' : '강수',
+    'ultraviolet': '자외선',
+    'fine_dust': '미세먼지',
+    'ultra_fine_dust': '초미세먼지',
+    'wind_chill': '체감온도',
   };
 }

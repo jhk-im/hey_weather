@@ -31,6 +31,7 @@ const kElevationColor = Color(0xFF101012);
 const kButtonColor = Color(0xFF202027);
 const kIconColor = Color(0xFF62626C);
 const kDividerPrimaryColor = Color(0xFF404048);
+const kProgressBackgroundColor = Color(0xFF2D2D2D);
 const kTextPointColor = Color(0xFFFFFFFF);
 const kTextPrimaryColor = Color(0xFFE4E4E5);
 const kTextSecondaryColor = Color(0xFFC3C3C6);

@@ -207,7 +207,10 @@ class HeyText extends Text {
         fontFamily: kPretendardBold,
         color: color ?? Colors.white,
         fontSize: fontSize ?? kFont34,
+        height: 1.2,
+        
       ),
+
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hey_weather/common/theme.dart';
+import 'package:hey_weather/common/translations_info.dart';
 import 'package:hey_weather/getx/bindings/init_binding.dart';
 import 'package:hey_weather/getx/routes.dart';
 
@@ -25,6 +26,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'title'.tr,
       defaultTransition: Transition.cupertino,
+      translations: TranslationsInfo(),
+      locale: const Locale('ko', 'KR'),
       fallbackLocale: const Locale('ko', 'KR'),
       themeMode: ThemeMode.dark,
       theme: theme.light(),

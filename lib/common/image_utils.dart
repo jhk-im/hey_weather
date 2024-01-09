@@ -11,7 +11,7 @@ class ImageUtils extends SvgPicture {
     super.allowDrawingOutsideViewBox,
     Color? color,
   }) : super.asset(
-    'assets/images/icons/basic/$name.svg',
+    'assets/images/icons/basic/icon_$name.svg',
     colorFilter: color != null ? ColorFilter.mode(
       color,
       BlendMode.srcIn,
@@ -26,7 +26,7 @@ class ImageUtils extends SvgPicture {
     super.allowDrawingOutsideViewBox,
     Color? color,
   }) : super.asset(
-    'assets/images/icons/weather/$name.svg',
+    'assets/images/icons/weather/icon_$name.svg',
     colorFilter: color != null ? ColorFilter.mode(
       color,
       BlendMode.srcIn,
@@ -41,7 +41,7 @@ class ImageUtils extends SvgPicture {
     super.allowDrawingOutsideViewBox,
     Color? color,
   }) : super.asset(
-    'assets/images/svg/$name.svg',
+    'assets/images/svg/icon_$name.svg',
     colorFilter: color != null ? ColorFilter.mode(
       color,
       BlendMode.srcIn,

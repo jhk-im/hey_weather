@@ -36,3 +36,4 @@ const kTextPointColor = Color(0xFFFFFFFF);
 const kTextPrimaryColor = Color(0xFFE4E4E5);
 const kTextSecondaryColor = Color(0xFFC3C3C6);
 const kTextDisabledColor = Color(0xFFA1A1A3);
+const kProgressForegroundColor = Color(0xFFADB4BD);

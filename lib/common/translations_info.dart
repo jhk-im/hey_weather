@@ -42,5 +42,6 @@ class TranslationsInfo extends Translations {
     'fine_dust': '미세먼지',
     'ultra_fine_dust': '초미세먼지',
     'wind_chill': '체감온도',
+    'weather_by_time': '시간대별 날씨',
   };
 }

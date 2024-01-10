@@ -53,7 +53,7 @@ class _HeyWeatherMediumCardState extends State<HeyWeatherMediumCard> {
                   // icon, title
                   Row(
                     children: [
-                      ImageUtils.weatherIcon(
+                      ImageUtils.icon(
                         context,
                         'sunrise_sunset',
                         width: 20,
@@ -74,7 +74,7 @@ class _HeyWeatherMediumCardState extends State<HeyWeatherMediumCard> {
                       const Spacer(),
                       Column(
                         children: [
-                          ImageUtils.weatherIcon(
+                          ImageUtils.icon(
                             context,
                             'sunrise',
                             width: 40,
@@ -108,7 +108,7 @@ class _HeyWeatherMediumCardState extends State<HeyWeatherMediumCard> {
                       const Spacer(),
                       Column(
                         children: [
-                          ImageUtils.weatherIcon(
+                          ImageUtils.icon(
                             context,
                             'sunset',
                             width: 40,

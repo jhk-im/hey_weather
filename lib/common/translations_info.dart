@@ -34,6 +34,9 @@ class TranslationsInfo extends Translations {
     'am' : '오전',
     'pm' : '오후',
     'same_yesterday' : '어제와 동일',
+    'now' : '지금',
+    'today' : '오늘',
+    'tomorrow' : '내일',
 
     'humidity' : '습도',
     'wind' : '바람',
@@ -43,5 +46,6 @@ class TranslationsInfo extends Translations {
     'ultra_fine_dust': '초미세먼지',
     'wind_chill': '체감온도',
     'weather_by_time': '시간대별 날씨',
+    'weather_week': '주간 날씨',
   };
 }

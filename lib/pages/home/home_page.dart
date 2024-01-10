@@ -7,6 +7,7 @@ import 'package:hey_weather/pages/home/home_controller.dart';
 import 'package:hey_weather/widgets/buttons/hey_custom_switch.dart';
 import 'package:hey_weather/widgets/buttons/hey_elevated_button.dart';
 import 'package:hey_weather/widgets/buttons/hey_custom_button.dart';
+import 'package:hey_weather/widgets/cards/hey_weather_big_card.dart';
 import 'package:hey_weather/widgets/cards/hey_weather_large_card.dart';
 import 'package:hey_weather/widgets/cards/hey_weather_medium_card.dart';
 import 'package:hey_weather/widgets/cards/hey_weather_small_card.dart';
@@ -351,8 +352,14 @@ class HomePage extends GetView<HomeController> {
                   sunset: '5시 34분',
                 ),
 
-                // 일출 일몰
+                // 시간대별 날씨
                 const HeyWeatherLargeCard(
+                  sunrise: '7시 34분',
+                  sunset: '5시 34분',
+                ),
+
+                // 주간 날씨
+                const HeyWeatherBigCard(
                   sunrise: '7시 34분',
                   sunset: '5시 34분',
                 ),

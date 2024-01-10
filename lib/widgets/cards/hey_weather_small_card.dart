@@ -110,7 +110,7 @@ class _HeyWeatherSmallCardState extends State<HeyWeatherSmallCard> {
                     // icon, title
                     Row(
                       children: [
-                        ImageUtils.weatherIcon(
+                        ImageUtils.icon(
                           context,
                           widget.iconName,
                           width: 20,
@@ -177,7 +177,7 @@ class _HeyWeatherSmallCardState extends State<HeyWeatherSmallCard> {
                             // icon, title
                             Row(
                               children: [
-                                ImageUtils.weatherIcon(
+                                ImageUtils.icon(
                                   context,
                                   widget.iconName,
                                   width: 20,
@@ -204,7 +204,7 @@ class _HeyWeatherSmallCardState extends State<HeyWeatherSmallCard> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 10),
                     Expanded(
                       flex: 1,
                       child: SizedBox(

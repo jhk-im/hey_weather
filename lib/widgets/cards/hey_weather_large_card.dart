@@ -34,8 +34,8 @@ class _HeyWeatherLargeCardState extends State<HeyWeatherLargeCard> {
       },
       child: Container(
         width: width,
-        height: width,
-        padding: const EdgeInsets.all(14),
+        height: 286,
+        padding: const EdgeInsets.only(left: 14, top: 14, bottom: 14),
         decoration: BoxDecoration(
           color: kBaseColor,
           borderRadius: BorderRadius.circular(20),
@@ -45,6 +45,7 @@ class _HeyWeatherLargeCardState extends State<HeyWeatherLargeCard> {
           ),
         ),
         child: Stack(
+          alignment: AlignmentDirectional.centerEnd,
           children: [
             Padding(
               padding: const EdgeInsets.all(6),
@@ -54,7 +55,7 @@ class _HeyWeatherLargeCardState extends State<HeyWeatherLargeCard> {
                   // icon, title
                   Row(
                     children: [
-                      ImageUtils.weatherIcon(
+                      ImageUtils.icon(
                         context,
                         'weather_by_time',
                         width: 20,
@@ -74,37 +75,78 @@ class _HeyWeatherLargeCardState extends State<HeyWeatherLargeCard> {
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         children: [
-                          SizedBox(
-                            width: 55,
-                            child: Column(
-                              children: [
-                                HeyText.title3Bold(
-                                  '23˚'.tr,
-                                  fontSize: kFont16,
-                                  color: kTextDisabledColor,
-                                ),
-                                const SizedBox(height: 16),
-                                RotatedBox(
-                                  quarterTurns: 3,
-                                  child: SizedBox(
-                                    width: 60,
-                                    child: LinearProgressIndicator(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      backgroundColor: kButtonColor,
-                                      valueColor: const AlwaysStoppedAnimation<Color>( kProgressForegroundColor),
-                                      value: 0.8,
-                                      minHeight: 6,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                          _weatherItem(
+                            temp: 23,
+                            progress: 0.3,
+                            iconName: 'partly_cloudy',
+                            percent: 0,
+                            timeText: '',
+                          ),
+                          _weatherItem(
+                            temp: 25,
+                            progress: 0.6,
+                            iconName: 'drizzle_on',
+                            percent: 60,
+                            timeText: '오후 6시',
+                          ),
+                          _weatherItem(
+                            temp: 22,
+                            progress: 0.55,
+                            iconName: 'drizzle_on',
+                            percent: 50,
+                            timeText: '오후 7시',
+                          ),
+                          _weatherItem(
+                            temp: 21,
+                            progress: 0.5,
+                            iconName: 'drizzle_on',
+                            percent: 80,
+                            timeText: '오후 8시',
+                          ),
+                          _weatherItem(
+                            temp: 20,
+                            progress: 0.4,
+                            iconName: 'drizzle_on',
+                            percent: 20,
+                            timeText: '오후 9시',
+                          ),
+                          _weatherItem(
+                            temp: 19,
+                            progress: 0.3,
+                            iconName: 'drizzle_on',
+                            percent: 30,
+                            timeText: '오후 10시',
+                          ),
+                          _weatherItem(
+                            temp: 19,
+                            progress: 0.3,
+                            iconName: 'drizzle_on',
+                            percent: 30,
+                            timeText: '오후 11시',
+                          ),
+                          _weatherItem(
+                            temp: 19,
+                            progress: 0.3,
+                            iconName: 'drizzle_on',
+                            percent: 30,
+                            timeText: '오후 12시',
                           ),
                         ],
                       ),
                     ),
                   ),
                 ],
+              ),
+            ),
+
+            Container(
+              width: 50,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [kWidgetGradientLeft, kWidgetGradientRight],
+                ),
               ),
             ),
 
@@ -136,5 +178,62 @@ class _HeyWeatherLargeCardState extends State<HeyWeatherLargeCard> {
         ),
       ),
     ));
+  }
+
+  Widget _weatherItem({
+    int temp = 0,
+    double progress = 0,
+    String iconName = '',
+    int percent = 0,
+    String timeText = '',
+  }) {
+    return SizedBox(
+      width: 55,
+      child: Column(
+        children: [
+          HeyText.title3Bold(
+            '$temp˚',
+            fontSize: kFont16,
+            color: kTextDisabledColor,
+          ),
+
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 16),
+            child: RotatedBox(
+              quarterTurns: 3,
+              child: SizedBox(
+                width: 60,
+                child: LinearProgressIndicator(
+                  borderRadius: BorderRadius.circular(10.0),
+                  backgroundColor: kButtonColor,
+                  valueColor: const AlwaysStoppedAnimation<Color>( kProgressForegroundColor),
+                  value: 0.5,
+                  minHeight: 6,
+                ),
+              ),
+            ),
+          ),
+
+          ImageUtils.weatherIcon(
+            context,
+            iconName,
+            width: 32,
+            height: 32,
+          ),
+
+          const SizedBox(height: 1.5),
+          HeyText.caption1(
+            '$percent%',
+            color: percent > 0 ? kPrimarySecondColor : Colors.transparent,
+          ),
+          const Spacer(),
+          HeyText.subHeadline(
+            timeText.isEmpty ? 'now'.tr : timeText,
+            fontSize: kFont12,
+            color: timeText.isEmpty ? kTextPointColor : kTextDisabledColor,
+          ),
+        ],
+      ),
+    );
   }
 }

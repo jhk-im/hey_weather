@@ -154,6 +154,7 @@ class _HeyWeatherLargeCardState extends State<HeyWeatherLargeCard> {
               visible: status.value > 0,
               child: Container(
                 color: status.value == 1 ? Colors.transparent : kBaseColor.withOpacity(0.5),
+                padding: const EdgeInsets.only(right: 14),
                 child: Column(
                   children: [
                     Row(

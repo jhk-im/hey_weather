@@ -4,13 +4,6 @@ import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/image_utils.dart';
 import 'package:hey_weather/pages/home/home_controller.dart';
-import 'package:hey_weather/widgets/buttons/hey_custom_switch.dart';
-import 'package:hey_weather/widgets/buttons/hey_elevated_button.dart';
-import 'package:hey_weather/widgets/buttons/hey_custom_button.dart';
-import 'package:hey_weather/widgets/cards/hey_weather_big_card.dart';
-import 'package:hey_weather/widgets/cards/hey_weather_large_card.dart';
-import 'package:hey_weather/widgets/cards/hey_weather_medium_card.dart';
-import 'package:hey_weather/widgets/cards/hey_weather_small_card.dart';
 import 'package:hey_weather/widgets/loading_widget.dart';
 
 
@@ -23,17 +16,53 @@ class HomePage extends GetView<HomeController> {
       body: SafeArea(
         child: Stack(
           children: [
-            SingleChildScrollView(
-              child: Column(
+            //_samples(context),
+            // Header
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+              child: Row(
                 children: [
-                  _buttons(context),
-                  _cards(context),
+                  Row(
+                    children: [
+                      ImageUtils.icon(context, 'location'),
+                      const SizedBox(width: 6),
+                      HeyText.body('서울 특별시 서초구', color: kTextSecondaryColor),
+                    ],
+                  ),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: () {
+                      print('map');
+                    },
+                    child: ImageUtils.icon(context, 'map'),
+                  ),
+                  const SizedBox(width: 8),
+                  GestureDetector(
+                    onTap: () {
+                      print('setting');
+                      controller.showOnboardBottomSheet();
+                    },
+                    child: ImageUtils.icon(context, 'setting'),
+                  ),
                 ],
               ),
             ),
+
             Obx(() => LoadingWidget(controller.isLoading)),
           ],
         ),
+      ),
+    );
+  }
+
+
+  /*Widget _samples(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          _buttons(context),
+          _cards(context),
+        ],
       ),
     );
   }
@@ -372,6 +401,6 @@ class HomePage extends GetView<HomeController> {
         const Divider(color: kIconColor, height: 1),
       ],
     );
-  }
+  }*/
 }
 

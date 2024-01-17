@@ -12,7 +12,7 @@ class SplashPage extends GetView<SplashController> {
     return Scaffold(
       backgroundColor: kPrimaryDarkerColor,
       body: Center(
-        child: ImageUtils.svg(context, 'splash_logo', width: 135, height: 80,),
+        child: ImageUtils.svg(context, 'splash_logo', width: 120, height: 70),
       ),
     );
   }

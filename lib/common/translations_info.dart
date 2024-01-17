@@ -47,5 +47,9 @@ class TranslationsInfo extends Translations {
     'wind_chill': '체감온도',
     'weather_by_time': '시간대별 날씨',
     'weather_week': '주간 날씨',
+
+    'onboard_title': '자주 보는 날씨를 선택해주세요',
+    'onboard_subtitle': '선택한 날씨 정보가 홈 화면에 추가돼요',
+    'to_add': '추가하기',
   };
 }

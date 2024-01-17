@@ -10,6 +10,7 @@ const kFont34 = 34.0;
 const kFont28 = 28.0;
 const kFont22 = 22.0;
 const kFont20 = 20.0;
+const kFont18 = 18.0;
 const kFont17 = 17.0;
 const kFont16 = 16.0;
 const kFont15 = 15.0;

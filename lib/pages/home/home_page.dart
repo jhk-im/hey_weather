@@ -14,7 +14,7 @@ class HomePage extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Stack(
+        child: Obx(() => Stack(
           children: [
             //_samples(context),
             // Header
@@ -26,7 +26,7 @@ class HomePage extends GetView<HomeController> {
                     children: [
                       ImageUtils.icon(context, 'location'),
                       const SizedBox(width: 6),
-                      HeyText.body('서울 특별시 서초구', color: kTextSecondaryColor),
+                      HeyText.body(controller.addressText, color: kTextSecondaryColor),
                     ],
                   ),
                   const Spacer(),
@@ -50,7 +50,7 @@ class HomePage extends GetView<HomeController> {
 
             Obx(() => LoadingWidget(controller.isLoading)),
           ],
-        ),
+        )),
       ),
     );
   }

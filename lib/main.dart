@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:hey_weather/common/theme.dart';
 import 'package:hey_weather/common/translations_info.dart';
 import 'package:hey_weather/getx/bindings/init_binding.dart';
@@ -14,15 +15,15 @@ import 'package:hey_weather/repository/soruce/weather_repository.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
-  // dotenv
   await dotenv.load(fileName: 'assets/.env');
 
   await Hive.initFlutter();
   Hive.registerAdapter(AddressEntityAdapter());
 
-  // repository
   final repository = WeatherRepository(WeatherApi(), WeatherDao());
   GetIt.instance.registerSingleton<WeatherRepository>(repository);
+
+  await SharedPreferencesUtil().initialize();
 
   runApp(const MyApp());
 }

@@ -27,7 +27,8 @@ class SplashController extends GetxController {
       await _requestPermission(permission, isOpenAppSettings: isOpenAppSettings);
     } else if (status.isPermanentlyDenied) {
       if (isOpenAppSettings) {
-        openAppSettings();
+        // TODO: 앱 종료 혹은 설정에서 권한 허용하도록 안내 팝업
+        // openAppSettings();
       }
     }
   }

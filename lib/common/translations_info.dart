@@ -38,6 +38,8 @@ class TranslationsInfo extends Translations {
     'today' : '오늘',
     'tomorrow' : '내일',
     'to_add': '추가하기',
+    'edit': '편집',
+    'setting_location': '지역 설정',
 
     // Weather
     'humidity' : '습도',
@@ -57,5 +59,8 @@ class TranslationsInfo extends Translations {
     'bs_address_title_1': '어느 지역으로 바꿀까요?',
     'bs_address_title_2': '바꿀 지역이 없어요',
     'bs_address_btn': '다른 지역 찾아보기',
+
+    // hint
+    'hint_address_input': '추가할 지역을 입력하세요',
   };
 }

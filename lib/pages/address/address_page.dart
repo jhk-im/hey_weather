@@ -1,75 +1,106 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hey_weather/common/constants.dart';
-import 'package:hey_weather/common/hey_bottom_sheet.dart';
 import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/image_utils.dart';
-import 'package:hey_weather/getx/routes.dart';
-import 'package:hey_weather/pages/home/home_controller.dart';
+import 'package:hey_weather/pages/address/address_controller.dart';
 import 'package:hey_weather/widgets/loading_widget.dart';
 
 
-class HomePage extends GetView<HomeController> {
-  const HomePage({super.key});
+class AddressPage extends GetView<AddressController> {
+  const AddressPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Obx(() => Stack(
+        child: Stack(
           children: [
-            //_samples(context),
             // Header
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      HeyBottomSheet.showAddressBottomSheet(
-                        context,
-                        addressList: controller.addressList,
-                        currentAddress: controller.currentAddress,
-                        onSelectedAddress: (addressId) {
-                          controller.logger.d('onSelectedAddress: (addressId) -> $addressId / currentAddress -> ${controller.currentAddress}');
-                          if (addressId != controller.currentAddress) {
-                            controller.resetData(addressId);
-                          }
+            Column(
+              children: [
+                SizedBox(
+                  width: double.maxFinite,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Get.back();
                         },
-                        onMoveToAddress: () {
-                          Get.toNamed(Routes.routeAddress);
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 23, horizontal: 24),
+                          child: ImageUtils.icon(
+                            context,
+                            'arrow_left',
+                            color: kTextPrimaryColor,
+                            width: 24,
+                            height: 24,
+                          ),
+                        ),
+                      ),
+
+                      const Spacer(),
+                      HeyText.body(
+                        'setting_location'.tr,
+                        color: kTextPrimaryColor,
+                        fontSize: kFont18,
+                      ),
+                      const Spacer(),
+
+                      GestureDetector(
+                        onTap: () {
+
                         },
-                      );
-                    },
-                    child: Row(
-                      children: [
-                        ImageUtils.icon(context, 'location'),
-                        const SizedBox(width: 6),
-                        HeyText.body(controller.addressText, color: kTextSecondaryColor),
-                      ],
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 23, horizontal: 16),
+                          child: HeyText.body(
+                            'edit'.tr,
+                            color: kTextDisabledColor,
+                            fontSize: kFont18,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  child: TextFormField(
+                    // controller: controller.textFieldController,
+                    cursorColor: kPrimaryDarkerColor,
+                    style: const TextStyle(
+                      color: kTextPointColor,
+                      fontFamily: kPretendardMedium,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: 'hint_address_input'.tr,
+                      prefixIcon: Container(
+                        margin: const EdgeInsets.only(right: 12, left: 16),
+                        child: GestureDetector(
+                          onTap: () {
+
+                          },
+                          child: ImageUtils.icon(
+                            context,
+                            'search',
+                            color: kIconColor,
+                            width: 24,
+                            height: 24,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                  const Spacer(),
-                  GestureDetector(
-                    onTap: () {
-                      print('map');
-                    },
-                    child: ImageUtils.icon(context, 'map'),
-                  ),
-                  const SizedBox(width: 8),
-                  GestureDetector(
-                    onTap: () {
-                      print('setting');
-                    },
-                    child: ImageUtils.icon(context, 'setting'),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-
             Obx(() => LoadingWidget(controller.isLoading)),
           ],
-        )),
+        ),
       ),
     );
   }

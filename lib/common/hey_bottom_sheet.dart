@@ -261,6 +261,7 @@ class HeyBottomSheet {
     required List<Address> addressList,
     required currentAddress,
     Function? onSelectedAddress,
+    Function? onMoveToAddress,
   }) {
     double maxHeight = (MediaQuery.of(context).size.height) * 0.7;
     bool isScroll = maxHeight - 142 < 54 * addressList.length;
@@ -285,7 +286,6 @@ class HeyBottomSheet {
               mainAxisSize: MainAxisSize.min,
               children: [
                 // Title, Close Button
-
                 Container(
                   margin: const EdgeInsets.only(top: 20, left: 20, right: 16),
                   child: Row(
@@ -342,7 +342,8 @@ class HeyBottomSheet {
                       iconName: 'arrow_right',
                       text: 'bs_address_btn'.tr,
                       onPressed: () {
-
+                        Get.back();
+                        onMoveToAddress?.call();
                       },
                     ),
                   ),

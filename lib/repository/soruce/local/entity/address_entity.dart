@@ -2,24 +2,26 @@ import 'package:hive/hive.dart';
 
 part 'address_entity.g.dart';
 
-@HiveType(typeId: 3)
+@HiveType(typeId: 0)
 class AddressEntity extends HiveObject {
   @HiveField(0)
-  String? addressName;
+  String? id;
   @HiveField(1)
-  String? region1depthName;
+  String? addressName;
   @HiveField(2)
-  String? region2depthName;
+  String? region1depthName;
   @HiveField(3)
-  String? region3depthName;
+  String? region2depthName;
   @HiveField(4)
-  String? region4depthName;
+  String? region3depthName;
   @HiveField(5)
-  double? x;
+  String? region4depthName;
   @HiveField(6)
-  double? y;
+  double? x;
   @HiveField(7)
-  String? code;
+  double? y;
   @HiveField(8)
+  String? code;
+  @HiveField(9)
   String? regionType;
 }

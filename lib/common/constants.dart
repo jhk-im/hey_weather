@@ -44,4 +44,4 @@ const kWidgetGradientLeft = Color(0x0d17171b);
 const kWidgetGradientRight = Color(0xcc17171b);
 
 // Shared, Dao
-const currentLocation = 'current_location';
+const kCurrentAddressId = 'current_address_id';

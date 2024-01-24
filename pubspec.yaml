@@ -23,6 +23,8 @@ dependencies:
   geolocator: ^9.0.2
   shared_preferences: ^2.2.2
   logger: ^2.0.2+1
+  uuid: ^4.3.3
+  connectivity: ^3.0.6
 
 dev_dependencies:
   flutter_test:

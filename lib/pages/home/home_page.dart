@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hey_weather/common/constants.dart';
+import 'package:hey_weather/common/hey_bottom_sheet.dart';
 import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/image_utils.dart';
 import 'package:hey_weather/pages/home/home_controller.dart';
@@ -12,6 +13,9 @@ class HomePage extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
+
+
+
     return Scaffold(
       body: SafeArea(
         child: Obx(() => Stack(
@@ -22,12 +26,27 @@ class HomePage extends GetView<HomeController> {
               margin: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
               child: Row(
                 children: [
-                  Row(
-                    children: [
-                      ImageUtils.icon(context, 'location'),
-                      const SizedBox(width: 6),
-                      HeyText.body(controller.addressText, color: kTextSecondaryColor),
-                    ],
+                  GestureDetector(
+                    onTap: () {
+                      HeyBottomSheet.showAddressBottomSheet(
+                        context,
+                        addressList: controller.addressList,
+                        currentAddress: controller.currentAddress,
+                        onSelectedAddress: (addressId) {
+                          controller.logger.d('onSelectedAddress: (addressId) -> $addressId / currentAddress -> ${controller.currentAddress}');
+                          if (addressId != controller.currentAddress) {
+                            controller.resetData(addressId);
+                          }
+                        },
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        ImageUtils.icon(context, 'location'),
+                        const SizedBox(width: 6),
+                        HeyText.body(controller.addressText, color: kTextSecondaryColor),
+                      ],
+                    ),
                   ),
                   const Spacer(),
                   GestureDetector(
@@ -40,7 +59,6 @@ class HomePage extends GetView<HomeController> {
                   GestureDetector(
                     onTap: () {
                       print('setting');
-                      controller.showOnboardBottomSheet();
                     },
                     child: ImageUtils.icon(context, 'setting'),
                   ),

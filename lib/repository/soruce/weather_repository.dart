@@ -1,6 +1,8 @@
   import 'dart:convert';
 
 import 'package:geolocator/geolocator.dart';
+import 'package:hey_weather/common/constants.dart';
+import 'package:hey_weather/common/utils.dart';
 import 'package:hey_weather/repository/soruce/local/weather_dao.dart';
 import 'package:hey_weather/repository/soruce/mapper/weather_mapper.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
@@ -61,47 +63,79 @@ class WeatherRepository {
   }
 
   // 현재 좌표 주소 업데이트
-  Future<Result<Address>> getUpdateAddressWithCoordinate() async {
+  Future<Result<Address>> getUpdateAddressWithCoordinate(String location) async {
     Position position = await _getLocation();
+    logger.i('getUpdateAddressWithCoordinate() -> position -> $position');
 
     // 좌표값 변경이 없는 경우 로컬 리턴
-    final localList = await _dao.getAllAddressList();
-    if (localList.isNotEmpty) {
-      final entity = localList.first;
-      logger.i('getAddressWithCoordinate() -> local ${entity.toAddress()}');
-      if (entity.x == position.longitude && entity.y == position.latitude) {
-        logger.i('getAddressWithCoordinate() -> local return');
-        return Result.success(entity.toAddress());
+    final current = await _dao.getAddressWithId(location);
+    if (current != null) {
+      final currentX = current.x!.toStringAsFixed(3);
+      final positionX = position.longitude.toStringAsFixed(3);
+      final currentY = current.y!.toStringAsFixed(3);
+      final positionY = position.latitude.toStringAsFixed(3);
+      if (currentX == positionX && currentY == positionY) {
+        logger.i('getAddressWithCoordinate() -> local return ${current.toAddress()}');
+        return Result.success(current.toAddress());
       }
     }
 
-    // 카카오 주소 검색
-    try {
-      final response = await _api.getAddressWithCoordinate(
-          position.longitude, position.latitude);
-      final jsonResult = jsonDecode(response.body);
-      AddressList result = AddressList.fromJson(jsonResult);
-      Address address = Address();
+    // 통신 오류용 기본 주소 정보
+    Address defaultAddress = Address();
+    defaultAddress.region1depthName = '서울특별시';
+    defaultAddress.region2depthName = '중구';
+    defaultAddress.region3depthName = '태평로 1가';
+    defaultAddress.x = 126.97723484374212;
+    defaultAddress.y = 37.56770871576262;
+    defaultAddress.id = kCurrentAddressId;
 
-      logger.i('getAddressWithCoordinate() -> api ${result.documents}');
-      if (result.documents != null) {
-        address = result.documents![0];
-        address.x = position.longitude;
-        address.y = position.latitude;
-
-        if (localList.isEmpty){
-          logger.i('getAddressWithCoordinate() -> api insert');
-          _dao.insertAddress(address.toAddressEntity());
-        } else {
-          logger.i('getAddressWithCoordinate() -> api update');
-          _dao.updateAddressWithIndex(0, address.toAddressEntity());
-        }
+    // 인터넷 연결 끊김
+    var connect =  await Utils.checkInternetConnection();
+    if (!connect) {
+      if (current != null) {
+        logger.i('getAddressWithCoordinate() -> network not connected local return ${current.toAddress()}');
+        return Result.success(current.toAddress());
+      } else {
+        logger.i('getAddressWithCoordinate() -> network not connected return $defaultAddress');
+        _dao.updateAddressWithId(kCurrentAddressId, defaultAddress.toAddressEntity());
+        return Result.success(defaultAddress);
       }
-      return Result.success(address);
-    } catch (e) {
-      return Result.error(Exception('getAddressWithCoordinate failed: ${e.toString()}'));
+    } else {
+      // 카카오 주소 검색
+      try {
+        final response = await _api.getAddressWithCoordinate(position.longitude, position.latitude);
+        final jsonResult = jsonDecode(response.body);
+        AddressList result = AddressList.fromJson(jsonResult);
+        Address address = Address();
+        if (result.documents != null) {
+          address = result.documents![0];
+          address.x = position.longitude;
+          address.y = position.latitude;
+          address.id = kCurrentAddressId;
+
+          logger.i('getAddressWithCoordinate() -> kakao api return $address');
+          _dao.updateAddressWithId(kCurrentAddressId, address.toAddressEntity());
+          return Result.success(address);
+        } else {
+          logger.i('getAddressWithCoordinate() -> kakao api failed return $defaultAddress');
+          _dao.updateAddressWithId(kCurrentAddressId, defaultAddress.toAddressEntity());
+          return Result.success(defaultAddress);
+        }
+      } catch (e) {
+        logger.i('getAddressWithCoordinate() -> kakao api failed return $defaultAddress');
+        _dao.updateAddressWithId(kCurrentAddressId, defaultAddress.toAddressEntity());
+        return Result.success(defaultAddress);
+      }
     }
   }
 
-  //
+  // 로컬리스트
+  Future<Result<List<Address>>> getAddressList() async {
+    final list = await _dao.getAllAddressList();
+    if (list.isNotEmpty) {
+      return Result.success(list.map((e) => e.toAddress()).toList());
+    } else {
+      return Result.error(Exception('getAddressList empty'));
+    }
+  }
 }

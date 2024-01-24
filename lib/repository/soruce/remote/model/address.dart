@@ -1,4 +1,5 @@
 class Address {
+  String? id;
   String? regionType;
   String? addressName;
   String? region1depthName;
@@ -9,18 +10,21 @@ class Address {
   double? x;
   double? y;
 
-  Address(
-      {this.regionType,
-        this.addressName,
-        this.region1depthName,
-        this.region2depthName,
-        this.region3depthName,
-        this.region4depthName,
-        this.code,
-        this.x,
-        this.y});
+  Address({
+    this.id,
+    this.regionType,
+    this.addressName,
+    this.region1depthName,
+    this.region2depthName,
+    this.region3depthName,
+    this.region4depthName,
+    this.code,
+    this.x,
+    this.y,
+  });
 
   Address.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     regionType = json['region_type'];
     addressName = json['address_name'];
     region1depthName = json['region_1depth_name'];
@@ -34,6 +38,7 @@ class Address {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
     data['region_type'] = regionType;
     data['address_name'] = addressName;
     data['region_1depth_name'] = region1depthName;

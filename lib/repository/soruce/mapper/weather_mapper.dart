@@ -5,6 +5,7 @@ import 'package:hey_weather/repository/soruce/remote/model/address.dart';
 extension ToAddressEntity on Address {
   AddressEntity toAddressEntity() {
     var entity = AddressEntity();
+    entity.id = id;
     entity.addressName = addressName;
     entity.region1depthName = region1depthName;
     entity.region2depthName = region2depthName;
@@ -21,6 +22,7 @@ extension ToAddressEntity on Address {
 extension ToAddress on AddressEntity {
   Address toAddress() {
     var address = Address(
+      id: id,
       addressName: addressName,
       region1depthName: region1depthName,
       region2depthName: region2depthName,

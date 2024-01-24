@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hey_weather/common/constants.dart';
+import 'package:hey_weather/common/hey_text.dart';
+import 'package:hey_weather/common/image_utils.dart';
 
 class HeyCustomButton extends Container {
   HeyCustomButton({
@@ -27,8 +29,11 @@ class HeyCustomButton extends Container {
     );
   }
 
-  factory HeyCustomButton.icon({
-    required Widget icon,
+  factory HeyCustomButton.textIcon(BuildContext context, {
+    double fontSize = 15,
+    Color color = kTextSecondaryColor,
+    String? iconName,
+    String? text,
     Function? onPressed,
   }) {
 
@@ -37,7 +42,25 @@ class HeyCustomButton extends Container {
         onTap: () {
           onPressed?.call();
         },
-        child: icon,
+        child: Row(
+          children: [
+            const Spacer(),
+            HeyText.subHeadlineSemiBold(
+              text ?? '',
+              fontSize: fontSize,
+              color: onPressed != null ? kTextSecondaryColor : kIconColor,
+            ),
+            const SizedBox(width: 8),
+            ImageUtils.icon(
+              context,
+              iconName ?? 'arrow_right',
+              width: 16,
+              height: 16,
+              color: color,
+            ),
+            const Spacer(),
+          ],
+        ),
       ),
     );
   }

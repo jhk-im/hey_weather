@@ -13,6 +13,16 @@ class WeatherDao {
     await box.putAt(index, address);
   }
 
+  Future<void> updateAddressWithId(String id, AddressEntity address) async {
+    final box = await Hive.openBox<AddressEntity>(userAddress);
+    await box.put(id, address);
+  }
+
+  Future<AddressEntity?> getAddressWithId(String addressId) async {
+    final box = await Hive.openBox<AddressEntity>(userAddress);
+    return box.get(addressId);
+  }
+
   Future clearAddress() async {
     final box = await Hive.openBox<AddressEntity>(userAddress);
     await box.clear();

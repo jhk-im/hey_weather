@@ -144,13 +144,14 @@ class HeyText extends Text {
     );
   }
 
-  factory HeyText.callOutSemiBold(String text, {Color? color, double? fontSize}) {
+  factory HeyText.callOutSemiBold(String text, {Color? color, double? fontSize, TextOverflow? textOverflow}) {
     return HeyText(
       text,
       style: TextStyle(
         fontFamily: kPretendardSemiBold,
         color: color ?? Colors.white,
         fontSize: fontSize ?? kFont16,
+        overflow: textOverflow,
       ),
     );
   }

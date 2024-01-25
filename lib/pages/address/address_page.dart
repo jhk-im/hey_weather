@@ -5,6 +5,7 @@ import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/image_utils.dart';
 import 'package:hey_weather/pages/address/address_controller.dart';
+import 'package:hey_weather/widgets/cards/hey_weather_address_card.dart';
 import 'package:hey_weather/widgets/loading_widget.dart';
 
 
@@ -108,6 +109,25 @@ class AddressPage extends GetView<AddressController> {
                 ),
 
                 // 현재 위치
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    children: [
+                      HeyWeatherAddressCard(
+                        address: controller.currentAddress,
+                        weatherStatus: '구름 조금',
+                        temperature: '19',
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Divider
+                Container(
+                  margin: const EdgeInsets.all(20),
+                  child: const Divider(color: kButtonColor, height: 1),
+                ),
+
               ],
             ),
 
@@ -129,7 +149,6 @@ class AddressPage extends GetView<AddressController> {
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () {
-                          print(controller.searchAddressList[index]);
                           controller.selectSearchAddress(controller.searchAddressList[index]);
                         },
                         child: Padding(

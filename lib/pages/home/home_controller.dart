@@ -56,10 +56,7 @@ class HomeController extends GetxController {
     // 현재 위치 업데이트 -> 현재 위치가 선택된 경우 그대로 진행
     var getCurrentAddress = await _repository.getUpdateAddressWithCoordinate(_currentAddress.value);
     getCurrentAddress.when(success: (address) async {
-      String depth1 = address.region1depthName ?? '';
-      String depth2 = address.region2depthName ?? '';
-      String depth3 = address.region3depthName ?? '';
-      _addressText('$depth1 $depth2 $depth3');
+      _addressText(address.addressName);
       await SharedPreferencesUtil().setString(kCurrentAddressId, address.id!);
     }, error: (Exception e) {
       logger.e(e);

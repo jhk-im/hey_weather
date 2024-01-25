@@ -21,32 +21,6 @@ class HeyWeatherSelectCard extends StatefulWidget {
 class _HeyWeatherSelectCardState extends State<HeyWeatherSelectCard> {
   final isSelected = false.obs;
 
-  // Colors
-  final Map<String, Color> stateColors = {
-    'none'.tr : kIconColor,
-    'low'.tr : kPrimaryDarkerColor,
-    'good'.tr : kPrimaryDarkerColor,
-    'weak'.tr : kPrimaryDarkerColor,
-    'high'.tr : kSubColor,
-    'normal'.tr : kHeyGreenColor,
-    'bad'.tr : kHeyOrangeColor,
-    'very_high'.tr: kHeyOrangeColor,
-    'strong'.tr: kHeyRedColor,
-    'danger'.tr: kHeyRedColor,
-    'very_bad'.tr: kHeyRedColor,
-    'very_good'.tr: kHeySkyBlueColor,
-  };
-
-  // Colors
-  final Map<String, String> stateUnits = {
-    'humidity'.tr : '%',
-    'wind'.tr : 'm/s',
-    'rain'.tr : 'mm',
-    'fine_dust'.tr : '㎍/m³',
-    'ultra_fine_dust'.tr : '㎍/m³',
-    'wind_chill'.tr: '˚',
-  };
-
   @override
   Widget build(BuildContext context) {
     double width = (MediaQuery.of(context).size.width / 2) - 22;

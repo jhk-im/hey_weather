@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
 import 'package:hey_weather/repository/soruce/remote/model/search_address.dart';
 import 'package:hey_weather/repository/soruce/weather_repository.dart';
 import 'package:logger/logger.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:rxdart/rxdart.dart';
 
 class AddressController extends GetxController {
@@ -12,6 +14,12 @@ class AddressController extends GetxController {
 
   final RxBool _isLoading = false.obs;
   bool get isLoading => _isLoading.value;
+
+  final RxBool _isLocationGranted = false.obs;
+  bool get isLocationGranted => _isLocationGranted.value;
+
+  final Rxn<Address> _currentAddress = Rxn<Address>();
+  Address? get currentAddress => _currentAddress.value;
 
   final RxList<Address> _addressList = <Address>[].obs;
   List<Address> get addressList => _addressList;
@@ -64,16 +72,32 @@ class AddressController extends GetxController {
     super.onClose();
   }
 
+  _checkPermissionStatus() async {
+    var status = await Permission.location.status;
+    _isLocationGranted(status.isGranted);
+  }
+
 
   Future _getData() async {
     _isLoading(true);
 
+    // 위치 권한 확인
+    await _checkPermissionStatus();
+
+    // 로컬 리스트
     var getAddressList =  await _repository.getAddressList();
     getAddressList.when(success: (addressList) async {
+
+      var currentAddress = addressList.firstWhereOrNull((element) => element.id == kCurrentAddressId);
+      if (currentAddress != null) {
+        _currentAddress(currentAddress);
+      }
+
       _addressList(addressList);
     }, error: (Exception e) {
       logger.e(e);
     });
+
 
     _isLoading(false);
   }

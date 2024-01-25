@@ -17,4 +17,16 @@ class WeatherApi {
     };
     return await http.get(url, headers: headers);
   }
+
+  // 주소로 좌표 검색
+  Future<http.Response> getSearchAddress(String query) async {
+    var url =
+    Uri.https(kakaoUrl, '/v2/local/search/address.json', {
+      'query': query,
+    });
+    var headers = <String, String> {
+      'Authorization': 'KakaoAK $kakaoApiKey',
+    };
+    return await http.get(url, headers: headers);
+  }
 }

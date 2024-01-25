@@ -6,6 +6,7 @@ class Address {
   String? region2depthName;
   String? region3depthName;
   String? region4depthName;
+  String? roadName;
   String? code;
   double? x;
   double? y;
@@ -18,6 +19,7 @@ class Address {
     this.region2depthName,
     this.region3depthName,
     this.region4depthName,
+    this.roadName,
     this.code,
     this.x,
     this.y,
@@ -31,6 +33,7 @@ class Address {
     region2depthName = json['region_2depth_name'];
     region3depthName = json['region_3depth_name'];
     region4depthName = json['region_4depth_name'];
+    roadName = json['road_name'];
     code = json['code'];
     x = json['x'];
     y = json['y'];
@@ -45,6 +48,7 @@ class Address {
     data['region_2depth_name'] = region2depthName;
     data['region_3depth_name'] = region3depthName;
     data['region_4depth_name'] = region4depthName;
+    data['road_name'] = roadName;
     data['code'] = code;
     data['x'] = x;
     data['y'] = y;

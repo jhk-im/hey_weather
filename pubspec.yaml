@@ -25,6 +25,8 @@ dependencies:
   logger: ^2.0.2+1
   uuid: ^4.3.3
   connectivity: ^3.0.6
+  rxdart: ^0.27.7
+  easy_rich_text: ^2.1.0
 
 dev_dependencies:
   flutter_test:

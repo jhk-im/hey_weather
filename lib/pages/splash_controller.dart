@@ -15,8 +15,8 @@ class SplashController extends GetxController {
   }
 
   _requestPermissions() async {
-    await _checkPermissionStatus(Permission.appTrackingTransparency);
-    await _checkPermissionStatus(Permission.location, isOpenAppSettings: true);
+    // await _checkPermissionStatus(Permission.appTrackingTransparency);
+    await _checkPermissionStatus(Permission.location);
     await _checkPermissionStatus(Permission.notification);
     Get.offAllNamed('/home');
   }
@@ -27,8 +27,7 @@ class SplashController extends GetxController {
       await _requestPermission(permission, isOpenAppSettings: isOpenAppSettings);
     } else if (status.isPermanentlyDenied) {
       if (isOpenAppSettings) {
-        // TODO: 앱 종료 혹은 설정에서 권한 허용하도록 안내 팝업
-        // openAppSettings();
+        openAppSettings();
       }
     }
   }
@@ -37,8 +36,7 @@ class SplashController extends GetxController {
     var result = await permission.request();
     if (!result.isGranted) {
       if (isOpenAppSettings) {
-        // TODO: 앱 종료 혹은 설정에서 권한 허용하도록 안내 팝업
-        // openAppSettings();
+        openAppSettings();
       }
     }
   }

@@ -8,7 +8,11 @@ class HeyWeatherTheme {
 
   ThemeData dark() => ThemeData(
     primaryColor: kPrimaryColor,
+    primaryColorDark: kPrimaryDarkerColor,
+    primaryColorLight: kPrimaryLighterColor,
     scaffoldBackgroundColor: kElevationColor,
+
+    highlightColor: kTextDisabledColor,
 
     appBarTheme: const AppBarTheme(
       systemOverlayStyle: SystemUiOverlayStyle.dark,
@@ -17,6 +21,12 @@ class HeyWeatherTheme {
     switchTheme: const SwitchThemeData(
       trackColor: MaterialStatePropertyAll(kPrimaryDarkerColor),
       trackOutlineWidth: MaterialStatePropertyAll(0),
+    ),
+
+    textSelectionTheme: const TextSelectionThemeData(
+      selectionColor: kPrimaryDarkerColor,
+      selectionHandleColor: kPrimaryDarkerColor,
+      cursorColor: kPrimaryDarkerColor
     ),
 
     inputDecorationTheme: InputDecorationTheme(

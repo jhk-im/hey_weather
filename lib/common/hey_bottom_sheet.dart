@@ -335,7 +335,7 @@ class HeyBottomSheet {
                 const SizedBox(height: 24),
                 // Button
                 Container(
-                  margin: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   child: Center(
                     child: HeyCustomButton.textIcon(
                       context,

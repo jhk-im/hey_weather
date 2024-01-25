@@ -6,7 +6,8 @@ import 'package:hey_weather/common/utils.dart';
 import 'package:hey_weather/repository/soruce/local/weather_dao.dart';
 import 'package:hey_weather/repository/soruce/mapper/weather_mapper.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
-import 'package:hey_weather/repository/soruce/remote/result.dart';
+import 'package:hey_weather/repository/soruce/remote/model/search_address.dart';
+import 'package:hey_weather/repository/soruce/remote/result/result.dart';
 import 'package:hey_weather/repository/soruce/remote/weather_api.dart';
 import 'package:logger/logger.dart';
 
@@ -62,7 +63,7 @@ class WeatherRepository {
     return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
 
-  // 현재 좌표 주소 업데이트
+  // 현재 좌표 주소
   Future<Result<Address>> getUpdateAddressWithCoordinate(String location) async {
     Position position = await _getLocation();
     logger.i('getUpdateAddressWithCoordinate() -> position -> $position');
@@ -101,7 +102,7 @@ class WeatherRepository {
         return Result.success(defaultAddress);
       }
     } else {
-      // 카카오 주소 검색
+      // 좌표로 주소 검색
       try {
         final response = await _api.getAddressWithCoordinate(position.longitude, position.latitude);
         final jsonResult = jsonDecode(response.body);
@@ -129,13 +130,30 @@ class WeatherRepository {
     }
   }
 
-  // 로컬리스트
+  // 로컬 주소 리스트
   Future<Result<List<Address>>> getAddressList() async {
     final list = await _dao.getAllAddressList();
     if (list.isNotEmpty) {
       return Result.success(list.map((e) => e.toAddress()).toList());
     } else {
       return Result.error(Exception('getAddressList empty'));
+    }
+  }
+
+  // 주소 검색
+  Future<Result<List<SearchAddress>>> getSearchAddress(String query) async {
+    // 카카오 주소 검색
+    try {
+      final response = await _api.getSearchAddress(query);
+      final jsonResult = jsonDecode(response.body);
+      SearchAddressList result = SearchAddressList.fromJson(jsonResult);
+      if (result.documents != null) {
+        return Result.success(result.documents!);
+      } else {
+        return Result.error(Exception('getSearchAddress empty'));
+      }
+    } catch (e) {
+      return Result.error(Exception('getSearchAddress failed: ${e.toString()}'));
     }
   }
 }

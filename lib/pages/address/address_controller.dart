@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
-import 'package:hey_weather/common/constants.dart';
-import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
+import 'package:hey_weather/repository/soruce/remote/model/search_address.dart';
 import 'package:hey_weather/repository/soruce/weather_repository.dart';
 import 'package:logger/logger.dart';
+import 'package:rxdart/rxdart.dart';
 
 class AddressController extends GetxController {
   final WeatherRepository _repository = GetIt.I<WeatherRepository>();
@@ -13,54 +13,60 @@ class AddressController extends GetxController {
   final RxBool _isLoading = false.obs;
   bool get isLoading => _isLoading.value;
 
-  final RxString _addressText = ''.obs;
-  String get addressText => _addressText.value;
-
-  final RxString _currentAddress = ''.obs;
-  String get currentAddress => _currentAddress.value;
-
   final RxList<Address> _addressList = <Address>[].obs;
   List<Address> get addressList => _addressList;
 
+  final RxList<SearchAddress> _searchAddressList = <SearchAddress>[].obs;
+  List<SearchAddress> get searchAddressList => _searchAddressList;
+
+  final RxString _searchAddressText = ''.obs;
+  String get searchAddressText => _searchAddressText.value;
+
   // input field
   TextEditingController textFieldController = TextEditingController();
-  final RxString _searchText = ''.obs;
-  String get searchText => _searchText.value;
+  final _deBouncer = BehaviorSubject<String>();
+  final focusNode = FocusNode();
+  textFieldListener(String text) {
+    _deBouncer.add(text);
+  }
+  selectSearchAddress(SearchAddress address) {
+    resetTextField();
+  }
 
-  _textFieldListener() {
-    _searchText.value = textFieldController.text;
+  resetTextField() {
+    textFieldController.text = '';
+    focusNode.unfocus();
+    _searchAddressList.clear();
   }
 
   var logger = Logger();
 
   @override
   void onInit() {
-    textFieldController.addListener(_textFieldListener);
+    _deBouncer.debounceTime(const Duration(microseconds: 300)).listen((text) {
+      if (text.length > 1) {
+        _searchAddressText(text);
+        _searchAddress(text);
+      } else {
+        _searchAddressList.clear();
+      }
+    });
+
     super.onInit();
     _getData();
   }
 
   @override
   void onClose() {
-    textFieldController.removeListener(_textFieldListener);
+    _deBouncer.close();
     textFieldController.dispose();
+    focusNode.dispose();
     super.onClose();
   }
 
 
   Future _getData() async {
     _isLoading(true);
-
-    var getAddressId = SharedPreferencesUtil().getString(kCurrentAddressId);
-    if (getAddressId == null) {
-      // 최초 진입
-      logger.i('HomeController getData() -> init currentLocation setting');
-      _currentAddress(kCurrentAddressId);
-      await SharedPreferencesUtil().setString(kCurrentAddressId, kCurrentAddressId);
-    } else {
-      _currentAddress(getAddressId);
-      logger.i('HomeController getData() -> currentLocation = $getAddressId');
-    }
 
     var getAddressList =  await _repository.getAddressList();
     getAddressList.when(success: (addressList) async {
@@ -70,5 +76,15 @@ class AddressController extends GetxController {
     });
 
     _isLoading(false);
+  }
+
+  Future _searchAddress(String query) async {
+    var getCurrentAddress = await _repository.getSearchAddress(query);
+    getCurrentAddress.when(success: (searchAddress) async {
+      logger.i('searchAddress() -> $searchAddress');
+      _searchAddressList(searchAddress);
+    }, error: (Exception e) {
+      logger.e(e);
+    });
   }
 }

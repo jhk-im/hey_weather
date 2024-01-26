@@ -6,6 +6,7 @@ const String kPretendardMedium = 'PretendardMedium';
 const String kPretendardRegular = 'PretendardRegular';
 const String kPretendardLight = 'PretendardLight';
 
+const kFont73 = 73.0;
 const kFont34 = 34.0;
 const kFont28 = 28.0;
 const kFont22 = 22.0;

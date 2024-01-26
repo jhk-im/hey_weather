@@ -1,50 +1,23 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter/material.dart';
 
-class ImageUtils extends SvgPicture {
-
-  ImageUtils.icon(BuildContext context, String name, {
+class ImageUtils extends StatelessWidget {
+  const ImageUtils({
     super.key,
-    super.width = 24,
-    super.height = 24,
-    super.fit,
-    super.allowDrawingOutsideViewBox,
-    Color? color,
-  }) : super.asset(
-    'assets/images/icons/basic/icon_$name.svg',
-    colorFilter: color != null ? ColorFilter.mode(
-      color,
-      BlendMode.srcIn,
-    ): null,
-  );
+    required this.iconName,
+    this.width,
+    this.height
+  });
 
-  ImageUtils.weatherIcon(BuildContext context, String name, {
-    super.key,
-    super.width = 32,
-    super.height = 32,
-    super.fit,
-    super.allowDrawingOutsideViewBox,
-    Color? color,
-  }) : super.asset(
-    'assets/images/icons/weather/icon_$name.svg',
-    colorFilter: color != null ? ColorFilter.mode(
-      color,
-      BlendMode.srcIn,
-    ): null,
-  );
+  final String iconName;
+  final double? width;
+  final double? height;
 
-  ImageUtils.svg(BuildContext context, String name, {
-    super.key,
-    super.width = 24,
-    super.height = 24,
-    super.fit,
-    super.allowDrawingOutsideViewBox,
-    Color? color,
-  }) : super.asset(
-    'assets/images/svg/icon_$name.svg',
-    colorFilter: color != null ? ColorFilter.mode(
-      color,
-      BlendMode.srcIn,
-    ): null,
-  );
+  @override
+  Widget build(BuildContext context) {
+    return Image.asset(
+      'assets/images/png/$iconName.png',
+      width: width,
+      height: height,
+    );
+  }
 }

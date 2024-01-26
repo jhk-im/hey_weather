@@ -31,7 +31,9 @@ class HomeController extends GetxController {
   }
 
   _showOnboardBottomSheet() {
-    HeyBottomSheet.showOnBoardingBottomSheet(Get.context!);
+    if (Get.context != null) {
+      HeyBottomSheet.showOnBoardingBottomSheet(Get.context!);
+    }
   }
 
   resetData(String addressId) async {
@@ -70,6 +72,7 @@ class HomeController extends GetxController {
     });
 
     _isLoading(false);
-    _showOnboardBottomSheet();
+
+    //_showOnboardBottomSheet();
   }
 }

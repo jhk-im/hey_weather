@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_text.dart';
-import 'package:hey_weather/common/image_utils.dart';
+import 'package:hey_weather/common/svg_utils.dart';
 
 class HeyWeatherLargeCard extends StatefulWidget {
   const HeyWeatherLargeCard({
@@ -55,7 +55,7 @@ class _HeyWeatherLargeCardState extends State<HeyWeatherLargeCard> {
                   // icon, title
                   Row(
                     children: [
-                      ImageUtils.icon(
+                      SvgUtils.icon(
                         context,
                         'weather_by_time',
                         width: 20,
@@ -160,7 +160,7 @@ class _HeyWeatherLargeCardState extends State<HeyWeatherLargeCard> {
                     Row(
                       children: [
                         const Spacer(),
-                        ImageUtils.icon(
+                        SvgUtils.icon(
                           context,
                           status.value == 1
                               ? 'circle_check'
@@ -215,7 +215,7 @@ class _HeyWeatherLargeCardState extends State<HeyWeatherLargeCard> {
             ),
           ),
 
-          ImageUtils.weatherIcon(
+          SvgUtils.weatherIcon(
             context,
             iconName,
             width: 32,

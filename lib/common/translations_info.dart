@@ -42,6 +42,8 @@ class TranslationsInfo extends Translations {
     'setting_location': '지역 설정',
     'current_location': '현재 위치',
     'recent_added': '최근 추가',
+    'question_add_1': '을 추가할까요?',
+    'question_add_2': '를 추가할까요?',
 
     // Weather
     'humidity' : '습도',
@@ -61,6 +63,9 @@ class TranslationsInfo extends Translations {
     'bs_address_title_1': '어느 지역으로 바꿀까요?',
     'bs_address_title_2': '바꿀 지역이 없어요',
     'bs_address_btn': '다른 지역 찾아보기',
+
+    // toast
+    'toast_added_location': '지역이 추가되었어요',
 
     // hint
     'hint_address_input': '추가할 지역을 입력하세요',

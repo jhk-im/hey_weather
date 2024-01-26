@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_text.dart';
-import 'package:hey_weather/common/image_utils.dart';
+import 'package:hey_weather/common/svg_utils.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
 
 class HeyWeatherAddressButton extends StatefulWidget {
@@ -42,7 +42,7 @@ class _HeyWeatherAddressButtonState extends State<HeyWeatherAddressButton> {
             const SizedBox(width: 12),
             Visibility(
               visible: widget.isSelected,
-              child: ImageUtils.icon(
+              child: SvgUtils.icon(
                 context,
                 'check_outline',
                 width: 24,

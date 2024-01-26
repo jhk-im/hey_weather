@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_text.dart';
-import 'package:hey_weather/common/image_utils.dart';
+import 'package:hey_weather/common/svg_utils.dart';
 
 class HeyElevatedButton extends ElevatedButton {
   const HeyElevatedButton({
@@ -226,7 +226,7 @@ class HeyElevatedButton extends ElevatedButton {
       child: Row(
         children: [
           const Spacer(),
-          ImageUtils.icon(
+          SvgUtils.icon(
             context,
             iconName ?? 'plus',
             width: 16,
@@ -273,7 +273,7 @@ class HeyElevatedButton extends ElevatedButton {
         splashFactory: NoSplash.splashFactory,
 
       ),
-      child: ImageUtils.icon(
+      child: SvgUtils.icon(
         context,
         iconName ?? 'plus',
         width: 16,
@@ -318,7 +318,7 @@ class HeyElevatedButton extends ElevatedButton {
         children: [
           //const Spacer(),
           if (isLeftIcon) ... {
-            ImageUtils.icon(
+            SvgUtils.icon(
               context,
               iconName ?? 'plus',
               width: 16,
@@ -334,7 +334,7 @@ class HeyElevatedButton extends ElevatedButton {
           ),
           if (!isLeftIcon) ... {
             const SizedBox(width: 8),
-            ImageUtils.icon(
+            SvgUtils.icon(
               context,
               iconName ?? 'plus',
               width: 16,
@@ -382,7 +382,7 @@ class HeyElevatedButton extends ElevatedButton {
           children: [
             //const Spacer(),
             if (isLeftIcon) ... {
-              ImageUtils.icon(
+              SvgUtils.icon(
                 context,
                 iconName ?? 'plus',
                 width: 16,
@@ -398,7 +398,7 @@ class HeyElevatedButton extends ElevatedButton {
             ),
             if (!isLeftIcon) ... {
               const SizedBox(width: 8),
-              ImageUtils.icon(
+              SvgUtils.icon(
                 context,
                 iconName ?? 'plus',
                 width: 16,

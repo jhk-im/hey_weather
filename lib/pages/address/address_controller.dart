@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hey_weather/common/constants.dart';
+import 'package:hey_weather/common/hey_snackbar.dart';
+import 'package:hey_weather/common/shared_preferences_util.dart';
+import 'package:hey_weather/getx/routes.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
 import 'package:hey_weather/repository/soruce/remote/model/search_address.dart';
 import 'package:hey_weather/repository/soruce/weather_repository.dart';
@@ -37,14 +40,25 @@ class AddressController extends GetxController {
   textFieldListener(String text) {
     _deBouncer.add(text);
   }
-  selectSearchAddress(SearchAddress address) {
-    resetTextField();
-  }
 
   resetTextField() {
     textFieldController.text = '';
     focusNode.unfocus();
     _searchAddressList.clear();
+  }
+
+  createSearchAddress(SearchAddress address) {
+    resetTextField();
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (Get.context != null) {
+        HeySnackBar.show(
+          Get.context!,
+          'toast_added_location'.tr,
+          isCheckIcon: true,
+        );
+      }
+    });
   }
 
   var logger = Logger();
@@ -110,5 +124,12 @@ class AddressController extends GetxController {
     }, error: (Exception e) {
       logger.e(e);
     });
+  }
+
+  selectAddress(Address address) async {
+    if (address.id != null) {
+      await SharedPreferencesUtil().setString(kCurrentAddressId, address.id!);
+      Get.offAllNamed(Routes.routeHome);
+    }
   }
 }

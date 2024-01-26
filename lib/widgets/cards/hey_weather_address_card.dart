@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_text.dart';
-import 'package:hey_weather/common/image_utils.dart';
+import 'package:hey_weather/common/svg_utils.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
 import 'package:hey_weather/widgets/buttons/hey_custom_button.dart';
 
@@ -13,12 +13,14 @@ class HeyWeatherAddressCard extends StatefulWidget {
     this.weatherStatus,
     this.temperature,
     this.isLast = false,
+    required this.onSelectAddress,
   });
 
   final Address? address;
   final String? weatherStatus;
   final String? temperature;
   final bool isLast;
+  final Function onSelectAddress;
 
 
   @override
@@ -31,7 +33,7 @@ class _HeyWeatherAddressCardState extends State<HeyWeatherAddressCard> {
 
     return GestureDetector(
       onTap: () {
-
+        widget.onSelectAddress(widget.address);
       },
       child: Container(
         width: double.maxFinite,
@@ -83,7 +85,7 @@ class _HeyWeatherAddressCardState extends State<HeyWeatherAddressCard> {
                 ),
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 15),
-                  child: ImageUtils.weatherIcon(
+                  child: SvgUtils.weatherIcon(
                     context,
                     'cloudy_on',
                     width: 40,

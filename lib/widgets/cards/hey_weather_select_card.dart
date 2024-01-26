@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_text.dart';
-import 'package:hey_weather/common/image_utils.dart';
+import 'package:hey_weather/common/svg_utils.dart';
 
 class HeyWeatherSelectCard extends StatefulWidget {
   const HeyWeatherSelectCard({
@@ -44,7 +44,7 @@ class _HeyWeatherSelectCardState extends State<HeyWeatherSelectCard> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ImageUtils.icon(
+            SvgUtils.icon(
               context,
               widget.iconName,
               width: 24,
@@ -59,7 +59,7 @@ class _HeyWeatherSelectCardState extends State<HeyWeatherSelectCard> {
             const Spacer(),
             Visibility(
               visible: isSelected.value,
-              child: ImageUtils.icon(
+              child: SvgUtils.icon(
                 context,
                 'check_outline',
                 width: 24,

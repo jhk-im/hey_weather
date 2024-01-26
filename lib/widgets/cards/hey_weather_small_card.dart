@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_text.dart';
-import 'package:hey_weather/common/image_utils.dart';
+import 'package:hey_weather/common/svg_utils.dart';
 
 class HeyWeatherSmallCard extends StatefulWidget {
   const HeyWeatherSmallCard({
@@ -110,7 +110,7 @@ class _HeyWeatherSmallCardState extends State<HeyWeatherSmallCard> {
                     // icon, title
                     Row(
                       children: [
-                        ImageUtils.icon(
+                        SvgUtils.icon(
                           context,
                           widget.iconName,
                           width: 20,
@@ -133,7 +133,7 @@ class _HeyWeatherSmallCardState extends State<HeyWeatherSmallCard> {
                               'highest'.tr,
                               color: kTextPointColor,
                             ),
-                            ImageUtils.icon(
+                            SvgUtils.icon(
                               context,
                               'highest',
                               width: 24,
@@ -151,7 +151,7 @@ class _HeyWeatherSmallCardState extends State<HeyWeatherSmallCard> {
                               'lowest'.tr,
                               color: kTextPointColor,
                             ),
-                            ImageUtils.icon(
+                            SvgUtils.icon(
                               context,
                               'lowest',
                               width: 24,
@@ -177,7 +177,7 @@ class _HeyWeatherSmallCardState extends State<HeyWeatherSmallCard> {
                             // icon, title
                             Row(
                               children: [
-                                ImageUtils.icon(
+                                SvgUtils.icon(
                                   context,
                                   widget.iconName,
                                   width: 20,
@@ -246,7 +246,7 @@ class _HeyWeatherSmallCardState extends State<HeyWeatherSmallCard> {
                                       color: kTextDisabledColor,
                                     ),
                                     const SizedBox(width: 4),
-                                    ImageUtils.icon(
+                                    SvgUtils.icon(
                                       context,
                                       isUp ? 'up' : 'down',
                                       width: 10,
@@ -269,7 +269,7 @@ class _HeyWeatherSmallCardState extends State<HeyWeatherSmallCard> {
                                     color: kTextDisabledColor,
                                   ),
                                   const SizedBox(width: 4),
-                                  ImageUtils.icon(
+                                  SvgUtils.icon(
                                     context,
                                     'direction',
                                     width: 10,
@@ -289,7 +289,7 @@ class _HeyWeatherSmallCardState extends State<HeyWeatherSmallCard> {
                                       color: widget.secondState.isNotEmpty ? kPrimaryDarkerColor : kIconColor,
                                     ),
                                     const SizedBox(width: 4),
-                                    ImageUtils.icon(
+                                    SvgUtils.icon(
                                       context,
                                       'direction',
                                       width: 10,
@@ -368,7 +368,7 @@ class _HeyWeatherSmallCardState extends State<HeyWeatherSmallCard> {
                     Row(
                       children: [
                         const Spacer(),
-                        ImageUtils.icon(
+                        SvgUtils.icon(
                           context,
                           status.value == 1
                               ? 'circle_check'

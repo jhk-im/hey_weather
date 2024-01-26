@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_bottom_sheet.dart';
 import 'package:hey_weather/common/hey_text.dart';
-import 'package:hey_weather/common/image_utils.dart';
+import 'package:hey_weather/common/svg_utils.dart';
 import 'package:hey_weather/getx/routes.dart';
 import 'package:hey_weather/pages/home/home_controller.dart';
 import 'package:hey_weather/widgets/loading_widget.dart';
@@ -26,7 +26,7 @@ class HomePage extends GetView<HomeController> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      HeyBottomSheet.showAddressBottomSheet(
+                      HeyBottomSheet.showSelectAddressBottomSheet(
                         context,
                         addressList: controller.addressList,
                         currentAddress: controller.currentAddress,
@@ -43,7 +43,7 @@ class HomePage extends GetView<HomeController> {
                     },
                     child: Row(
                       children: [
-                        ImageUtils.icon(context, 'location'),
+                        SvgUtils.icon(context, 'location'),
                         const SizedBox(width: 6),
                         HeyText.body(controller.addressText, color: kTextSecondaryColor),
                       ],
@@ -54,14 +54,14 @@ class HomePage extends GetView<HomeController> {
                     onTap: () {
                       print('map');
                     },
-                    child: ImageUtils.icon(context, 'map'),
+                    child: SvgUtils.icon(context, 'map'),
                   ),
                   const SizedBox(width: 8),
                   GestureDetector(
                     onTap: () {
                       print('setting');
                     },
-                    child: ImageUtils.icon(context, 'setting'),
+                    child: SvgUtils.icon(context, 'setting'),
                   ),
                 ],
               ),

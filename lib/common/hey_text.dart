@@ -209,7 +209,6 @@ class HeyText extends Text {
         color: color ?? Colors.white,
         fontSize: fontSize ?? kFont34,
         height: 1.2,
-        
       ),
 
     );

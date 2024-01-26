@@ -12,14 +12,14 @@ class HeyWeatherAddressCard extends StatefulWidget {
     this.address,
     this.weatherStatus,
     this.temperature,
-    this.isLast = false,
+    this.isFirst = false,
     required this.onSelectAddress,
   });
 
   final Address? address;
   final String? weatherStatus;
   final String? temperature;
-  final bool isLast;
+  final bool isFirst;
   final Function onSelectAddress;
 
 
@@ -58,14 +58,14 @@ class _HeyWeatherAddressCardState extends State<HeyWeatherAddressCard> {
                     widget.weatherStatus ?? '',
                     color: kTextDisabledColor,
                   ),
-                  if (widget.isLast || widget.address?.id == kCurrentAddressId) ... {
+                  if (widget.isFirst || widget.address?.id == kCurrentAddressId) ... {
                     const Spacer(),
                     HeyCustomButton.tag(
                       paddingVertical: 4,
                       paddingHorizontal: 6,
                       backgroundColor: kButtonColor,
                       text: HeyText.footnoteSemiBold(
-                        widget.isLast ? 'recent_added'.tr : 'current_location'.tr,
+                        widget.isFirst ? 'recent_added'.tr : 'current_location'.tr,
                         color: kPrimaryDarkerColor,
                       ),
                     ),

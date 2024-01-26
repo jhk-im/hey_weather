@@ -112,7 +112,7 @@ class AddressController extends GetxController {
         success: (idList) {
           print(idList);
           print(sortList);
-          sortList.sort((a, b) => idList.indexOf(a.id!).compareTo(idList.indexOf(b.id!)));
+          sortList.sort((a, b) => idList.indexOf(b.id!).compareTo(idList.indexOf(a.id!)));
           _addressList(sortList);
         },
         error: (Exception e) {

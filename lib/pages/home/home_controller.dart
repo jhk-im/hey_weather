@@ -56,16 +56,26 @@ class HomeController extends GetxController {
     }
 
     // 현재 위치 업데이트 -> 현재 위치가 선택된 경우 그대로 진행
-    var getCurrentAddress = await _repository.getUpdateAddressWithCoordinate(_currentAddress.value);
-    getCurrentAddress.when(success: (address) async {
-      _addressText(address.addressName);
-      await SharedPreferencesUtil().setString(kCurrentAddressId, address.id!);
-    }, error: (Exception e) {
-      logger.e(e);
-    });
+    if (getAddressId == kCurrentAddressId) {
+      var getCurrentAddress = await _repository.getUpdateAddressWithCoordinate(_currentAddress.value);
+      getCurrentAddress.when(success: (address) async {
+        _addressText(address.addressName);
+        await SharedPreferencesUtil().setString(kCurrentAddressId, address.id!);
+      }, error: (Exception e) {
+        logger.e(e);
+      });
+    }
 
     var getAddressList =  await _repository.getAddressList();
     getAddressList.when(success: (addressList) async {
+
+      if (getAddressId != kCurrentAddressId) {
+        final address = addressList.where((element) => element.id == getAddressId);
+        if (address.isNotEmpty) {
+          _addressText(address.first.addressName);
+        }
+      }
+
       _addressList(addressList);
     }, error: (Exception e) {
       logger.e(e);

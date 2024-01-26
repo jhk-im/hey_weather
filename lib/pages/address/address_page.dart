@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_bottom_sheet.dart';
-import 'package:hey_weather/common/hey_snackbar.dart';
 import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/svg_utils.dart';
 import 'package:hey_weather/pages/address/address_controller.dart';
@@ -57,11 +56,7 @@ class AddressPage extends GetView<AddressController> {
 
                           GestureDetector(
                             onTap: () {
-                              HeySnackBar.show(
-                                context,
-                                'toast_added_location'.tr,
-                                isCheckIcon: true,
-                              );
+
                             },
                             child: Container(
                               width: 72,
@@ -135,6 +130,24 @@ class AddressPage extends GetView<AddressController> {
                     Container(
                       margin: const EdgeInsets.all(20),
                       child: const Divider(color: kButtonColor, height: 1),
+                    ),
+
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: controller.addressList.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                            child: HeyWeatherAddressCard(
+                              address: controller.addressList[index],
+                              weatherStatus: '구름 조금',
+                              temperature: '19',
+                              onSelectAddress: controller.selectAddress,
+                              isFirst: index == 0,
+                            ),
+                          );
+                        },
+                      ),
                     ),
 
                   ],

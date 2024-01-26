@@ -11,6 +11,7 @@ import 'package:hey_weather/repository/soruce/weather_repository.dart';
 import 'package:logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:uuid/uuid.dart';
 
 class AddressController extends GetxController {
   final WeatherRepository _repository = GetIt.I<WeatherRepository>();
@@ -49,16 +50,14 @@ class AddressController extends GetxController {
 
   createSearchAddress(SearchAddress address) {
     resetTextField();
+    _updateAddressCard(address);
+  }
 
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (Get.context != null) {
-        HeySnackBar.show(
-          Get.context!,
-          'toast_added_location'.tr,
-          isCheckIcon: true,
-        );
-      }
-    });
+  selectAddress(Address address) async {
+    if (address.id != null) {
+      await SharedPreferencesUtil().setString(kCurrentAddressId, address.id!);
+      Get.offAllNamed(Routes.routeHome);
+    }
   }
 
   var logger = Logger();
@@ -91,7 +90,6 @@ class AddressController extends GetxController {
     _isLocationGranted(status.isGranted);
   }
 
-
   Future _getData() async {
     _isLoading(true);
 
@@ -106,8 +104,21 @@ class AddressController extends GetxController {
       if (currentAddress != null) {
         _currentAddress(currentAddress);
       }
+      final sortList = addressList.where((e) => e.id != kCurrentAddressId).toList();
 
-      _addressList(addressList);
+      // 내가 추가한 주소 리스트
+      var getAddressSortIdList =  await _repository.getAddressSortIdList();
+      getAddressSortIdList.when(
+        success: (idList) {
+          print(idList);
+          print(sortList);
+          sortList.sort((a, b) => idList.indexOf(a.id!).compareTo(idList.indexOf(b.id!)));
+          _addressList(sortList);
+        },
+        error: (Exception e) {
+          logger.e(e);
+        },
+      );
     }, error: (Exception e) {
       logger.e(e);
     });
@@ -126,10 +137,32 @@ class AddressController extends GetxController {
     });
   }
 
-  selectAddress(Address address) async {
-    if (address.id != null) {
-      await SharedPreferencesUtil().setString(kCurrentAddressId, address.id!);
-      Get.offAllNamed(Routes.routeHome);
-    }
+  Future _updateAddressCard(SearchAddress address) async {
+    String uuid =  const Uuid().v4();
+
+    final newAddress = Address();
+    newAddress.addressName = address.addressName;
+    newAddress.x = double.parse(address.x!);
+    newAddress.y = double.parse(address.y!);
+    newAddress.id = uuid;
+
+    await _repository.updateLocalAddressWithId(newAddress);
+
+    final idList = addressList.map((e) => e.id!).toList();
+    idList.add(uuid);
+
+    await _repository.updateLocalAddressIdList(idList);
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (Get.context != null) {
+        HeySnackBar.show(
+          Get.context!,
+          'toast_added_location'.tr,
+          isCheckIcon: true,
+        );
+
+        _getData();
+      }
+    });
   }
 }

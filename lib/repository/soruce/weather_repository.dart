@@ -83,6 +83,7 @@ class WeatherRepository {
 
     // 통신 오류용 기본 주소 정보
     Address defaultAddress = Address();
+    defaultAddress.addressName = '서울 특별시 중구 태평로 1가';
     defaultAddress.region1depthName = '서울특별시';
     defaultAddress.region2depthName = '중구';
     defaultAddress.region3depthName = '태평로 1가';
@@ -155,5 +156,27 @@ class WeatherRepository {
     } catch (e) {
       return Result.error(Exception('getSearchAddress failed: ${e.toString()}'));
     }
+  }
+
+  // 로컬 순서 id 리스트
+  Future<Result<List<String>>> getAddressSortIdList() async {
+    final list = await _dao.getAddressSortIdList();
+    if (list != null) {
+      return Result.success(list);
+    } else {
+      return Result.error(Exception('getAddressList empty'));
+    }
+  }
+
+  // 주소 업데이트
+  Future updateLocalAddressWithId(Address address) async {
+    logger.i('updateAddressWithId() -> $address');
+    await _dao.updateAddressWithId(address.id!, address.toAddressEntity());
+  }
+
+  // 주소 순서 업데이트
+  Future updateLocalAddressIdList(List<String> idList) async {
+    logger.i('updateAddressCardSort() -> $idList');
+    await _dao.updateAddressCardSort(idList);
   }
 }

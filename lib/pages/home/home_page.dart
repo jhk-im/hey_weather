@@ -26,9 +26,11 @@ class HomePage extends GetView<HomeController> {
                 children: [
                   GestureDetector(
                     onTap: () {
+
+
                       HeyBottomSheet.showSelectAddressBottomSheet(
                         context,
-                        addressList: controller.addressList,
+                        addressList: controller.addressList.reversed.toList(),
                         currentAddress: controller.currentAddress,
                         onSelectedAddress: (addressId) {
                           controller.logger.d('onSelectedAddress: (addressId) -> $addressId / currentAddress -> ${controller.currentAddress}');

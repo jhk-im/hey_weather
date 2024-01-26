@@ -36,7 +36,7 @@ class _HeyWeatherAddressButtonState extends State<HeyWeatherAddressButton> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             HeyText.bodySemiBold(
-              '${widget.address.region1depthName} ${widget.address.region2depthName} ${widget.address.region3depthName}',
+              '${widget.address.addressName}',
               color: widget.isSelected ? kPrimaryDarkerColor : kTextPrimaryColor,
             ),
             const SizedBox(width: 12),

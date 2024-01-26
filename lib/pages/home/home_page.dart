@@ -6,6 +6,7 @@ import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/svg_utils.dart';
 import 'package:hey_weather/getx/routes.dart';
 import 'package:hey_weather/pages/home/home_controller.dart';
+import 'package:hey_weather/widgets/cards/hey_weather_home_card.dart';
 import 'package:hey_weather/widgets/loading_widget.dart';
 
 
@@ -18,55 +19,67 @@ class HomePage extends GetView<HomeController> {
       body: SafeArea(
         child: Obx(() => Stack(
           children: [
-            //_samples(context),
-            // Header
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-
-
-                      HeyBottomSheet.showSelectAddressBottomSheet(
-                        context,
-                        addressList: controller.addressList.reversed.toList(),
-                        currentAddress: controller.currentAddress,
-                        onSelectedAddress: (addressId) {
-                          controller.logger.d('onSelectedAddress: (addressId) -> $addressId / currentAddress -> ${controller.currentAddress}');
-                          if (addressId != controller.currentAddress) {
-                            controller.resetData(addressId);
-                          }
+            Column(
+              children: [
+                // Header
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          HeyBottomSheet.showSelectAddressBottomSheet(
+                            context,
+                            addressList: controller.addressList.reversed.toList(),
+                            currentAddress: controller.currentAddress,
+                            onSelectedAddress: (addressId) {
+                              controller.logger.d('onSelectedAddress: (addressId) -> $addressId / currentAddress -> ${controller.currentAddress}');
+                              if (addressId != controller.currentAddress) {
+                                controller.resetData(addressId);
+                              }
+                            },
+                            onMoveToAddress: () {
+                              Get.toNamed(Routes.routeAddress);
+                            },
+                          );
                         },
-                        onMoveToAddress: () {
-                          Get.toNamed(Routes.routeAddress);
+                        child: Row(
+                          children: [
+                            SvgUtils.icon(context, 'location'),
+                            const SizedBox(width: 6),
+                            HeyText.body(controller.addressText, color: kTextSecondaryColor),
+                          ],
+                        ),
+                      ),
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: () {
+                          print('map');
                         },
-                      );
-                    },
-                    child: Row(
-                      children: [
-                        SvgUtils.icon(context, 'location'),
-                        const SizedBox(width: 6),
-                        HeyText.body(controller.addressText, color: kTextSecondaryColor),
-                      ],
-                    ),
+                        child: SvgUtils.icon(context, 'map'),
+                      ),
+                      const SizedBox(width: 8),
+                      GestureDetector(
+                        onTap: () {
+                          print('setting');
+                        },
+                        child: SvgUtils.icon(context, 'setting'),
+                      ),
+                    ],
                   ),
-                  const Spacer(),
-                  GestureDetector(
-                    onTap: () {
-                      print('map');
-                    },
-                    child: SvgUtils.icon(context, 'map'),
+                ),
+                // Card
+                Container(
+                  margin: const EdgeInsets.only(top: 12, left: 20, right: 20),
+                  child: const HeyWeatherHomeCard(
+                    weatherStatus: '구름 조금',
+                    temperature: '19',
+                    message1: '어제보다 1℃ 낮아요',
+                    message2: '저녁 6시에 비 올 확률이 80%예요',
+                    message3: '미세먼지가 없고 하늘이 깨끗해요',
                   ),
-                  const SizedBox(width: 8),
-                  GestureDetector(
-                    onTap: () {
-                      print('setting');
-                    },
-                    child: SvgUtils.icon(context, 'setting'),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
 
             Obx(() => LoadingWidget(controller.isLoading)),

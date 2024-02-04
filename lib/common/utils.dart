@@ -23,4 +23,17 @@ class Utils {
 
     return (lastCharCode - 0xAC00) % 28 != 0;
   }
+
+  String containsSearchText(String? input, String search) {
+    if (input != null) {
+      final list = input.split(' ');
+      if (list.toString().contains(search)) {
+        return list.lastWhere((e) => e.contains(search));
+      } else {
+        return list.last;
+      }
+    } else {
+      return '';
+    }
+  }
 }

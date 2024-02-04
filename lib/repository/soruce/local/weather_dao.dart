@@ -3,50 +3,46 @@ import 'package:hive/hive.dart';
 
 class WeatherDao {
   static const userAddress = 'user_address';
-  Future updateAddressWithId(String id, AddressEntity address) async {
+  Future updateUserAddressWithId(String id, AddressEntity address) async {
     final box = await Hive.openBox<AddressEntity>(userAddress);
     await box.put(id, address);
   }
 
-  Future<AddressEntity?> getAddressWithId(String addressId) async {
+  Future<AddressEntity?> getUserAddressWithId(String addressId) async {
     final box = await Hive.openBox<AddressEntity>(userAddress);
     return box.get(addressId);
   }
 
-  Future deleteAddressWithId(String addressId) async {
+  Future deleteUserAddressWithId(String addressId) async {
     final box = await Hive.openBox<AddressEntity>(userAddress);
     return box.delete(addressId);
   }
 
-  Future<List<AddressEntity>> getAllAddressList() async {
+  Future<List<AddressEntity>> getAllUserAddressList() async {
     final box = await Hive.openBox<AddressEntity>(userAddress);
     return box.values.toList();
   }
 
-  /*Future<void> insertAddress(AddressEntity address) async {
-    final box = await Hive.openBox<AddressEntity>(userAddress);
-    await box.add(address);
+  static const userAddressSort = 'user_address_sort';
+  static const userAddressEdit = 'user_address_edit';
+  static const userAddressRecent = 'user_address_recent';
+  Future updateUserAddressEdit(List<String> idList) async {
+    final box = await Hive.openBox<List<String>>(userAddressSort);
+    await box.put(userAddressEdit, idList);
   }
 
-  Future<void> updateAddressWithIndex(int index, AddressEntity address) async {
-    final box = await Hive.openBox<AddressEntity>(userAddress);
-    await box.putAt(index, address);
+  Future<List<String>?> getUserAddressEditIdList() async {
+    final box = await Hive.openBox<List<String>>(userAddressSort);
+    return box.get(userAddressEdit);
   }
 
-  Future clearAddress() async {
-    final box = await Hive.openBox<AddressEntity>(userAddress);
-    await box.clear();
-  }*/
-
-  static const cardSort = 'card_sort';
-  Future updateAddressCardSort(List<String> idList) async {
-    final box = await Hive.openBox<List<String>>(cardSort);
-    await box.put('address_card_sort', idList);
+  Future updateUserAddressRecent(List<String> idList) async {
+    final box = await Hive.openBox<List<String>>(userAddressSort);
+    await box.put(userAddressRecent, idList);
   }
 
-  Future<List<String>?> getAddressSortIdList() async {
-    final box = await Hive.openBox<List<String>>(cardSort);
-    return box.get('address_card_sort');
+  Future<List<String>?> getUserAddressRecentIdList() async {
+    final box = await Hive.openBox<List<String>>(userAddressSort);
+    return box.get(userAddressRecent);
   }
-
 }

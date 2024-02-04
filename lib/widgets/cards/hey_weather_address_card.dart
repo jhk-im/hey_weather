@@ -58,7 +58,7 @@ class _HeyWeatherAddressCardState extends State<HeyWeatherAddressCard> {
                     widget.weatherStatus ?? '',
                     color: kTextDisabledColor,
                   ),
-                  if (widget.isFirst || widget.address?.id == kCurrentAddressId) ... {
+                  if (widget.isFirst || widget.address?.id == kCurrentLocationId) ... {
                     const Spacer(),
                     HeyCustomButton.tag(
                       paddingVertical: 4,

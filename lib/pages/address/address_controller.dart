@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_snackbar.dart';
-import 'package:hey_weather/common/shared_preferences_util.dart';
+import 'package:hey_weather/common/utils.dart';
 import 'package:hey_weather/getx/routes.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
 import 'package:hey_weather/repository/soruce/remote/model/search_address.dart';
@@ -18,6 +18,9 @@ class AddressController extends GetxController {
 
   final RxBool _isLoading = false.obs;
   bool get isLoading => _isLoading.value;
+
+  final RxBool _isUpdated = false.obs;
+  bool get isUpdated => _isUpdated.value;
 
   final RxBool _isLocationGranted = false.obs;
   bool get isLocationGranted => _isLocationGranted.value;
@@ -48,14 +51,15 @@ class AddressController extends GetxController {
     _searchAddressList.clear();
   }
 
-  createSearchAddress(SearchAddress address) {
+  createSearchAddress(SearchAddress address, String searchText) {
     resetTextField();
-    _updateAddressCard(address);
+    _updateAddressCard(address, searchText);
   }
 
   selectAddress(Address address) async {
     if (address.id != null) {
-      await SharedPreferencesUtil().setString(kCurrentAddressId, address.id!);
+      // 최근 선택 주소 리스트 업데이트
+      await _repository.updateUserAddressRecentIdList(address.id!, isSelect: true);
       Get.offAllNamed(Routes.routeHome);
     }
   }
@@ -96,23 +100,20 @@ class AddressController extends GetxController {
     // 위치 권한 확인
     await _checkPermissionStatus();
 
-    // 로컬 리스트
-    var getAddressList =  await _repository.getAddressList();
-    getAddressList.when(success: (addressList) async {
-
-      var currentAddress = addressList.firstWhereOrNull((element) => element.id == kCurrentAddressId);
+    // 사용자 주소 리스트
+    var getUserAddressList =  await _repository.getUserAddressList();
+    getUserAddressList.when(success: (addressList) async {
+      var currentAddress = addressList.firstWhereOrNull((element) => element.id == kCurrentLocationId);
       if (currentAddress != null) {
         _currentAddress(currentAddress);
       }
-      final sortList = addressList.where((e) => e.id != kCurrentAddressId).toList();
+      final sortList = addressList.where((e) => e.id != kCurrentLocationId).toList();
 
-      // 내가 추가한 주소 리스트
-      var getAddressSortIdList =  await _repository.getAddressSortIdList();
-      getAddressSortIdList.when(
+      // 편집 주소 리스트
+      var getUserAddressEditIdList =  await _repository.getUserAddressEditIdList();
+      getUserAddressEditIdList.when(
         success: (idList) {
-          print(idList);
-          print(sortList);
-          sortList.sort((a, b) => idList.indexOf(b.id!).compareTo(idList.indexOf(a.id!)));
+          sortList.sort((a, b) => idList.indexOf(a.id!).compareTo(idList.indexOf(b.id!)));
           _addressList(sortList);
         },
         error: (Exception e) {
@@ -131,27 +132,27 @@ class AddressController extends GetxController {
     var getCurrentAddress = await _repository.getSearchAddress(query);
     getCurrentAddress.when(success: (searchAddress) async {
       logger.i('searchAddress() -> $searchAddress');
+
       _searchAddressList(searchAddress);
     }, error: (Exception e) {
       logger.e(e);
     });
   }
 
-  Future _updateAddressCard(SearchAddress address) async {
+  Future _updateAddressCard(SearchAddress address, String searchText) async {
     String uuid =  const Uuid().v4();
 
     final newAddress = Address();
-    newAddress.addressName = address.addressName;
+    newAddress.addressName = Utils().containsSearchText(address.addressName, searchText);
     newAddress.x = double.parse(address.x!);
     newAddress.y = double.parse(address.y!);
     newAddress.id = uuid;
 
-    await _repository.updateLocalAddressWithId(newAddress);
+    await _repository.updateUserAddressWithId(newAddress);
+    await _repository.insertUserAddressEditIdList(uuid);
+    await _repository.updateUserAddressRecentIdList(uuid);
 
-    final idList = addressList.map((e) => e.id!).toList();
-    idList.add(uuid);
-
-    await _repository.updateLocalAddressIdList(idList);
+    _isUpdated(true);
 
     Future.delayed(const Duration(milliseconds: 500), () {
       if (Get.context != null) {

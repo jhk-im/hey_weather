@@ -4,7 +4,6 @@ import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_bottom_sheet.dart';
 import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/svg_utils.dart';
-import 'package:hey_weather/getx/routes.dart';
 import 'package:hey_weather/pages/home/home_controller.dart';
 import 'package:hey_weather/widgets/cards/hey_weather_home_card.dart';
 import 'package:hey_weather/widgets/loading_widget.dart';
@@ -30,7 +29,7 @@ class HomePage extends GetView<HomeController> {
                         onTap: () {
                           HeyBottomSheet.showSelectAddressBottomSheet(
                             context,
-                            addressList: controller.addressList.reversed.toList(),
+                            addressList: controller.recentAddressList,
                             currentAddress: controller.currentAddress,
                             onSelectedAddress: (addressId) {
                               controller.logger.d('onSelectedAddress: (addressId) -> $addressId / currentAddress -> ${controller.currentAddress}');
@@ -38,9 +37,7 @@ class HomePage extends GetView<HomeController> {
                                 controller.resetData(addressId);
                               }
                             },
-                            onMoveToAddress: () {
-                              Get.toNamed(Routes.routeAddress);
-                            },
+                            onMoveToAddress: controller.moveToAddress,
                           );
                         },
                         child: Row(
@@ -53,9 +50,7 @@ class HomePage extends GetView<HomeController> {
                       ),
                       const Spacer(),
                       GestureDetector(
-                        onTap: () {
-                          print('map');
-                        },
+                        onTap: controller.moveToAddress,
                         child: SvgUtils.icon(context, 'map'),
                       ),
                       const SizedBox(width: 8),

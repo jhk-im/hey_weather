@@ -143,8 +143,6 @@ class HeyBottomSheet {
     Function? onSelectedAddress,
     Function? onMoveToAddress,
   }) {
-    double maxHeight = (MediaQuery.of(context).size.height) * 0.7;
-    bool isScroll = maxHeight - 142 < 54 * addressList.length;
     showModalBottomSheet(
       context: context,
       clipBehavior: Clip.antiAlias,
@@ -158,8 +156,8 @@ class HeyBottomSheet {
       builder: (BuildContext context) {
         return SafeArea(
           child: Container(
-            constraints: BoxConstraints(
-              maxHeight: maxHeight,
+            constraints: const BoxConstraints(
+              maxHeight: 392,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -194,7 +192,6 @@ class HeyBottomSheet {
                 const SizedBox(height: 20),
                 // Selector
                 Expanded(
-                  flex: isScroll ? 1 : 0,
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
@@ -238,6 +235,7 @@ class HeyBottomSheet {
 
   static void showCreateAddressBottomSheet(BuildContext context, {
     required SearchAddress address,
+    required String searchText,
     String? weatherStatus,
     String? temperature,
     String? message1,
@@ -256,6 +254,9 @@ class HeyBottomSheet {
       ),
       backgroundColor: kButtonColor,
       builder: (BuildContext context) {
+
+        final addressName = Utils().containsSearchText(address.addressName, searchText);
+
         return SafeArea(
           child: Container(
             height: 580,
@@ -271,7 +272,7 @@ class HeyBottomSheet {
                       child: Row(
                         children: [
                           HeyText.title3Bold(
-                            address.addressName ?? '',
+                            addressName,
                             fontSize: kFont18,
                             color: kPrimaryDarkerColor,
                           ),
@@ -308,7 +309,7 @@ class HeyBottomSheet {
                   child: HeyElevatedButton.primaryText1(
                     text: 'to_add'.tr,
                     onPressed: () {
-                      onCreateAddress.call(address);
+                      onCreateAddress.call(address, searchText);
                     },
                   ),
                 ),

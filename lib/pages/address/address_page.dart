@@ -32,7 +32,7 @@ class AddressPage extends GetView<AddressController> {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              Get.back();
+                              Get.back(result: controller.isUpdated);
                             },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 23, horizontal: 24),
@@ -161,56 +161,51 @@ class AddressPage extends GetView<AddressController> {
                     height: 300,
                     color: kElevationColor,
                     margin: const EdgeInsets.only(top: 164),
-                    child: Scrollbar(
-                      thickness: 10,
-                      radius: const Radius.circular(10),
-                      thumbVisibility: true,
-                      interactive: true,
-                      child: ListView.builder(
-                        itemCount: controller.searchAddressList.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              controller.focusNode.unfocus();
-                              HeyBottomSheet.showCreateAddressBottomSheet(
-                                context,
-                                address: controller.searchAddressList[index],
-                                weatherStatus: '구름 조금',
-                                temperature: '19',
-                                message1: '어제보다 1℃ 낮아요',
-                                message2: '저녁 6시에 비 올 확률이 80%예요',
-                                message3: '미세먼지가 없고 하늘이 깨끗해요',
-                                onCreateAddress: (address) {
-                                  Get.back();
-                                  controller.createSearchAddress(address);
-                                },
-                              );
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: EasyRichText(
-                                controller.searchAddressList[index].addressName ?? '',
-                                defaultStyle: const TextStyle(
-                                  fontFamily: kPretendardSemiBold,
-                                  color: kTextPrimaryColor,
-                                  fontSize: kFont17,
-                                ),
-                                patternList: [
-                                  EasyRichTextPattern(
-                                    targetString: controller.searchAddressText,
-                                    matchWordBoundaries: false,
-                                    style: const TextStyle(
-                                      fontFamily: kPretendardSemiBold,
-                                      color: kPrimaryDarkerColor,
-                                      fontSize: kFont17,
-                                    ),
-                                  ),
-                                ],
+                    child: ListView.builder(
+                      itemCount: controller.searchAddressList.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            controller.focusNode.unfocus();
+                            HeyBottomSheet.showCreateAddressBottomSheet(
+                              context,
+                              address: controller.searchAddressList[index],
+                              searchText: controller.searchAddressText,
+                              weatherStatus: '구름 조금',
+                              temperature: '19',
+                              message1: '어제보다 1℃ 낮아요',
+                              message2: '저녁 6시에 비 올 확률이 80%예요',
+                              message3: '미세먼지가 없고 하늘이 깨끗해요',
+                              onCreateAddress: (address, searchText) {
+                                Get.back();
+                                controller.createSearchAddress(address, searchText);
+                              },
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: EasyRichText(
+                              controller.searchAddressList[index].addressName ?? '',
+                              defaultStyle: const TextStyle(
+                                fontFamily: kPretendardSemiBold,
+                                color: kTextPrimaryColor,
+                                fontSize: kFont17,
                               ),
+                              patternList: [
+                                EasyRichTextPattern(
+                                  targetString: controller.searchAddressText,
+                                  matchWordBoundaries: false,
+                                  style: const TextStyle(
+                                    fontFamily: kPretendardSemiBold,
+                                    color: kPrimaryDarkerColor,
+                                    fontSize: kFont17,
+                                  ),
+                                ),
+                              ],
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),

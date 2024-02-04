@@ -44,5 +44,5 @@ const kProgressForegroundColor = Color(0xFFADB4BD);
 const kWidgetGradientLeft = Color(0x0d17171b);
 const kWidgetGradientRight = Color(0xcc17171b);
 
-// Shared, Dao
-const kCurrentAddressId = 'current_address_id';
+// 현재 위치 id
+const kCurrentLocationId = 'current_location_id';

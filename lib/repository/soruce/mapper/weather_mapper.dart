@@ -15,6 +15,7 @@ extension ToAddressEntity on Address {
     entity.y = y;
     entity.code = code;
     entity.regionType = regionType;
+    entity.createDateTime = createDateTime;
     return entity;
   }
 }
@@ -32,6 +33,7 @@ extension ToAddress on AddressEntity {
       y: y,
       code: code,
       regionType: regionType,
+      createDateTime: createDateTime,
     );
     return address;
   }

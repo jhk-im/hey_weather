@@ -24,4 +24,6 @@ class AddressEntity extends HiveObject {
   String? code;
   @HiveField(9)
   String? regionType;
+  @HiveField(10)
+  String? createDateTime;
 }

@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_snackbar.dart';
-import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:hey_weather/common/utils.dart';
 import 'package:hey_weather/getx/routes.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
@@ -73,9 +72,6 @@ class AddressController extends GetxController {
       _isUpdated(true);
       await _repository.deleteUserAddressWithId(address.id!);
       _addressList.remove(address);
-      if (_addressList.isEmpty) {
-        SharedPreferencesUtil().setString(kRecentInsertId, kCurrentLocationId);
-      }
     }
   }
 
@@ -86,6 +82,10 @@ class AddressController extends GetxController {
       _isUpdated(true);
       final idList = addressList.map((element) => element.id ?? '').toList();
       await _repository.updateUserAddressEditIdList(idList);
+
+      final recent = addressList.where((e) => e.id != kCurrentLocationId).toList();
+      recent.sort((a, b) => DateTime.parse(b.createDateTime ?? '').compareTo(DateTime.parse(a.createDateTime ?? '')));
+      addressList[addressList.indexOf(recent.first)].isRecent = true;
     }
   }
 
@@ -133,17 +133,15 @@ class AddressController extends GetxController {
         _currentAddress(currentAddress);
       }
       final sortList = addressList.where((e) => e.id != kCurrentLocationId).toList();
-      final recentId = SharedPreferencesUtil().getString(kRecentInsertId);
+      final recent = addressList.where((e) => e.id != kCurrentLocationId).toList();
+      recent.sort((a, b) => DateTime.parse(b.createDateTime ?? '').compareTo(DateTime.parse(a.createDateTime ?? '')));
 
       // 편집 주소 리스트
       var getUserAddressEditIdList =  await _repository.getUserAddressEditIdList();
       getUserAddressEditIdList.when(
         success: (idList) {
           sortList.sort((a, b) => idList.indexOf(a.id!).compareTo(idList.indexOf(b.id!)));
-          final recent = sortList.firstWhereOrNull((element) => element.id == recentId);
-          if (recent != null) {
-            sortList[sortList.indexOf(recent)].isRecent = true;
-          }
+          sortList[sortList.indexOf(recent.first)].isRecent = true;
           _addressList(sortList);
         },
         error: (Exception e) {
@@ -177,12 +175,11 @@ class AddressController extends GetxController {
     newAddress.x = double.parse(address.x!);
     newAddress.y = double.parse(address.y!);
     newAddress.id = uuid;
+    newAddress.createDateTime = DateTime.now().toLocal().toString();
 
     await _repository.updateUserAddressWithId(newAddress);
     await _repository.insertUserAddressEditIdList(uuid);
     await _repository.insertUserAddressRecentIdList(uuid);
-
-    SharedPreferencesUtil().setString(kRecentInsertId, uuid);
 
     _isUpdated(true);
 

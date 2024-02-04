@@ -30,6 +30,7 @@ class AddressPage extends GetView<AddressController> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          // back
                           GestureDetector(
                             onTap: () {
                               Get.back(result: controller.isUpdated);
@@ -46,6 +47,7 @@ class AddressPage extends GetView<AddressController> {
                             ),
                           ),
 
+                          // 타이틀
                           const Spacer(),
                           HeyText.body(
                             'setting_location'.tr,
@@ -54,10 +56,9 @@ class AddressPage extends GetView<AddressController> {
                           ),
                           const Spacer(),
 
+                          // 편집
                           GestureDetector(
-                            onTap: () {
-
-                            },
+                            onTap: controller.editModeToggle,
                             child: Container(
                               width: 72,
                               padding: const EdgeInsets.only(right: 20),
@@ -65,7 +66,7 @@ class AddressPage extends GetView<AddressController> {
                                 children: [
                                   const Spacer(),
                                   HeyText.body(
-                                    'edit'.tr,
+                                    controller.isEditMode ? 'done'.tr : 'edit'.tr,
                                     color: kTextDisabledColor,
                                     fontSize: kFont18,
                                   ),
@@ -120,6 +121,8 @@ class AddressPage extends GetView<AddressController> {
                             address: controller.currentAddress,
                             weatherStatus: '구름 조금',
                             temperature: '19',
+                            isEditMode: controller.isEditMode,
+                            isCurrentLocation: true,
                             onSelectAddress: controller.selectAddress,
                           ),
                         ],
@@ -133,20 +136,32 @@ class AddressPage extends GetView<AddressController> {
                     ),
 
                     Expanded(
-                      child: ListView.builder(
-                        itemCount: controller.addressList.length,
-                        itemBuilder: (context, index) {
-                          return Container(
-                            margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                            child: HeyWeatherAddressCard(
-                              address: controller.addressList[index],
-                              weatherStatus: '구름 조금',
-                              temperature: '19',
-                              onSelectAddress: controller.selectAddress,
-                              isFirst: index == 0,
-                            ),
-                          );
+                      child: ReorderableListView(
+                        proxyDecorator: (widget, animation, proxy) {
+                          return widget;
                         },
+                        onReorder: (oldIndex, newIndex) {
+                          if (oldIndex < newIndex) {
+                            newIndex -= 1;
+                          }
+                          final item = controller.addressList.removeAt(oldIndex);
+                          controller.addressList.insert(newIndex, item);
+                        },
+                        children: List.generate(controller.addressList.length, (index) {
+                            return Container(
+                              key: ValueKey(controller.addressList[index]),
+                              margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                              child: HeyWeatherAddressCard(
+                                address: controller.addressList[index],
+                                weatherStatus: '구름 조금',
+                                temperature: '19',
+                                isEditMode: controller.isEditMode,
+                                onSelectAddress: controller.selectAddress,
+                                onRemoveAddress: controller.removeAddress,
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
 

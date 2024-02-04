@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_snackbar.dart';
+import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:hey_weather/common/utils.dart';
 import 'package:hey_weather/getx/routes.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
@@ -24,6 +25,9 @@ class AddressController extends GetxController {
 
   final RxBool _isLocationGranted = false.obs;
   bool get isLocationGranted => _isLocationGranted.value;
+
+  final RxBool _isEditMode = false.obs;
+  bool get isEditMode => _isEditMode.value;
 
   final Rxn<Address> _currentAddress = Rxn<Address>();
   Address? get currentAddress => _currentAddress.value;
@@ -57,10 +61,31 @@ class AddressController extends GetxController {
   }
 
   selectAddress(Address address) async {
-    if (address.id != null) {
+    if (!isEditMode && address.id != null) {
       // 최근 선택 주소 리스트 업데이트
-      await _repository.updateUserAddressRecentIdList(address.id!, isSelect: true);
+      await _repository.insertUserAddressRecentIdList(address.id!, isSelect: true);
       Get.offAllNamed(Routes.routeHome);
+    }
+  }
+
+  removeAddress(Address address) async {
+    if (address.id != null) {
+      _isUpdated(true);
+      await _repository.deleteUserAddressWithId(address.id!);
+      _addressList.remove(address);
+      if (_addressList.isEmpty) {
+        SharedPreferencesUtil().setString(kRecentInsertId, kCurrentLocationId);
+      }
+    }
+  }
+
+  editModeToggle() async {
+    _isEditMode(!_isEditMode.value);
+
+    if (!isEditMode) {
+      _isUpdated(true);
+      final idList = addressList.map((element) => element.id ?? '').toList();
+      await _repository.updateUserAddressEditIdList(idList);
     }
   }
 
@@ -108,12 +133,17 @@ class AddressController extends GetxController {
         _currentAddress(currentAddress);
       }
       final sortList = addressList.where((e) => e.id != kCurrentLocationId).toList();
+      final recentId = SharedPreferencesUtil().getString(kRecentInsertId);
 
       // 편집 주소 리스트
       var getUserAddressEditIdList =  await _repository.getUserAddressEditIdList();
       getUserAddressEditIdList.when(
         success: (idList) {
           sortList.sort((a, b) => idList.indexOf(a.id!).compareTo(idList.indexOf(b.id!)));
+          final recent = sortList.firstWhereOrNull((element) => element.id == recentId);
+          if (recent != null) {
+            sortList[sortList.indexOf(recent)].isRecent = true;
+          }
           _addressList(sortList);
         },
         error: (Exception e) {
@@ -150,7 +180,9 @@ class AddressController extends GetxController {
 
     await _repository.updateUserAddressWithId(newAddress);
     await _repository.insertUserAddressEditIdList(uuid);
-    await _repository.updateUserAddressRecentIdList(uuid);
+    await _repository.insertUserAddressRecentIdList(uuid);
+
+    SharedPreferencesUtil().setString(kRecentInsertId, uuid);
 
     _isUpdated(true);
 

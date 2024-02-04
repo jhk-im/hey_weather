@@ -45,7 +45,7 @@ class HomeController extends GetxController {
 
   resetData(String addressId) async {
     // 최근 선택 주소 리스트 업데이트
-    await _repository.updateUserAddressRecentIdList(addressId, isSelect: true);
+    await _repository.insertUserAddressRecentIdList(addressId, isSelect: true);
     updateUserAddressList();
   }
 
@@ -96,7 +96,7 @@ class HomeController extends GetxController {
       logger.i('HomeController getData() -> empty getUserAddressList');
       _currentAddress(kCurrentLocationId);
       await _repository.insertUserAddressEditIdList(kCurrentLocationId);
-      await _repository.updateUserAddressRecentIdList(kCurrentLocationId);
+      await _repository.insertUserAddressRecentIdList(kCurrentLocationId);
       await _getUpdateAddressWithCoordinate();
       _isLoading(false);
     });

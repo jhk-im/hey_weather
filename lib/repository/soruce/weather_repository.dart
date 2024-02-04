@@ -204,8 +204,8 @@ class WeatherRepository {
   }
 
   // 최근 선택한 순서 업데이트
-  Future updateUserAddressRecentIdList(String id, {bool isSelect = false}) async {
-    logger.i('updateUserAddressEditIdList(id: $id)');
+  Future insertUserAddressRecentIdList(String id, {bool isSelect = false}) async {
+    logger.i('insertUserAddressRecentIdList(id: $id)');
     final idList = await _dao.getUserAddressRecentIdList();
     if (idList == null) {
       await _dao.updateUserAddressRecent([id]);
@@ -221,6 +221,22 @@ class WeatherRepository {
         idList.add(id);
       }
       await _dao.updateUserAddressRecent(idList);
+    }
+  }
+
+  // 최근 선택 주소 업데이트
+  Future updateUserAddressRecentIdList(List<String> idList) async {
+    logger.i('updateUserAddressRecentIdList(idList: $idList)');
+    await _dao.updateUserAddressEdit(idList);
+  }
+
+  // 주소 삭제
+  Future deleteUserAddressWithId(String addressId) async {
+    await _dao.deleteUserAddressWithId(addressId);
+    final recentIdList = await _dao.getUserAddressRecentIdList();
+    if (recentIdList != null) {
+      recentIdList.remove(addressId);
+      updateUserAddressRecentIdList(recentIdList);
     }
   }
 }

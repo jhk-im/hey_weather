@@ -39,6 +39,7 @@ class TranslationsInfo extends Translations {
     'tomorrow' : '내일',
     'to_add': '추가하기',
     'edit': '편집',
+    'done': '완료',
     'setting_location': '지역 설정',
     'current_location': '현재 위치',
     'recent_added': '최근 추가',

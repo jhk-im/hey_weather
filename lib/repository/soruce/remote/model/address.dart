@@ -10,6 +10,7 @@ class Address {
   String? code;
   double? x;
   double? y;
+  bool? isRecent;
 
   Address({
     this.id,
@@ -23,6 +24,7 @@ class Address {
     this.code,
     this.x,
     this.y,
+    this.isRecent,
   });
 
   Address.fromJson(Map<String, dynamic> json) {
@@ -37,6 +39,7 @@ class Address {
     code = json['code'];
     x = json['x'];
     y = json['y'];
+    isRecent = json['isRecent'];
   }
 
   Map<String, dynamic> toJson() {
@@ -52,6 +55,7 @@ class Address {
     data['code'] = code;
     data['x'] = x;
     data['y'] = y;
+    data['isRecent'] = isRecent;
     return data;
   }
 

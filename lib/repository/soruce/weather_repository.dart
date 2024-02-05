@@ -83,10 +83,10 @@ class WeatherRepository {
 
     // 통신 오류용 기본 주소 정보
     Address defaultAddress = Address();
-    defaultAddress.addressName = '태평로 1가';
+    defaultAddress.addressName = '태평로1가';
     defaultAddress.region1depthName = '서울특별시';
     defaultAddress.region2depthName = '중구';
-    defaultAddress.region3depthName = '태평로 1가';
+    defaultAddress.region3depthName = '태평로1가';
     defaultAddress.x = 126.97723484374212;
     defaultAddress.y = 37.56770871576262;
     defaultAddress.id = kCurrentLocationId;

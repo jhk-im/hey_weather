@@ -4,6 +4,7 @@ import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_bottom_sheet.dart';
 import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/svg_utils.dart';
+import 'package:hey_weather/getx/routes.dart';
 import 'package:hey_weather/pages/home/home_controller.dart';
 import 'package:hey_weather/widgets/cards/hey_weather_home_card.dart';
 import 'package:hey_weather/widgets/loading_widget.dart';
@@ -26,7 +27,10 @@ class HomePage extends GetView<HomeController> {
                   margin: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
                   child: Row(
                     children: [
-                      GestureDetector(
+                      InkWell(
+                        splashColor: kBaseColor,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
                         onTap: () {
                           HeyBottomSheet.showSelectAddressBottomSheet(
                             context,
@@ -50,14 +54,20 @@ class HomePage extends GetView<HomeController> {
                         ),
                       ),
                       const Spacer(),
-                      GestureDetector(
+                      InkWell(
+                        splashColor: kBaseColor,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
                         onTap: controller.moveToAddress,
                         child: SvgUtils.icon(context, 'map'),
                       ),
                       const SizedBox(width: 8),
-                      GestureDetector(
+                      InkWell(
+                        splashColor: kBaseColor,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
                         onTap: () {
-                          print('setting');
+                          Get.toNamed(Routes.routeSetting);
                         },
                         child: SvgUtils.icon(context, 'setting'),
                       ),
@@ -67,22 +77,27 @@ class HomePage extends GetView<HomeController> {
 
                 // Location Permission
                 if (!controller.isLocationPermission) ... {
-                  GestureDetector(
-                    onTap: openAppSettings,
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 12, left: 20, right: 20),
-                      padding: const EdgeInsets.only(left: 20, top: 12, bottom: 12, right: 12),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: kBaseColor,
-                      ),
-                      width: double.maxFinite,
-                      child: Row(
-                        children: [
-                          HeyText.footnote('location_permission_message'.tr),
-                          const Spacer(),
-                          SvgUtils.icon(context, 'arrow_right',),
-                        ],
+                  Container(
+                    margin: const EdgeInsets.only(top: 12, left: 20, right: 20),
+                    child: InkWell(
+                      splashColor: kBaseColor,
+                      highlightColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      onTap: openAppSettings,
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 20, top: 12, bottom: 12, right: 12),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: kBaseColor,
+                        ),
+                        width: double.maxFinite,
+                        child: Row(
+                          children: [
+                            HeyText.footnote('location_permission_message'.tr),
+                            const Spacer(),
+                            SvgUtils.icon(context, 'arrow_right'),
+                          ],
+                        ),
                       ),
                     ),
                   ),

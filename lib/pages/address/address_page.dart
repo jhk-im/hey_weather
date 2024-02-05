@@ -37,7 +37,7 @@ class AddressPage extends GetView<AddressController> {
                               Get.back(result: controller.isUpdated);
                             },
                             child: Padding(
-                              padding: const EdgeInsets.only(top: 23, bottom: 23, left: 16, right: 24),
+                              padding: const EdgeInsets.only(top: 24, bottom: 24, left: 16, right: 24),
                               child: SvgUtils.icon(
                                 context,
                                 'arrow_left',
@@ -50,10 +50,9 @@ class AddressPage extends GetView<AddressController> {
 
                           // 타이틀
                           const Spacer(),
-                          HeyText.body(
+                          HeyText.bodySemiBold(
                             'setting_location'.tr,
                             color: kTextPrimaryColor,
-                            fontSize: kFont18,
                           ),
                           const Spacer(),
 

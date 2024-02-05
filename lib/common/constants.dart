@@ -36,6 +36,7 @@ const kIconColor = Color(0xFF62626C);
 const kDividerPrimaryColor = Color(0xFF404048);
 const kProgressBackgroundColor = Color(0xFF2D2D2D);
 const kDisabledText = Color(0xFF393939);
+const kTimePickerItem = Color(0x99EBEBF5);
 const kTextPointColor = Color(0xFFFFFFFF);
 const kTextPrimaryColor = Color(0xFFE4E4E5);
 const kTextSecondaryColor = Color(0xFFC3C3C6);
@@ -49,3 +50,5 @@ const kCurrentLocationId = 'current_location_id';
 
 // SharedPreferences key
 const kLocationPermission = 'location_permission';
+const kNotificationPermission = 'notification_permission';
+const kFahrenheit = 'fahrenheit';

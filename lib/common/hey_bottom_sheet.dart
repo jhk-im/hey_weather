@@ -320,4 +320,129 @@ class HeyBottomSheet {
       },
     );
   }
+
+  static void showTemperatureBottomSheet(BuildContext context, {
+    required isFahrenheit,
+    Function? onSelected,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      clipBehavior: Clip.antiAlias,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(30),
+        ),
+      ),
+      backgroundColor: kButtonColor,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Container(
+            constraints: const BoxConstraints(
+              maxHeight: 210,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Title, Close Button
+                Container(
+                  margin: const EdgeInsets.only(top: 20, left: 20, right: 16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(top: 12),
+                        child: HeyText.title3Bold(
+                          'setting_temperature'.tr,
+                          fontSize: kFont18,
+                          color: kTextPointColor,
+                        ),
+                      ),
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: () {
+                          Get.back();
+                        },
+                        child: SvgUtils.icon(context, 'close', width: 32, height: 32),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        // 섭씨
+                        GestureDetector(
+                          onTap: () {
+                            Get.back();
+                            onSelected?.call(false);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 30, left: 24, right: 24),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                HeyText.body(
+                                  '${'celsius'.tr} ${'celsius_text'.tr}',
+                                  color: !isFahrenheit ? kPrimaryDarkerColor : kTextPrimaryColor,
+                                ),
+                                const SizedBox(width: 12),
+                                Visibility(
+                                  visible: !isFahrenheit,
+                                  child: SvgUtils.icon(
+                                    context,
+                                    'check_outline',
+                                    width: 24,
+                                    height: 24,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        // 화씨
+                        GestureDetector(
+                          onTap: () {
+                            Get.back();
+                            onSelected?.call(true);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 54, left: 24, right: 24),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                HeyText.body(
+                                  '${'fahrenheit'.tr} ${'fahrenheit_text'.tr}',
+                                  color: isFahrenheit ? kPrimaryDarkerColor : kTextPrimaryColor,
+                                ),
+                                const SizedBox(width: 12),
+                                Visibility(
+                                  visible: isFahrenheit,
+                                  child: SvgUtils.icon(
+                                    context,
+                                    'check_outline',
+                                    width: 24,
+                                    height: 24,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 }

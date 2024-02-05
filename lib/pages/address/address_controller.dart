@@ -139,7 +139,7 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     logger.i('HomeController getUpdateAddressWithCoordinate()');
     var getUpdateAddressWithCoordinate = await _repository.getUpdateAddressWithCoordinate();
     getUpdateAddressWithCoordinate.when(success: (address) async {
-      (address);
+      _currentAddress(address);
       _isUpdated(true);
     }, error: (Exception e) {
       logger.e(e);

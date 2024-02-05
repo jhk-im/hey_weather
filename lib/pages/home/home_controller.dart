@@ -87,17 +87,17 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     logger.i('HomeController getUpdateAddressWithCoordinate()');
     var getUpdateAddressWithCoordinate = await _repository.getUpdateAddressWithCoordinate();
     getUpdateAddressWithCoordinate.when(success: (address) async {
-      if (isAddressUpdate) {
-        _addressText(address.addressName);
-      }
       if (addressList != null) { // 리스트 업데이트
         final oldAddress = addressList.firstWhere((element) => element.id == kCurrentLocationId);
         final index = addressList.indexOf(oldAddress);
         addressList.remove(oldAddress);
         addressList.insert(index, address);
-
+        if (isAddressUpdate) {
+          _addressText(address.addressName);
+        }
         _recentAddressList(addressList);
       } else { // 최초 진입
+        _addressText(address.addressName);
         _recentAddressList.add(address);
       }
     }, error: (Exception e) {

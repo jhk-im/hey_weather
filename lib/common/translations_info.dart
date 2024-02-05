@@ -45,6 +45,7 @@ class TranslationsInfo extends Translations {
     'recent_added': '최근 추가',
     'question_add_1': '을 추가할까요?',
     'question_add_2': '를 추가할까요?',
+    'location_permission_message': '현재 위치의 날씨 정보를 보려면\n위치 권한 허용이 필요해요! ',
 
     // Weather
     'humidity' : '습도',

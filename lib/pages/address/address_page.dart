@@ -8,6 +8,7 @@ import 'package:hey_weather/common/svg_utils.dart';
 import 'package:hey_weather/pages/address/address_controller.dart';
 import 'package:hey_weather/widgets/cards/hey_weather_address_card.dart';
 import 'package:hey_weather/widgets/loading_widget.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 
 class AddressPage extends GetView<AddressController> {
@@ -36,7 +37,7 @@ class AddressPage extends GetView<AddressController> {
                               Get.back(result: controller.isUpdated);
                             },
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 23, horizontal: 24),
+                              padding: const EdgeInsets.only(top: 23, bottom: 23, left: 16, right: 24),
                               child: SvgUtils.icon(
                                 context,
                                 'arrow_left',
@@ -113,21 +114,43 @@ class AddressPage extends GetView<AddressController> {
                     ),
 
                     // 현재 위치
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        children: [
-                          HeyWeatherAddressCard(
-                            address: controller.currentAddress,
-                            weatherStatus: '구름 조금',
-                            temperature: '19',
-                            isEditMode: controller.isEditMode,
-                            isCurrentLocation: true,
-                            onSelectAddress: controller.selectAddress,
+                    if (!controller.isLocationPermission) ... {
+                      GestureDetector(
+                        onTap: openAppSettings,
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 20),
+                          padding: const EdgeInsets.only(left: 20, top: 12, bottom: 12, right: 12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: kBaseColor,
                           ),
-                        ],
+                          width: double.maxFinite,
+                          child: Row(
+                            children: [
+                              HeyText.footnote('location_permission_message'.tr),
+                              const Spacer(),
+                              SvgUtils.icon(context, 'arrow_right',),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
+                    } else ... {
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                          children: [
+                            HeyWeatherAddressCard(
+                              address: controller.currentAddress,
+                              weatherStatus: '구름 조금',
+                              temperature: '19',
+                              isEditMode: controller.isEditMode,
+                              isCurrentLocation: true,
+                              onSelectAddress: controller.selectAddress,
+                            ),
+                          ],
+                        ),
+                      ),
+                    },
 
                     // Divider
                     Container(

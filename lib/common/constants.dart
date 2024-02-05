@@ -46,3 +46,6 @@ const kWidgetGradientRight = Color(0xcc17171b);
 
 // 현재 위치 id
 const kCurrentLocationId = 'current_location_id';
+
+// SharedPreferences key
+const kLocationPermission = 'location_permission';

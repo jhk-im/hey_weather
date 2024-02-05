@@ -64,12 +64,12 @@ class WeatherRepository {
   }
 
   // 현재 좌표 주소
-  Future<Result<Address>> getUpdateAddressWithCoordinate(String location) async {
+  Future<Result<Address>> getUpdateAddressWithCoordinate() async {
     Position position = await _getLocation();
     logger.i('getUpdateAddressWithCoordinate() -> position -> $position');
 
     // 좌표값 변경이 없는 경우 로컬 리턴
-    final current = await _dao.getUserAddressWithId(location);
+    final current = await _dao.getUserAddressWithId(kCurrentLocationId);
     if (current != null) {
       final currentX = current.x!.toStringAsFixed(3);
       final positionX = position.longitude.toStringAsFixed(3);

@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:hey_weather/common/constants.dart';
+import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class SplashController extends GetxController {
@@ -6,7 +8,6 @@ class SplashController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
     // _listenForPermissionStatus();
 
     Future.delayed(const Duration(seconds: 2), () {
@@ -26,8 +27,16 @@ class SplashController extends GetxController {
     if (status.isDenied) {
       await _requestPermission(permission, isOpenAppSettings: isOpenAppSettings);
     } else if (status.isPermanentlyDenied) {
-      if (isOpenAppSettings) {
+      if (permission == Permission.location) {
+        SharedPreferencesUtil().setBool(kLocationPermission, false);
+      }
+
+      /*if (isOpenAppSettings) {
         openAppSettings();
+      }*/
+    } else if (status.isGranted) {
+      if (permission == Permission.location) {
+        SharedPreferencesUtil().setBool(kLocationPermission, true);
       }
     }
   }
@@ -35,8 +44,15 @@ class SplashController extends GetxController {
   _requestPermission(Permission permission, {isOpenAppSettings = false}) async {
     var result = await permission.request();
     if (!result.isGranted) {
-      if (isOpenAppSettings) {
+      if (permission == Permission.location) {
+        SharedPreferencesUtil().setBool(kLocationPermission, false);
+      }
+      /*if (isOpenAppSettings) {
         openAppSettings();
+      }*/
+    } else {
+      if (permission == Permission.location) {
+        SharedPreferencesUtil().setBool(kLocationPermission, true);
       }
     }
   }

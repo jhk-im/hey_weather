@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_snackbar.dart';
+import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:hey_weather/common/utils.dart';
 import 'package:hey_weather/getx/routes.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
@@ -13,7 +14,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uuid/uuid.dart';
 
-class AddressController extends GetxController {
+class AddressController extends GetxController with WidgetsBindingObserver {
   final WeatherRepository _repository = GetIt.I<WeatherRepository>();
 
   final RxBool _isLoading = false.obs;
@@ -22,11 +23,11 @@ class AddressController extends GetxController {
   final RxBool _isUpdated = false.obs;
   bool get isUpdated => _isUpdated.value;
 
-  final RxBool _isLocationGranted = false.obs;
-  bool get isLocationGranted => _isLocationGranted.value;
-
   final RxBool _isEditMode = false.obs;
   bool get isEditMode => _isEditMode.value;
+
+  final RxBool _isLocationPermission = false.obs;
+  bool get isLocationPermission => _isLocationPermission.value;
 
   final Rxn<Address> _currentAddress = Rxn<Address>();
   Address? get currentAddress => _currentAddress.value;
@@ -93,6 +94,8 @@ class AddressController extends GetxController {
 
   @override
   void onInit() {
+    _isLocationPermission(SharedPreferencesUtil().getBool(kLocationPermission));
+
     _deBouncer.debounceTime(const Duration(microseconds: 300)).listen((text) {
       if (text.length > 1) {
         _searchAddressText(text);
@@ -101,9 +104,9 @@ class AddressController extends GetxController {
         _searchAddressList.clear();
       }
     });
-
     super.onInit();
     _getData();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -111,19 +114,40 @@ class AddressController extends GetxController {
     _deBouncer.close();
     textFieldController.dispose();
     focusNode.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.onClose();
   }
 
-  _checkPermissionStatus() async {
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      _checkLocationPermission();
+    }
+  }
+
+  _checkLocationPermission() async {
     var status = await Permission.location.status;
-    _isLocationGranted(status.isGranted);
+    if (_isLocationPermission.value != status.isGranted) {
+      _isLocationPermission(status.isGranted);
+      SharedPreferencesUtil().setBool(kLocationPermission, status.isGranted);
+      _getUpdateAddressWithCoordinate();
+    }
+  }
+
+  Future _getUpdateAddressWithCoordinate() async {
+    logger.i('HomeController getUpdateAddressWithCoordinate()');
+    var getUpdateAddressWithCoordinate = await _repository.getUpdateAddressWithCoordinate();
+    getUpdateAddressWithCoordinate.when(success: (address) async {
+      (address);
+      _isUpdated(true);
+    }, error: (Exception e) {
+      logger.e(e);
+    });
   }
 
   Future _getData() async {
     _isLoading(true);
-
-    // 위치 권한 확인
-    await _checkPermissionStatus();
 
     // 사용자 주소 리스트
     var getUserAddressList =  await _repository.getUserAddressList();

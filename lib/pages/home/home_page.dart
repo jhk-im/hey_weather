@@ -7,6 +7,7 @@ import 'package:hey_weather/common/svg_utils.dart';
 import 'package:hey_weather/pages/home/home_controller.dart';
 import 'package:hey_weather/widgets/cards/hey_weather_home_card.dart';
 import 'package:hey_weather/widgets/loading_widget.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 
 class HomePage extends GetView<HomeController> {
@@ -63,6 +64,30 @@ class HomePage extends GetView<HomeController> {
                     ],
                   ),
                 ),
+
+                // Location Permission
+                if (!controller.isLocationPermission) ... {
+                  GestureDetector(
+                    onTap: openAppSettings,
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 12, left: 20, right: 20),
+                      padding: const EdgeInsets.only(left: 20, top: 12, bottom: 12, right: 12),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: kBaseColor,
+                      ),
+                      width: double.maxFinite,
+                      child: Row(
+                        children: [
+                          HeyText.footnote('location_permission_message'.tr),
+                          const Spacer(),
+                          SvgUtils.icon(context, 'arrow_right',),
+                        ],
+                      ),
+                    ),
+                  ),
+                },
+
                 // Card
                 Container(
                   margin: const EdgeInsets.only(top: 12, left: 20, right: 20),

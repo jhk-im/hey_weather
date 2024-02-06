@@ -18,6 +18,14 @@ class SettingMainController extends GetxController with WidgetsBindingObserver {
 
   var logger = Logger();
 
+  @override
+  void onInit() {
+    _isNotificationPermission(SharedPreferencesUtil().getBool(kNotificationPermission));
+    _isFahrenheit(SharedPreferencesUtil().getBool(kFahrenheit));
+    super.onInit();
+  }
+
+  /// User Interaction
   fahrenheitToggle(bool update) {
     _isFahrenheit(update);
     SharedPreferencesUtil().setBool(kFahrenheit, update);
@@ -25,12 +33,5 @@ class SettingMainController extends GetxController with WidgetsBindingObserver {
 
   updateNotification() {
     _isNotificationPermission(SharedPreferencesUtil().getBool(kNotificationPermission));
-  }
-
-  @override
-  void onInit() {
-    _isNotificationPermission(SharedPreferencesUtil().getBool(kNotificationPermission));
-    _isFahrenheit(SharedPreferencesUtil().getBool(kFahrenheit));
-    super.onInit();
   }
 }

@@ -1,4 +1,5 @@
 import 'package:hey_weather/repository/soruce/local/entity/address_entity.dart';
+import 'package:hey_weather/repository/soruce/local/entity/user_notification_entity.dart';
 import 'package:hive/hive.dart';
 
 class WeatherDao {
@@ -44,5 +45,26 @@ class WeatherDao {
   Future<List<String>?> getUserAddressRecentIdList() async {
     final box = await Hive.openBox<List<String>>(userAddressSort);
     return box.get(userAddressRecent);
+  }
+
+  static const userNotification = 'user_notification';
+  Future updateUserNotification(String id, UserNotificationEntity notification) async {
+    final box = await Hive.openBox<UserNotificationEntity>(userNotification);
+    await box.put(id, notification);
+  }
+
+  Future deleteUserNotification(String id) async {
+    final box = await Hive.openBox<UserNotificationEntity>(userNotification);
+    return box.delete(id);
+  }
+
+  Future clearUserNotification() async {
+    final box = await Hive.openBox<UserNotificationEntity>(userNotification);
+    return box.clear();
+  }
+
+  Future<List<UserNotificationEntity>?> getUserNotificationList() async {
+    final box = await Hive.openBox<UserNotificationEntity>(userNotification);
+    return box.values.toList();
   }
 }

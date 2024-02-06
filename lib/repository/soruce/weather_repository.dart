@@ -7,6 +7,7 @@ import 'package:hey_weather/repository/soruce/local/weather_dao.dart';
 import 'package:hey_weather/repository/soruce/mapper/weather_mapper.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
 import 'package:hey_weather/repository/soruce/remote/model/search_address.dart';
+import 'package:hey_weather/repository/soruce/remote/model/user_notification.dart';
 import 'package:hey_weather/repository/soruce/remote/result/result.dart';
 import 'package:hey_weather/repository/soruce/remote/weather_api.dart';
 import 'package:logger/logger.dart';
@@ -63,7 +64,7 @@ class WeatherRepository {
     return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
 
-  // 현재 좌표 주소
+  /// KAKAO 좌표로 주소 검색
   Future<Result<Address>> getUpdateAddressWithCoordinate() async {
     Position position = await _getLocation();
     logger.i('getUpdateAddressWithCoordinate() -> position -> $position');
@@ -132,16 +133,6 @@ class WeatherRepository {
     }
   }
 
-  // 로컬 주소 리스트
-  Future<Result<List<Address>>> getUserAddressList() async {
-    final list = await _dao.getAllUserAddressList();
-    if (list.isNotEmpty) {
-      return Result.success(list.map((e) => e.toAddress()).toList());
-    } else {
-      return Result.error(Exception('getAddressList empty'));
-    }
-  }
-
   // 주소 검색
   Future<Result<List<SearchAddress>>> getSearchAddress(String query) async {
     // 카카오 주소 검색
@@ -159,13 +150,33 @@ class WeatherRepository {
     }
   }
 
+  /// 주소 정보
+  Future<Result<List<Address>>> getUserAddressList() async {
+    final list = await _dao.getAllUserAddressList();
+    if (list.isNotEmpty) {
+      return Result.success(list.map((e) => e.toAddress()).toList());
+    } else {
+      return Result.error(Exception('getAddressList empty'));
+    }
+  }
+
   // id로 주소 추가
   Future updateUserAddressWithId(Address address) async {
     logger.i('updateUserAddressWithId() -> $address');
     await _dao.updateUserAddressWithId(address.id!, address.toAddressEntity());
   }
 
-  // 편집한 주소 순서 id 리스트
+  // 주소 삭제
+  Future deleteUserAddressWithId(String addressId) async {
+    await _dao.deleteUserAddressWithId(addressId);
+    final recentIdList = await _dao.getUserAddressRecentIdList();
+    if (recentIdList != null) {
+      recentIdList.remove(addressId);
+      updateUserAddressRecentIdList(recentIdList);
+    }
+  }
+
+  /// 편집 주소 리스트 정보
   Future<Result<List<String>>> getUserAddressEditIdList() async {
     final list = await _dao.getUserAddressEditIdList();
     if (list != null) {
@@ -193,7 +204,7 @@ class WeatherRepository {
     await _dao.updateUserAddressEdit(idList);
   }
 
-  // 최근 선택한 주소 순서 id 리스트
+  /// 최근 선택한 주소 리스트 정보
   Future<Result<List<String>>> getUserAddressRecentIdList() async {
     final list = await _dao.getUserAddressRecentIdList();
     if (list != null) {
@@ -230,13 +241,24 @@ class WeatherRepository {
     await _dao.updateUserAddressEdit(idList);
   }
 
-  // 주소 삭제
-  Future deleteUserAddressWithId(String addressId) async {
-    await _dao.deleteUserAddressWithId(addressId);
-    final recentIdList = await _dao.getUserAddressRecentIdList();
-    if (recentIdList != null) {
-      recentIdList.remove(addressId);
-      updateUserAddressRecentIdList(recentIdList);
+  /// 알림 DateTime 리스트
+  Future<Result<List<UserNotification>>> getUserNotificationList() async {
+    final list = await _dao.getUserNotificationList();
+    if (list != null) {
+      return Result.success(list.map((e) => e.toUserNotification()).toList());
+    } else {
+      return Result.error(Exception('getUserNotificationList empty'));
     }
+  }
+
+  // 알림 업데이트
+  Future updateUserNotification(UserNotification notification) async {
+    logger.i('updateUserNotification(notification: $notification)');
+    await _dao.updateUserNotification(notification.id ?? '', notification.toUserNotificationEntity());
+  }
+
+  // 알림 삭제
+  Future deleteUserNotification(String id) async {
+    await _dao.deleteUserNotification(id);
   }
 }

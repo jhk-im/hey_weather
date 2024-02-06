@@ -33,26 +33,25 @@ class HeyWeatherAddressCard extends StatefulWidget {
 class _HeyWeatherAddressCardState extends State<HeyWeatherAddressCard> {
   @override
   Widget build(BuildContext context) {
-
-    return GestureDetector(
-      onTap: () {
-        widget.onSelectAddress(widget.address);
-      },
-      child: Row(
-        children: [
-          if (!widget.isCurrentLocation && widget.isEditMode) ... {
-            GestureDetector(
-              onTap: () {
-                widget.onRemoveAddress?.call(widget.address);
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(right: 16),
-                child: SvgUtils.icon(context, 'circle_minus'),
-              ),
+    return Row(
+      children: [
+        if (!widget.isCurrentLocation && widget.isEditMode) ... {
+          GestureDetector(
+            onTap: () {
+              widget.onRemoveAddress?.call(widget.address);
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: SvgUtils.icon(context, 'circle_minus'),
             ),
-          },
+          ),
+        },
 
-          Expanded(
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              widget.onSelectAddress(widget.address);
+            },
             child: Container(
               padding: const EdgeInsets.only(top: 20, left: 24, bottom: 28),
               decoration: BoxDecoration(
@@ -135,8 +134,8 @@ class _HeyWeatherAddressCardState extends State<HeyWeatherAddressCard> {
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

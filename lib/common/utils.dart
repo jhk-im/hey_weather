@@ -1,5 +1,6 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Utils {
   static Future<bool> checkInternetConnection() async {
@@ -35,5 +36,11 @@ class Utils {
     } else {
       return '';
     }
+  }
+
+  String formatDateTime(DateTime dateTime) {
+    final String formattedTime = DateFormat('a h:mm').format(dateTime);
+    final String korAmPm = formattedTime.contains('AM') ? '오전' : '오후';
+    return formattedTime.replaceFirst(RegExp('[APMapm]{2}'), korAmPm);
   }
 }

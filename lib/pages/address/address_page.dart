@@ -32,7 +32,10 @@ class AddressPage extends GetView<AddressController> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           // back
-                          GestureDetector(
+                          InkWell(
+                            splashColor: kBaseColor,
+                            highlightColor: Colors.transparent,
+                            hoverColor: Colors.transparent,
                             onTap: () {
                               Get.back(result: controller.isUpdated);
                             },
@@ -57,7 +60,10 @@ class AddressPage extends GetView<AddressController> {
                           const Spacer(),
 
                           // 편집
-                          GestureDetector(
+                          InkWell(
+                            splashColor: kBaseColor,
+                            highlightColor: Colors.transparent,
+                            hoverColor: Colors.transparent,
                             onTap: controller.editModeToggle,
                             child: Container(
                               width: 72,
@@ -114,7 +120,10 @@ class AddressPage extends GetView<AddressController> {
 
                     // 현재 위치
                     if (!controller.isLocationPermission) ... {
-                      GestureDetector(
+                      InkWell(
+                        splashColor: kBaseColor,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
                         onTap: openAppSettings,
                         child: Container(
                           margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -159,6 +168,7 @@ class AddressPage extends GetView<AddressController> {
 
                     Expanded(
                       child: ReorderableListView(
+                        buildDefaultDragHandles: controller.isEditMode,
                         proxyDecorator: (widget, animation, proxy) {
                           return widget;
                         },
@@ -201,7 +211,10 @@ class AddressPage extends GetView<AddressController> {
                     child: ListView.builder(
                       itemCount: controller.searchAddressList.length,
                       itemBuilder: (context, index) {
-                        return GestureDetector(
+                        return InkWell(
+                          splashColor: kBaseColor,
+                          highlightColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
                           onTap: () {
                             controller.focusNode.unfocus();
                             HeyBottomSheet.showCreateAddressBottomSheet(

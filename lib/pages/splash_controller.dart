@@ -34,8 +34,6 @@ class SplashController extends GetxController {
     } else if (status.isGranted) {
       if (permission == Permission.location) {
         SharedPreferencesUtil().setBool(kLocationPermission, true);
-      } else if (permission == Permission.notification) {
-        SharedPreferencesUtil().setBool(kNotificationPermission, true);
       }
     }
   }

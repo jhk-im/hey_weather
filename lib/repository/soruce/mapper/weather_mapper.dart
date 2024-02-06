@@ -1,5 +1,7 @@
 import 'package:hey_weather/repository/soruce/local/entity/address_entity.dart';
+import 'package:hey_weather/repository/soruce/local/entity/user_notification_entity.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
+import 'package:hey_weather/repository/soruce/remote/model/user_notification.dart';
 
 // 주소
 extension ToAddressEntity on Address {
@@ -36,5 +38,27 @@ extension ToAddress on AddressEntity {
       createDateTime: createDateTime,
     );
     return address;
+  }
+}
+
+// 알림
+extension ToUserNotificationEntity on UserNotification {
+  UserNotificationEntity toUserNotificationEntity() {
+    var entity = UserNotificationEntity();
+    entity.id = id;
+    entity.dateTime = dateTime;
+    entity.isOn = isOn;
+    return entity;
+  }
+}
+
+extension ToUserNotification on UserNotificationEntity {
+  UserNotification toUserNotification() {
+    var userNotification = UserNotification(
+      id: id,
+      dateTime: dateTime,
+      isOn: isOn,
+    );
+    return userNotification;
   }
 }

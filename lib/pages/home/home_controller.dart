@@ -54,20 +54,12 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     }
   }
 
+  /// User Interaction
   /*_showOnboardBottomSheet() {
     if (Get.context != null) {
       HeyBottomSheet.showOnBoardingBottomSheet(Get.context!);
     }
   }*/
-
-  _checkLocationPermission() async {
-    var status = await Permission.location.status;
-    if (_isLocationPermission.value != status.isGranted) {
-      _isLocationPermission(status.isGranted);
-      SharedPreferencesUtil().setBool(kLocationPermission, status.isGranted);
-      _getData();
-    }
-  }
 
   moveToAddress() async {
     var result = await Get.toNamed(Routes.routeAddress);
@@ -83,8 +75,18 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     updateUserAddressList();
   }
 
+  _checkLocationPermission() async {
+    var status = await Permission.location.status;
+    if (_isLocationPermission.value != status.isGranted) {
+      _isLocationPermission(status.isGranted);
+      SharedPreferencesUtil().setBool(kLocationPermission, status.isGranted);
+      _getData();
+    }
+  }
+
+
+  /// Data
   Future _getUpdateAddressWithCoordinate({bool isAddressUpdate = false, List<Address>? addressList}) async {
-    logger.i('HomeController getUpdateAddressWithCoordinate()');
     var getUpdateAddressWithCoordinate = await _repository.getUpdateAddressWithCoordinate();
     getUpdateAddressWithCoordinate.when(success: (address) async {
       if (addressList != null) { // 리스트 업데이트
@@ -101,7 +103,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         _recentAddressList.add(address);
       }
     }, error: (Exception e) {
-      logger.e(e);
+      logger.e('HomeController.getUpdateAddressWithCoordinate $e');
     });
   }
 
@@ -128,14 +130,14 @@ class HomeController extends GetxController with WidgetsBindingObserver {
           }
         },
         error: (Exception e) {
-          logger.e(e);
+          logger.e('HomeController.getData $e');
         },
       );
 
       _isLoading(false);
     }, error: (Exception e) async {
       // 최초 진입
-      logger.i('HomeController getData() -> empty getUserAddressList');
+      logger.i('HomeController.getData -> empty getUserAddressList (init first)');
       _currentAddress(kCurrentLocationId);
       await _repository.insertUserAddressEditIdList(kCurrentLocationId);
       await _repository.insertUserAddressRecentIdList(kCurrentLocationId);
@@ -154,18 +156,17 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       var getUserAddressRecentIdList =  await _repository.getUserAddressRecentIdList();
       getUserAddressRecentIdList.when(
         success: (idList) {
-          print(idList);
           addressList.sort((a, b) => idList.indexOf(a.id!).compareTo(idList.indexOf(b.id!)));
           _recentAddressList(addressList);
           _addressText(addressList.first.addressName);
           _currentAddress(addressList.first.id);
         },
         error: (Exception e) {
-          logger.e(e);
+          logger.e('HomeController.updateUserAddressList $e');
         },
       );
     }, error: (Exception e) {
-      logger.e(e);
+      logger.e('HomeController.updateUserAddressList $e');
     });
   }
 }

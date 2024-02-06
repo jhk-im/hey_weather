@@ -45,50 +45,6 @@ class AddressController extends GetxController with WidgetsBindingObserver {
   TextEditingController textFieldController = TextEditingController();
   final _deBouncer = BehaviorSubject<String>();
   final focusNode = FocusNode();
-  textFieldListener(String text) {
-    _deBouncer.add(text);
-  }
-
-  resetTextField() {
-    textFieldController.text = '';
-    focusNode.unfocus();
-    _searchAddressList.clear();
-  }
-
-  createSearchAddress(SearchAddress address, String searchText) {
-    resetTextField();
-    _updateAddressCard(address, searchText);
-  }
-
-  selectAddress(Address address) async {
-    if (!isEditMode && address.id != null) {
-      // 최근 선택 주소 리스트 업데이트
-      await _repository.insertUserAddressRecentIdList(address.id!, isSelect: true);
-      Get.offAllNamed(Routes.routeHome);
-    }
-  }
-
-  removeAddress(Address address) async {
-    if (address.id != null) {
-      _isUpdated(true);
-      await _repository.deleteUserAddressWithId(address.id!);
-      _addressList.remove(address);
-    }
-  }
-
-  editModeToggle() async {
-    _isEditMode(!_isEditMode.value);
-
-    if (!isEditMode) {
-      _isUpdated(true);
-      final idList = addressList.map((element) => element.id ?? '').toList();
-      await _repository.updateUserAddressEditIdList(idList);
-
-      final recent = addressList.where((e) => e.id != kCurrentLocationId).toList();
-      recent.sort((a, b) => DateTime.parse(b.createDateTime ?? '').compareTo(DateTime.parse(a.createDateTime ?? '')));
-      addressList[addressList.indexOf(recent.first)].isRecent = true;
-    }
-  }
 
   var logger = Logger();
 
@@ -135,6 +91,53 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     }
   }
 
+  /// User Interaction
+  textFieldListener(String text) {
+    _deBouncer.add(text);
+  }
+
+  resetTextField() {
+    textFieldController.text = '';
+    focusNode.unfocus();
+    _searchAddressList.clear();
+  }
+
+  createSearchAddress(SearchAddress address, String searchText) {
+    resetTextField();
+    _updateAddressCard(address, searchText);
+  }
+
+  selectAddress(Address address) async {
+    if (!isEditMode && address.id != null) {
+      // 최근 선택 주소 리스트 업데이트
+      await _repository.insertUserAddressRecentIdList(address.id!, isSelect: true);
+      Get.offAllNamed(Routes.routeHome);
+    }
+  }
+
+  removeAddress(Address address) async {
+    if (address.id != null) {
+      _isUpdated(true);
+      await _repository.deleteUserAddressWithId(address.id!);
+      _addressList.remove(address);
+    }
+  }
+
+  editModeToggle() async {
+    _isEditMode(!_isEditMode.value);
+
+    if (!isEditMode) {
+      _isUpdated(true);
+      final idList = addressList.map((element) => element.id ?? '').toList();
+      await _repository.updateUserAddressEditIdList(idList);
+
+      final recent = addressList.where((e) => e.id != kCurrentLocationId).toList();
+      recent.sort((a, b) => DateTime.parse(b.createDateTime ?? '').compareTo(DateTime.parse(a.createDateTime ?? '')));
+      addressList[addressList.indexOf(recent.first)].isRecent = true;
+    }
+  }
+
+  /// Data
   Future _getUpdateAddressWithCoordinate() async {
     logger.i('AddressController getUpdateAddressWithCoordinate()');
     var getUpdateAddressWithCoordinate = await _repository.getUpdateAddressWithCoordinate();

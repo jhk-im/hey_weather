@@ -180,7 +180,10 @@ class HeyBottomSheet {
                         ),
                       ),
                       const Spacer(),
-                      GestureDetector(
+                      InkWell(
+                        splashColor: kBaseColor,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
                         onTap: () {
                           Get.back();
                         },
@@ -285,7 +288,10 @@ class HeyBottomSheet {
                       ),
                     ),
                     const Spacer(),
-                    GestureDetector(
+                    InkWell(
+                      splashColor: kBaseColor,
+                      highlightColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
                       onTap: () {
                         Get.back();
                       },
@@ -360,7 +366,10 @@ class HeyBottomSheet {
                         ),
                       ),
                       const Spacer(),
-                      GestureDetector(
+                      InkWell(
+                        splashColor: kBaseColor,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
                         onTap: () {
                           Get.back();
                         },
@@ -376,7 +385,10 @@ class HeyBottomSheet {
                     child: Column(
                       children: [
                         // 섭씨
-                        GestureDetector(
+                        InkWell(
+                          splashColor: kBaseColor,
+                          highlightColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
                           onTap: () {
                             Get.back();
                             onSelected?.call(false);
@@ -406,7 +418,10 @@ class HeyBottomSheet {
                         ),
 
                         // 화씨
-                        GestureDetector(
+                        InkWell(
+                          splashColor: kBaseColor,
+                          highlightColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
                           onTap: () {
                             Get.back();
                             onSelected?.call(true);

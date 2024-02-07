@@ -34,7 +34,6 @@ class _HeyWeatherSunCardState extends State<HeyWeatherSunCard> {
       },
       child: Container(
         width: width,
-        height: width / 2.2,
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: kBaseColor,
@@ -67,8 +66,7 @@ class _HeyWeatherSunCardState extends State<HeyWeatherSunCard> {
                       ),
                     ],
                   ),
-
-                  const Spacer(),
+                  const SizedBox(height: 24),
                   Row(
                     children: [
                       const Spacer(),

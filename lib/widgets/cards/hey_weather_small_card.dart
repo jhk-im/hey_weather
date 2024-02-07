@@ -204,7 +204,7 @@ class _HeyWeatherSmallCardState extends State<HeyWeatherSmallCard> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
+
                     Expanded(
                       flex: 1,
                       child: SizedBox(

@@ -54,7 +54,6 @@ class _HeyWeatherDustCardState extends State<HeyWeatherDustCard> {
       },
       child: Container(
         width: width,
-        height: width / 2.2,
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: kBaseColor,
@@ -87,8 +86,7 @@ class _HeyWeatherDustCardState extends State<HeyWeatherDustCard> {
                       ),
                     ],
                   ),
-
-                  const Spacer(),
+                  const SizedBox(height: 24),
                   Row(
                     children: [
                       // 미세먼지

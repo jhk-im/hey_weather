@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hey_weather/common/constants.dart';
-import 'package:hey_weather/common/hey_bottom_sheet.dart';
 import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/svg_utils.dart';
 import 'package:hey_weather/getx/routes.dart';
@@ -22,173 +21,183 @@ class HomePage extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
+    double statusBarHeight = MediaQuery.of(context).padding.top;
     double emptyHeight = (MediaQuery.of(context).size.height) - 157;
     return Scaffold(
-      body: SafeArea(
-        child: Obx(() => Stack(
-          children: [
-            Column(
-              children: [
-                // Header 157
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-                  child: Row(
-                    children: [
-                      InkWell(
-                        splashColor: kBaseColor,
-                        highlightColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        onTap: () {
-                          HeyBottomSheet.showSelectAddressBottomSheet(
+      body: Obx(() => Stack(
+        children: [
+          Column(
+            children: [
+              // StatusBar
+              SizedBox(height: statusBarHeight),
+
+              // Header
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+                child: Row(
+                  children: [
+                    InkWell(
+                      splashColor: kBaseColor,
+                      highlightColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      onTap: () {
+                        /*HeyBottomSheet.showSelectAddressBottomSheet(
+                          context,
+                          addressList: controller.recentAddressList,
+                          currentAddress: controller.currentAddress,
+                          onSelectedAddress: (addressId) {
+                            controller.logger.d('onSelectedAddress: (addressId) -> $addressId / currentAddress -> ${controller.currentAddress}');
+                            if (addressId != controller.currentAddress) {
+                              controller.resetData(addressId);
+                            }
+                          },
+                          onMoveToAddress: controller.moveToAddress,
+                        );*/
+                        controller.moveToAddress();
+                      },
+                      child: Row(
+                        children: [
+                          SvgUtils.icon(
                             context,
-                            addressList: controller.recentAddressList,
-                            currentAddress: controller.currentAddress,
-                            onSelectedAddress: (addressId) {
-                              controller.logger.d('onSelectedAddress: (addressId) -> $addressId / currentAddress -> ${controller.currentAddress}');
-                              if (addressId != controller.currentAddress) {
-                                controller.resetData(addressId);
-                              }
-                            },
-                            onMoveToAddress: controller.moveToAddress,
-                          );
-                        },
-                        child: Row(
+                            controller.currentAddress == kCurrentLocationId ? 'location_target' : 'location',
+                          ),
+                          const SizedBox(width: 6),
+                          HeyText.body(controller.addressText, color: kTextSecondaryColor),
+                        ],
+                      ),
+                    ),
+                    const Spacer(),
+                    /*InkWell(
+                      splashColor: kBaseColor,
+                      highlightColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      onTap: controller.moveToAddress,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: SvgUtils.icon(context, 'map'),
+                      ),
+                    ),*/
+                    InkWell(
+                      splashColor: kBaseColor,
+                      highlightColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      onTap: () {
+                        Get.toNamed(Routes.routeSetting);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: SvgUtils.icon(context, 'setting'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // MY, ALL, 편집
+              _tab(context, controller.scrollY > 395),
+
+              // Content
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: controller.scrollController,
+                  physics: const ClampingScrollPhysics(),
+                  child: Column(
+                    children: [
+                      // Location Permission
+                      if (!controller.isLocationPermission) ... {
+                        Container(
+                          margin: const EdgeInsets.only(top: 12, left: 20, right: 20),
+                          child: InkWell(
+                            splashColor: kBaseColor,
+                            highlightColor: Colors.transparent,
+                            hoverColor: Colors.transparent,
+                            onTap: openAppSettings,
+                            child: Container(
+                              padding: const EdgeInsets.only(left: 20, top: 12, bottom: 12, right: 12),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: kBaseColor,
+                              ),
+                              width: double.maxFinite,
+                              child: Row(
+                                children: [
+                                  HeyText.footnote('location_permission_message'.tr),
+                                  const Spacer(),
+                                  SvgUtils.icon(context, 'arrow_right'),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      },
+
+                      // Today Card
+                      Container(
+                        margin: const EdgeInsets.only(top: 12, left: 20, right: 20),
+                        child: const HeyWeatherHomeCard(
+                          weatherStatus: '구름 조금',
+                          temperature: '19',
+                          message1: '어제보다 1℃ 낮아요',
+                          message2: '저녁 6시에 비 올 확률이 80%예요',
+                          message3: '미세먼지가 없고 하늘이 깨끗해요',
+                        ),
+                      ),
+
+                      // Contents
+                      Container(
+                        margin: const EdgeInsets.only(top: 25),
+                        child: Column(
                           children: [
-                            SvgUtils.icon(context, 'location'),
-                            const SizedBox(width: 6),
-                            HeyText.body(controller.addressText, color: kTextSecondaryColor),
+                            // MY, ALL, 편집
+                            _tab(context, controller.scrollY < 395),
+                            if (!controller.isAllTab) ... {
+                              Visibility(
+                                visible: controller.isEmptyWeathers,
+                                child: Container(
+                                  width: double.maxFinite,
+                                  height: emptyHeight,
+                                  color: kHomeBottomColor,
+                                  child: Center(
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(height: 50),
+                                        HeyElevatedButton.secondaryIcon2(
+                                          context,
+                                          width: 58,
+                                          onPressed: () {
+
+                                          },
+                                        ),
+                                        const SizedBox(height: 20),
+                                        HeyText.subHeadline(
+                                          'home_add_desc'.tr,
+                                          color: kTextDisabledColor,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            } else ... {
+                              // ALL
+                              _allWeatherWidgets(context),
+                            },
                           ],
-                        ),
-                      ),
-                      const Spacer(),
-                      InkWell(
-                        splashColor: kBaseColor,
-                        highlightColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        onTap: controller.moveToAddress,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: SvgUtils.icon(context, 'map'),
-                        ),
-                      ),
-                      InkWell(
-                        splashColor: kBaseColor,
-                        highlightColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        onTap: () {
-                          Get.toNamed(Routes.routeSetting);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: SvgUtils.icon(context, 'setting'),
                         ),
                       ),
                     ],
                   ),
                 ),
+              ),
+            ],
+          ),
 
-                // MY, ALL, 편집
-                _tab(context, controller.scrollY > 395),
-
-                // Content
-                Expanded(
-                  child: SingleChildScrollView(
-                    controller: controller.scrollController,
-                    child: Column(
-                      children: [
-                        // Location Permission
-                        if (!controller.isLocationPermission) ... {
-                          Container(
-                            margin: const EdgeInsets.only(top: 12, left: 20, right: 20),
-                            child: InkWell(
-                              splashColor: kBaseColor,
-                              highlightColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              onTap: openAppSettings,
-                              child: Container(
-                                padding: const EdgeInsets.only(left: 20, top: 12, bottom: 12, right: 12),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: kBaseColor,
-                                ),
-                                width: double.maxFinite,
-                                child: Row(
-                                  children: [
-                                    HeyText.footnote('location_permission_message'.tr),
-                                    const Spacer(),
-                                    SvgUtils.icon(context, 'arrow_right'),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        },
-
-                        // Today Card
-                        Container(
-                          margin: const EdgeInsets.only(top: 12, left: 20, right: 20),
-                          child: const HeyWeatherHomeCard(
-                            weatherStatus: '구름 조금',
-                            temperature: '19',
-                            message1: '어제보다 1℃ 낮아요',
-                            message2: '저녁 6시에 비 올 확률이 80%예요',
-                            message3: '미세먼지가 없고 하늘이 깨끗해요',
-                          ),
-                        ),
-
-                        // Contents
-                        Container(
-                          margin: const EdgeInsets.only(top: 25),
-                          child: Column(
-                            children: [
-                              // MY, ALL, 편집
-                              _tab(context, controller.scrollY < 395),
-                              if (!controller.isAllTab) ... {
-                                Visibility(
-                                  visible: controller.isEmptyWeathers,
-                                  child: Container(
-                                    width: double.maxFinite,
-                                    height: emptyHeight,
-                                    color: kHomeBottomColor,
-                                    child: Center(
-                                      child: Column(
-                                        children: [
-                                          const SizedBox(height: 50),
-                                          HeyElevatedButton.secondaryIcon2(
-                                            context,
-                                            width: 58,
-                                            onPressed: () {
-
-                                            },
-                                          ),
-                                          const SizedBox(height: 20),
-                                          HeyText.subHeadline(
-                                            'home_add_desc'.tr,
-                                            color: kTextDisabledColor,
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              } else ... {
-                                // ALL
-                                _allWeatherWidgets(context),
-                              },
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            Obx(() => LoadingWidget(controller.isLoading)),
-          ],
-        )),
-      ),
+          Padding(
+            padding: EdgeInsets.only(top: statusBarHeight),
+            child: LoadingWidget(controller.isLoading),
+          ),
+        ],
+      )),
     );
   }
 
@@ -301,10 +310,12 @@ class HomePage extends GetView<HomeController> {
               ultra: '10',
               ultraState: '좋음',
             ),
-            // 일출 일몰
-            const HeyWeatherSunCard(
-              sunrise: '7시 34분',
-              sunset: '5시 34분',
+            // 강수
+            HeyWeatherSmallCard(
+              title: 'rain'.tr,
+              iconName: 'rain',
+              subtitle: '없음',
+              state: '0',
             ),
             // 습도
             HeyWeatherSmallCard(
@@ -314,6 +325,12 @@ class HomePage extends GetView<HomeController> {
               state: '16',
               secondState: '17',
             ),
+            // 체감온도
+            HeyWeatherSmallCard(
+              title: 'wind_chill'.tr,
+              iconName: 'wind_chill',
+              state: '30 28',
+            ),
             // 바람
             HeyWeatherSmallCard(
               title: 'wind'.tr,
@@ -322,12 +339,10 @@ class HomePage extends GetView<HomeController> {
               state: '3',
               secondState: '북동',
             ),
-            // 강수
-            HeyWeatherSmallCard(
-              title: 'rain'.tr,
-              iconName: 'rain',
-              subtitle: '없음',
-              state: '0',
+            // 일출 일몰
+            const HeyWeatherSunCard(
+              sunrise: '7시 34분',
+              sunset: '5시 34분',
             ),
             // 자외선
             HeyWeatherSmallCard(
@@ -336,12 +351,6 @@ class HomePage extends GetView<HomeController> {
               subtitle: '낮음',
               state: '3',
               secondState: '3',
-            ),
-            // 체감온도
-            HeyWeatherSmallCard(
-              title: 'wind_chill'.tr,
-              iconName: 'wind_chill',
-              state: '30 28',
             ),
           ],
         ),

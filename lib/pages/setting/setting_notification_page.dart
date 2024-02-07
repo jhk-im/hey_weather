@@ -15,12 +15,16 @@ class SettingNotificationPage extends GetView<SettingNotificationController> {
 
   @override
   Widget build(BuildContext context) {
+    double statusBarHeight = MediaQuery.of(context).padding.top;
     return Builder(
       builder: (context) {
         return Scaffold(
           body: SafeArea(
             child: Obx(() => Stack(
               children: [
+                // StatusBar
+                SizedBox(height: statusBarHeight),
+
                 // 헤더, 알림 토글, 알림 리스트
                 Column(
                   children: [
@@ -262,7 +266,10 @@ class SettingNotificationPage extends GetView<SettingNotificationController> {
                   ],
                 ),
 
-                LoadingWidget(controller.isLoading),
+                Padding(
+                  padding: EdgeInsets.only(top: statusBarHeight),
+                  child: LoadingWidget(controller.isLoading),
+                ),
               ],
             )),
           ),

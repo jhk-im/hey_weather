@@ -34,7 +34,7 @@ class _HeyWeatherBigCardState extends State<HeyWeatherBigCard> {
       },
       child: Container(
         width: width,
-        height: width * 1.18,
+
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: kBaseColor,

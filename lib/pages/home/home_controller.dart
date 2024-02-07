@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hey_weather/common/constants.dart';
+import 'package:hey_weather/common/hey_bottom_sheet.dart';
 import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:hey_weather/getx/routes.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
 import 'package:hey_weather/repository/soruce/weather_repository.dart';
 import 'package:logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
-
-import '../../common/hey_bottom_sheet.dart';
 
 class HomeController extends GetxController with WidgetsBindingObserver {
   final WeatherRepository _repository = GetIt.I<WeatherRepository>();
@@ -110,6 +109,9 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   tabToggle(bool isALL) {
     _isAllTab(isALL);
+    if (_scrollY.value > 395) {
+      scrollController.jumpTo(396);
+    }
   }
 
   editToggle(bool isEdit) {

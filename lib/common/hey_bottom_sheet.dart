@@ -88,35 +88,35 @@ class HeyBottomSheet {
                         title: 'dust'.tr,
                         iconName: 'dust',
                       ),
-                      // 일출 일몰
+                      // 강수
                       HeyWeatherSelectCard(
-                        title: 'sunrise_sunset'.tr,
-                        iconName: 'sunrise_sunset',
+                        title: 'rain'.tr,
+                        iconName: 'rain',
                       ),
                       // 습도
                       HeyWeatherSelectCard(
                         title: 'humidity'.tr,
                         iconName: 'humidity',
                       ),
+                      // 체감온도
+                      HeyWeatherSelectCard(
+                        title: 'wind_chill'.tr,
+                        iconName: 'wind_chill',
+                      ),
                       // 바람
                       HeyWeatherSelectCard(
                         title: 'wind'.tr,
                         iconName: 'wind',
                       ),
-                      // 강수
+                      // 일출 일몰
                       HeyWeatherSelectCard(
-                        title: 'rain'.tr,
-                        iconName: 'rain',
+                        title: 'sunrise_sunset'.tr,
+                        iconName: 'sunrise_sunset',
                       ),
                       // 자외선
                       HeyWeatherSelectCard(
                         title: 'ultraviolet'.tr,
                         iconName: 'ultraviolet',
-                      ),
-                      // 체감온도
-                      HeyWeatherSelectCard(
-                        title: 'wind_chill'.tr,
-                        iconName: 'wind_chill',
                       ),
                     ],
                   ),

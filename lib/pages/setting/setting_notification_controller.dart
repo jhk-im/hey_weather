@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hey_weather/common/constants.dart';
+import 'package:hey_weather/common/hey_dialog.dart';
 import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:hey_weather/repository/soruce/remote/model/user_notification.dart';
 import 'package:hey_weather/repository/soruce/weather_repository.dart';
@@ -75,7 +76,16 @@ class SettingNotificationController extends GetxController with WidgetsBindingOb
         SharedPreferencesUtil().setBool(kNotificationPermission, isOn);
       } else {
         _isOpenAppSettings = true;
-        openAppSettings();
+
+        if (Get.context != null) {
+          HeyDialog.showCommonDialog(
+            Get.context!,
+            title: 'dialog_setting_title'.tr,
+            subtitle: 'dialog_setting_subtitle'.tr,
+            okText: 'dialog_setting_ok'.tr,
+            onOk: openAppSettings,
+          );
+        }
       }
     }
   }

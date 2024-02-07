@@ -19,12 +19,12 @@ class SettingMainPage extends GetView<SettingMainController> {
         return Scaffold(
           body: Obx(() => Stack(
             children: [
-              // StatusBar
-              SizedBox(height: statusBarHeight),
-
               // 헤더, 설정 리스트, 커피
               Column(
                 children: [
+                  // StatusBar
+                  SizedBox(height: statusBarHeight),
+
                   // 헤더
                   SizedBox(
                     width: double.maxFinite,
@@ -191,10 +191,49 @@ class SettingMainPage extends GetView<SettingMainController> {
                     ),
                   ),
 
-                  // Divider
                   Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 20),
-                    child: const Divider(color: kButtonColor, height: 1),
+                    margin: const EdgeInsets.all(20),
+                    child: InkWell(
+                      splashColor: kBaseColor,
+                      highlightColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      onTap: () {
+
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: kPrimaryColor,
+                        ),
+                        width: double.maxFinite,
+                        child: Row(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                HeyText.footnoteSemiBold(
+                                  'coffee_title_1'.tr,
+                                  color: kPrimaryLighterColor,
+                                ),
+                                HeyText.footnoteSemiBold(
+                                  'coffee_title_2'.tr,
+                                  color: kTextPointColor,
+                                ),
+                              ],
+                            ),
+                            const Spacer(),
+                            SvgUtils.icon(
+                              context,
+                              'arrow_right',
+                              color: kTextPointColor,
+                              width: 16,
+                              height: 16,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

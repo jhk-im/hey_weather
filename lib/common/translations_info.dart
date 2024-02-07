@@ -61,6 +61,8 @@ class TranslationsInfo extends Translations {
     'home_tab_1': 'MY',
     'home_tab_2': 'ALL',
     'home_add_desc': '자주 보는 날씨 정보 추가',
+    'coffee_title_1': '헤이 날씨가 도움이 되셨나요?',
+    'coffee_title_2': '응원의 커피 보내기',
 
     // Weather
     'humidity' : '습도',
@@ -83,6 +85,11 @@ class TranslationsInfo extends Translations {
     'bs_address_title_1': '어느 지역으로 바꿀까요?',
     'bs_address_title_2': '바꿀 지역이 없어요',
     'bs_address_btn': '다른 지역 찾아보기',
+
+    // Dialog
+    'dialog_setting_title': '설정하러 이동할까요??',
+    'dialog_setting_subtitle': '시스템 알림이 꺼져 있어 알림 기능을 켤 수 없어요. 설정에서 알림을 켜주세요',
+    'dialog_setting_ok': '설정 바로가기',
 
     // toast
     'toast_added_location': '지역이 추가되었어요',

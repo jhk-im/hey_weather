@@ -63,26 +63,30 @@ class SettingNotificationPage extends GetView<SettingNotificationController> {
                           const Spacer(),
 
                           // 편집
-                          InkWell(
-                            splashColor: kBaseColor,
-                            highlightColor: Colors.transparent,
-                            hoverColor: Colors.transparent,
-                            onTap: controller.editModeToggle,
-                            child: Container(
-                              width: 72,
-                              padding: const EdgeInsets.only(right: 20),
-                              child: Row(
-                                children: [
-                                  const Spacer(),
-                                  HeyText.body(
-                                    controller.isEditMode ? 'done'.tr : 'edit'.tr,
-                                    color: kTextDisabledColor,
-                                    fontSize: kFont18,
-                                  ),
-                                ],
+                          if (controller.isNotificationPermission) ... {
+                            InkWell(
+                              splashColor: kBaseColor,
+                              highlightColor: Colors.transparent,
+                              hoverColor: Colors.transparent,
+                              onTap: controller.editModeToggle,
+                              child: Container(
+                                width: 72,
+                                padding: const EdgeInsets.only(right: 20),
+                                child: Row(
+                                  children: [
+                                    const Spacer(),
+                                    HeyText.body(
+                                      controller.isEditMode ? 'done'.tr : 'edit'.tr,
+                                      color: kTextDisabledColor,
+                                      fontSize: kFont18,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
+                          } else ... {
+                            const SizedBox(width: 72),
+                          },
                         ],
                       ),
                     ),

@@ -9,6 +9,8 @@ import 'package:hey_weather/repository/soruce/weather_repository.dart';
 import 'package:logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../common/hey_bottom_sheet.dart';
+
 class HomeController extends GetxController with WidgetsBindingObserver {
   final WeatherRepository _repository = GetIt.I<WeatherRepository>();
 
@@ -21,6 +23,15 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   final RxBool _isOpenSettings = false.obs;
   bool get isOpenSettings => _isOpenSettings.value;
 
+  final RxBool _isAllTab = false.obs;
+  bool get isAllTab => _isAllTab.value;
+
+  final RxBool _isEditMode = false.obs;
+  bool get isEditMode => _isEditMode.value;
+
+  final RxBool _isEmptyWeathers = true.obs;
+  bool get isEmptyWeathers => _isEmptyWeathers.value;
+
   final RxString _addressText = ''.obs;
   String get addressText => _addressText.value;
 
@@ -30,18 +41,26 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   final RxList<Address> _recentAddressList = <Address>[].obs;
   List<Address> get recentAddressList => _recentAddressList;
 
+  // scroll
+  final ScrollController scrollController = ScrollController();
+  final RxDouble _scrollY = 0.0.obs;
+  double get scrollY => _scrollY.value;
+
   var logger = Logger();
 
   @override
   void onInit() {
     _isLocationPermission(SharedPreferencesUtil().getBool(kLocationPermission));
+    scrollController.addListener(_scrollListener);
+    WidgetsBinding.instance.addObserver(this);
     super.onInit();
     _getData();
-    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void onClose() {
+    scrollController.removeListener(_scrollListener);
+    scrollController.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.onClose();
   }
@@ -54,13 +73,27 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     }
   }
 
-  /// User Interaction
-  /*_showOnboardBottomSheet() {
+  void _scrollListener() {
+    double scrollPosition = scrollController.position.pixels;
+    _scrollY.value = scrollPosition;
+  }
+
+  _checkLocationPermission() async {
+    var status = await Permission.location.status;
+    if (_isLocationPermission.value != status.isGranted) {
+      _isLocationPermission(status.isGranted);
+      SharedPreferencesUtil().setBool(kLocationPermission, status.isGranted);
+      _getData();
+    }
+  }
+
+  _showOnboardBottomSheet() {
     if (Get.context != null) {
       HeyBottomSheet.showOnBoardingBottomSheet(Get.context!);
     }
-  }*/
+  }
 
+  /// User Interaction
   moveToAddress() async {
     var result = await Get.toNamed(Routes.routeAddress);
 
@@ -75,15 +108,13 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     updateUserAddressList();
   }
 
-  _checkLocationPermission() async {
-    var status = await Permission.location.status;
-    if (_isLocationPermission.value != status.isGranted) {
-      _isLocationPermission(status.isGranted);
-      SharedPreferencesUtil().setBool(kLocationPermission, status.isGranted);
-      _getData();
-    }
+  tabToggle(bool isALL) {
+    _isAllTab(isALL);
   }
 
+  editToggle(bool isEdit) {
+    _isEditMode(isEdit);
+  }
 
   /// Data
   Future _getUpdateAddressWithCoordinate({bool isAddressUpdate = false, List<Address>? addressList}) async {
@@ -144,7 +175,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       await _getUpdateAddressWithCoordinate();
       _isLoading(false);
     });
-    //_showOnboardBottomSheet();
+
+    _showOnboardBottomSheet();
   }
 
   Future updateUserAddressList() async {

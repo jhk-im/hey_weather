@@ -249,6 +249,7 @@ class HeyElevatedButton extends ElevatedButton {
   factory HeyElevatedButton.secondaryIcon2(BuildContext context, {
     Color backgroundColor = kButtonColor,
     Color foregroundColor = kTextSecondaryColor,
+    double? width,
     double height = 40,
     double radius = 12,
     double horizontalPadding = 16,
@@ -261,7 +262,7 @@ class HeyElevatedButton extends ElevatedButton {
       } : null,
       style: ElevatedButton.styleFrom(
         foregroundColor: foregroundColor.withAlpha(15),
-        minimumSize: Size(double.minPositive, height),
+        minimumSize: Size(width ?? double.minPositive, height),
         backgroundColor: backgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radius), // Set the corner radius here
@@ -271,7 +272,6 @@ class HeyElevatedButton extends ElevatedButton {
         disabledBackgroundColor: kBaseColor,
         disabledForegroundColor: kIconColor,
         splashFactory: NoSplash.splashFactory,
-
       ),
       child: SvgUtils.icon(
         context,

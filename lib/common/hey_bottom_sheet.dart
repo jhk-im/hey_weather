@@ -73,6 +73,26 @@ class HeyBottomSheet {
                     spacing: 15,
                     runSpacing: 15,
                     children: [
+                      // 시간대별 날씨
+                      HeyWeatherSelectCard(
+                        title: 'weather_by_time'.tr,
+                        iconName: 'weather_by_time',
+                      ),
+                      // 주간 날씨
+                      HeyWeatherSelectCard(
+                        title: 'weather_week'.tr,
+                        iconName: 'weather_week',
+                      ),
+                      // 대기질
+                      HeyWeatherSelectCard(
+                        title: 'dust'.tr,
+                        iconName: 'dust',
+                      ),
+                      // 일출 일몰
+                      HeyWeatherSelectCard(
+                        title: 'sunrise_sunset'.tr,
+                        iconName: 'sunrise_sunset',
+                      ),
                       // 습도
                       HeyWeatherSelectCard(
                         title: 'humidity'.tr,
@@ -93,30 +113,10 @@ class HeyBottomSheet {
                         title: 'ultraviolet'.tr,
                         iconName: 'ultraviolet',
                       ),
-                      // 미세먼지
+                      // 체감온도
                       HeyWeatherSelectCard(
-                        title: 'fine_dust'.tr,
-                        iconName: 'fine_dust',
-                      ),
-                      // 초 미세먼지
-                      HeyWeatherSelectCard(
-                        title: 'ultra_fine_dust'.tr,
-                        iconName: 'fine_dust',
-                      ),
-                      // 일출 일몰
-                      HeyWeatherSelectCard(
-                        title: 'sunrise_sunset'.tr,
-                        iconName: 'sunrise_sunset',
-                      ),
-                      // 시간대별 날씨
-                      HeyWeatherSelectCard(
-                        title: 'weather_by_time'.tr,
-                        iconName: 'weather_by_time',
-                      ),
-                      // 주간 날씨
-                      HeyWeatherSelectCard(
-                        title: 'weather_week'.tr,
-                        iconName: 'weather_week',
+                        title: 'wind_chill'.tr,
+                        iconName: 'wind_chill',
                       ),
                     ],
                   ),

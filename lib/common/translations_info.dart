@@ -58,12 +58,18 @@ class TranslationsInfo extends Translations {
     'celsius': '°C',
     'celsius_text': '(섭씨 온도)',
     'receive_notification': '알림 받기',
+    'home_tab_1': 'MY',
+    'home_tab_2': 'ALL',
+    'home_add_desc': '자주 보는 날씨 정보 추가',
 
     // Weather
     'humidity' : '습도',
     'wind' : '바람',
     'rain' : '강수',
     'ultraviolet': '자외선',
+    'dust': '대기질',
+    'dust_fine': '미세',
+    'dust_ultra': '초미세',
     'fine_dust': '미세먼지',
     'ultra_fine_dust': '초미세먼지',
     'wind_chill': '체감온도',

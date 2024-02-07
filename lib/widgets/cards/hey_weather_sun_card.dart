@@ -4,8 +4,8 @@ import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/svg_utils.dart';
 
-class HeyWeatherMediumCard extends StatefulWidget {
-  const HeyWeatherMediumCard({
+class HeyWeatherSunCard extends StatefulWidget {
+  const HeyWeatherSunCard({
     super.key,
     required this.sunrise,
     required this.sunset,
@@ -15,10 +15,10 @@ class HeyWeatherMediumCard extends StatefulWidget {
   final String sunset;
 
   @override
-  State<HeyWeatherMediumCard> createState() => _HeyWeatherMediumCardState();
+  State<HeyWeatherSunCard> createState() => _HeyWeatherSunCardState();
 }
 
-class _HeyWeatherMediumCardState extends State<HeyWeatherMediumCard> {
+class _HeyWeatherSunCardState extends State<HeyWeatherSunCard> {
   final status = 0.obs; // 0 -> default, 1 -> edit, 2 -> select
 
   @override
@@ -34,7 +34,7 @@ class _HeyWeatherMediumCardState extends State<HeyWeatherMediumCard> {
       },
       child: Container(
         width: width,
-        height: width / 2,
+        height: width / 2.2,
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: kBaseColor,

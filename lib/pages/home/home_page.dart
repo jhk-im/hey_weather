@@ -6,7 +6,13 @@ import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/svg_utils.dart';
 import 'package:hey_weather/getx/routes.dart';
 import 'package:hey_weather/pages/home/home_controller.dart';
+import 'package:hey_weather/widgets/buttons/hey_elevated_button.dart';
+import 'package:hey_weather/widgets/cards/hey_weather_big_card.dart';
+import 'package:hey_weather/widgets/cards/hey_weather_dust_card.dart';
 import 'package:hey_weather/widgets/cards/hey_weather_home_card.dart';
+import 'package:hey_weather/widgets/cards/hey_weather_large_card.dart';
+import 'package:hey_weather/widgets/cards/hey_weather_sun_card.dart';
+import 'package:hey_weather/widgets/cards/hey_weather_small_card.dart';
 import 'package:hey_weather/widgets/loading_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -16,15 +22,16 @@ class HomePage extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
+    double emptyHeight = (MediaQuery.of(context).size.height) - 157;
     return Scaffold(
       body: SafeArea(
         child: Obx(() => Stack(
           children: [
             Column(
               children: [
-                // Header
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+                // Header 157
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
                   child: Row(
                     children: [
                       InkWell(
@@ -59,9 +66,11 @@ class HomePage extends GetView<HomeController> {
                         highlightColor: Colors.transparent,
                         hoverColor: Colors.transparent,
                         onTap: controller.moveToAddress,
-                        child: SvgUtils.icon(context, 'map'),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: SvgUtils.icon(context, 'map'),
+                        ),
                       ),
-                      const SizedBox(width: 8),
                       InkWell(
                         splashColor: kBaseColor,
                         highlightColor: Colors.transparent,
@@ -69,49 +78,108 @@ class HomePage extends GetView<HomeController> {
                         onTap: () {
                           Get.toNamed(Routes.routeSetting);
                         },
-                        child: SvgUtils.icon(context, 'setting'),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: SvgUtils.icon(context, 'setting'),
+                        ),
                       ),
                     ],
                   ),
                 ),
 
-                // Location Permission
-                if (!controller.isLocationPermission) ... {
-                  Container(
-                    margin: const EdgeInsets.only(top: 12, left: 20, right: 20),
-                    child: InkWell(
-                      splashColor: kBaseColor,
-                      highlightColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      onTap: openAppSettings,
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 20, top: 12, bottom: 12, right: 12),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: kBaseColor,
-                        ),
-                        width: double.maxFinite,
-                        child: Row(
-                          children: [
-                            HeyText.footnote('location_permission_message'.tr),
-                            const Spacer(),
-                            SvgUtils.icon(context, 'arrow_right'),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                },
+                // MY, ALL, 편집
+                _tab(context, controller.scrollY > 395),
 
-                // Card
-                Container(
-                  margin: const EdgeInsets.only(top: 12, left: 20, right: 20),
-                  child: const HeyWeatherHomeCard(
-                    weatherStatus: '구름 조금',
-                    temperature: '19',
-                    message1: '어제보다 1℃ 낮아요',
-                    message2: '저녁 6시에 비 올 확률이 80%예요',
-                    message3: '미세먼지가 없고 하늘이 깨끗해요',
+                // Content
+                Expanded(
+                  child: SingleChildScrollView(
+                    controller: controller.scrollController,
+                    child: Column(
+                      children: [
+                        // Location Permission
+                        if (!controller.isLocationPermission) ... {
+                          Container(
+                            margin: const EdgeInsets.only(top: 12, left: 20, right: 20),
+                            child: InkWell(
+                              splashColor: kBaseColor,
+                              highlightColor: Colors.transparent,
+                              hoverColor: Colors.transparent,
+                              onTap: openAppSettings,
+                              child: Container(
+                                padding: const EdgeInsets.only(left: 20, top: 12, bottom: 12, right: 12),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: kBaseColor,
+                                ),
+                                width: double.maxFinite,
+                                child: Row(
+                                  children: [
+                                    HeyText.footnote('location_permission_message'.tr),
+                                    const Spacer(),
+                                    SvgUtils.icon(context, 'arrow_right'),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        },
+
+                        // Today Card
+                        Container(
+                          margin: const EdgeInsets.only(top: 12, left: 20, right: 20),
+                          child: const HeyWeatherHomeCard(
+                            weatherStatus: '구름 조금',
+                            temperature: '19',
+                            message1: '어제보다 1℃ 낮아요',
+                            message2: '저녁 6시에 비 올 확률이 80%예요',
+                            message3: '미세먼지가 없고 하늘이 깨끗해요',
+                          ),
+                        ),
+
+                        // Contents
+                        Container(
+                          margin: const EdgeInsets.only(top: 25),
+                          child: Column(
+                            children: [
+                              // MY, ALL, 편집
+                              _tab(context, controller.scrollY < 395),
+                              if (!controller.isAllTab) ... {
+                                Visibility(
+                                  visible: controller.isEmptyWeathers,
+                                  child: Container(
+                                    width: double.maxFinite,
+                                    height: emptyHeight,
+                                    color: kHomeBottomColor,
+                                    child: Center(
+                                      child: Column(
+                                        children: [
+                                          const SizedBox(height: 50),
+                                          HeyElevatedButton.secondaryIcon2(
+                                            context,
+                                            width: 58,
+                                            onPressed: () {
+
+                                            },
+                                          ),
+                                          const SizedBox(height: 20),
+                                          HeyText.subHeadline(
+                                            'home_add_desc'.tr,
+                                            color: kTextDisabledColor,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              } else ... {
+                                // ALL
+                                _allWeatherWidgets(context),
+                              },
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -124,8 +192,167 @@ class HomePage extends GetView<HomeController> {
     );
   }
 
+  Widget _tab(BuildContext context, bool isVisible) {
+    return Visibility(
+      visible: isVisible,
+      child: Container(
+        width: double.maxFinite,
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+          color: kHomeBottomColor,
+          border: Border(
+            top: BorderSide(
+              color:   kButtonColor,
+              width:1,
+            ),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 10, top: 24, bottom: 12, right: 20),
+          child: controller.isEditMode ? Row(
+            children: [
+              const SizedBox(width: 10),
+              HeyElevatedButton.secondaryIcon2(
+                context,
+                width: 58,
+                onPressed: () {
 
-  /*Widget _samples(BuildContext context) {
+                },
+              ),
+              const Spacer(),
+              HeyElevatedButton.secondaryText2(
+                text: 'done'.tr,
+                onPressed: () {
+                  controller.editToggle(false);
+                },
+              ),
+            ],
+          ) : Row(
+            children: [
+              InkWell(
+                onTap: () {
+                  controller.tabToggle(false);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: HeyText.title3Bold(
+                    'home_tab_1'.tr,
+                    color: !controller.isAllTab ? kTextDisabledColor : kButtonColor,
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  controller.tabToggle(true);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: HeyText.title3Bold(
+                    'home_tab_2'.tr,
+                    color: controller.isAllTab ? kTextDisabledColor : kButtonColor,
+                  ),
+                ),
+              ),
+
+              if (controller.isEmptyWeathers || controller.isAllTab) ... {
+                const SizedBox(height: 48),
+              } else ... {
+                const Spacer(),
+                HeyElevatedButton.secondaryText2(
+                  text: 'edit'.tr,
+                  onPressed: () {
+                    controller.editToggle(true);
+                  },
+                ),
+              },
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _allWeatherWidgets(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(top: 16, bottom: 24),
+      color: kHomeBottomColor,
+      child: Center(
+        child: Wrap(
+          spacing: 15,
+          runSpacing: 15,
+          children: [
+            // 시간대별 날씨
+            const HeyWeatherLargeCard(
+              sunrise: '7시 34분',
+              sunset: '5시 34분',
+            ),
+            // 주간 날씨
+            const HeyWeatherBigCard(
+              sunrise: '7시 34분',
+              sunset: '5시 34분',
+            ),
+            // 대기질
+            const HeyWeatherDustCard(
+              fine: '13',
+              fineState: '최고 좋음',
+              ultra: '10',
+              ultraState: '좋음',
+            ),
+            // 일출 일몰
+            const HeyWeatherSunCard(
+              sunrise: '7시 34분',
+              sunset: '5시 34분',
+            ),
+            // 습도
+            HeyWeatherSmallCard(
+              title: 'humidity'.tr,
+              iconName: 'humidity',
+              subtitle: '낮음',
+              state: '16',
+              secondState: '17',
+            ),
+            // 바람
+            HeyWeatherSmallCard(
+              title: 'wind'.tr,
+              iconName: 'wind',
+              subtitle: '없음',
+              state: '3',
+              secondState: '북동',
+            ),
+            // 강수
+            HeyWeatherSmallCard(
+              title: 'rain'.tr,
+              iconName: 'rain',
+              subtitle: '없음',
+              state: '0',
+            ),
+            // 자외선
+            HeyWeatherSmallCard(
+              title: 'ultraviolet'.tr,
+              iconName: 'ultraviolet',
+              subtitle: '낮음',
+              state: '3',
+              secondState: '3',
+            ),
+            // 체감온도
+            HeyWeatherSmallCard(
+              title: 'wind_chill'.tr,
+              iconName: 'wind_chill',
+              state: '30 28',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+/*Widget _samples(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -471,5 +698,3 @@ class HomePage extends GetView<HomeController> {
       ],
     );
   }*/
-}
-

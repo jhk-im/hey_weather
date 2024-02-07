@@ -44,6 +44,7 @@ const kTextDisabledColor = Color(0xFFA1A1A3);
 const kProgressForegroundColor = Color(0xFFADB4BD);
 const kWidgetGradientLeft = Color(0x0d17171b);
 const kWidgetGradientRight = Color(0xcc17171b);
+const kHomeBottomColor = Color(0xFF0E0E0E);
 
 // 현재 위치 id
 const kCurrentLocationId = 'current_location_id';

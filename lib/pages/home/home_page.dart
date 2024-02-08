@@ -6,15 +6,15 @@ import 'package:hey_weather/common/svg_utils.dart';
 import 'package:hey_weather/getx/routes.dart';
 import 'package:hey_weather/pages/home/home_controller.dart';
 import 'package:hey_weather/widgets/buttons/hey_elevated_button.dart';
-import 'package:hey_weather/widgets/cards/hey_weather_big_card.dart';
-import 'package:hey_weather/widgets/cards/hey_weather_dust_card.dart';
+import 'package:hey_weather/widgets/cards/weather/hey_weather_week_card.dart';
+import 'package:hey_weather/widgets/cards/weather/hey_weather_dust_card.dart';
 import 'package:hey_weather/widgets/cards/hey_weather_home_card.dart';
-import 'package:hey_weather/widgets/cards/hey_weather_large_card.dart';
-import 'package:hey_weather/widgets/cards/hey_weather_sun_card.dart';
-import 'package:hey_weather/widgets/cards/hey_weather_small_card.dart';
+import 'package:hey_weather/widgets/cards/weather/hey_weather_time_card.dart';
+import 'package:hey_weather/widgets/cards/weather/hey_weather_sun_card.dart';
+import 'package:hey_weather/widgets/cards/weather/hey_weather_small_card.dart';
 import 'package:hey_weather/widgets/loading_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
-
+import 'package:reorderables/reorderables.dart';
 
 class HomePage extends GetView<HomeController> {
   const HomePage({super.key});
@@ -146,14 +146,15 @@ class HomePage extends GetView<HomeController> {
                       // Contents
                       Container(
                         margin: const EdgeInsets.only(top: 25),
+                        color: kHomeBottomColor,
                         child: Column(
                           children: [
                             // MY, ALL, 편집
                             _tab(context, controller.scrollY < 395),
                             if (!controller.isAllTab) ... {
-                              Visibility(
-                                visible: controller.isEmptyWeathers,
-                                child: Container(
+                              if (controller.myWeatherList.isEmpty) ... {
+                                // Empty
+                                Container(
                                   width: double.maxFinite,
                                   height: emptyHeight,
                                   color: kHomeBottomColor,
@@ -177,10 +178,40 @@ class HomePage extends GetView<HomeController> {
                                     ),
                                   ),
                                 ),
-                              ),
+                              } else ... {
+                                // My
+                                ReorderableWrap(
+                                  spacing: 15,
+                                  runSpacing: 15,
+                                  padding: const EdgeInsets.only(top: 16, bottom: 24, left: 20, right: 20),
+                                  scrollPhysics: const NeverScrollableScrollPhysics(),
+                                  enableReorder: controller.isEditMode,
+                                  controller: controller.myScrollController,
+                                  buildDraggableFeedback: (context, constraints, widget) {
+                                    return widget;
+                                  },
+                                  onReorder: (oldIndex, newIndex) {
+                                    if (oldIndex < newIndex) {
+                                      newIndex -= 1;
+                                    }
+                                    final item = controller.myWeatherList.removeAt(oldIndex);
+                                    controller.myWeatherList.insert(newIndex, item);
+                                  },
+                                  children: List.generate(controller.myWeatherList.length, (index) {
+                                    return _myWeatherWidgets(
+                                      controller.myWeatherList[index],
+                                      controller.isEditMode ? 3 : 0,
+                                      onTap: (id, status) {
+                                        print('id: $id, status: $status');
+                                        controller.myWeatherList.remove(id);
+                                      },
+                                    );
+                                  }),
+                                ),
+                              },
                             } else ... {
                               // ALL
-                              _allWeatherWidgets(context),
+                              _allWeatherWidgets(),
                             },
                           ],
                         ),
@@ -266,7 +297,7 @@ class HomePage extends GetView<HomeController> {
                 ),
               ),
 
-              if (controller.isEmptyWeathers || controller.isAllTab) ... {
+              if (controller.myWeatherList.isEmpty || controller.isAllTab) ... {
                 const SizedBox(height: 48),
               } else ... {
                 const Spacer(),
@@ -284,9 +315,99 @@ class HomePage extends GetView<HomeController> {
     );
   }
 
-  Widget _allWeatherWidgets(BuildContext context) {
+  Widget _myWeatherWidgets(String id, int buttonStatus, {required Function onTap}) {
+    switch (id) {
+      case kWeatherCardTime:
+        return HeyWeatherTimeCard(
+          buttonStatus: buttonStatus,
+          onTap: (id, status) {
+            onTap.call(id, status);
+          },
+        );
+      case kWeatherCardWeek:
+        return HeyWeatherWeekCard(
+          buttonStatus: buttonStatus,
+          onTap: (id, status) {
+            onTap.call(id, status);
+          },
+        );
+      case kWeatherCardDust:
+        return HeyWeatherDustCard(
+          fine: '13',
+          fineState: '최고 좋음',
+          ultra: '10',
+          ultraState: '좋음',
+          buttonStatus: buttonStatus,
+          onTap: (id, status) {
+            onTap.call(id, status);
+          },
+        );
+      case kWeatherCardRain:
+        return HeyWeatherSmallCard(
+          id: id,
+          title: 'rain'.tr,
+          iconName: 'rain',
+          subtitle: '없음',
+          weatherState: '0',
+          buttonStatus: buttonStatus,
+          onTap: (id, status) {
+            onTap.call(id, status);
+          },
+        );
+      case kWeatherCardHumidity:
+        return HeyWeatherSmallCard(
+          id: id,
+          title: 'humidity'.tr,
+          iconName: 'humidity',
+          subtitle: '낮음',
+          weatherState: '16',
+          secondWeatherState: '17',
+          buttonStatus: buttonStatus,
+          onTap: (id, status) {
+            onTap.call(id, status);
+          },
+        );
+      case kWeatherCardWind:
+        return HeyWeatherSmallCard(
+          id: id,
+          title: 'wind'.tr,
+          iconName: 'wind',
+          subtitle: '없음',
+          weatherState:'3',
+          secondWeatherState: '북동',
+          buttonStatus: buttonStatus,
+          onTap: (id, status) {
+            onTap.call(id, status);
+          },
+        );
+      case kWeatherCardSun:
+        return HeyWeatherSunCard(
+          sunrise: '7시 34분',
+          sunset: '5시 34분',
+          buttonStatus: buttonStatus,
+          onTap: (id, status) {
+            onTap.call(id, status);
+          },
+        );
+      default :
+        return HeyWeatherSmallCard(
+          id: id,
+          title: 'ultraviolet'.tr,
+          iconName: 'ultraviolet',
+          subtitle: '낮음',
+          weatherState: '3',
+          secondWeatherState: '3',
+          buttonStatus: buttonStatus,
+          onTap: (id, status) {
+            onTap.call(id, status);
+          },
+        );
+    }
+  }
+
+  Widget _allWeatherWidgets() {
     return Container(
-      padding: const EdgeInsets.only(top: 16, bottom: 24),
+      padding: const EdgeInsets.only(top: 16, bottom: 24, left: 20, right: 20),
       color: kHomeBottomColor,
       child: Center(
         child: Wrap(
@@ -294,63 +415,73 @@ class HomePage extends GetView<HomeController> {
           runSpacing: 15,
           children: [
             // 시간대별 날씨
-            const HeyWeatherLargeCard(
-              sunrise: '7시 34분',
-              sunset: '5시 34분',
+            HeyWeatherTimeCard(
+              onTap: (id, status) {},
             ),
             // 주간 날씨
-            const HeyWeatherBigCard(
-              sunrise: '7시 34분',
-              sunset: '5시 34분',
+            HeyWeatherWeekCard(
+              onTap: (id, status) {},
             ),
             // 대기질
-            const HeyWeatherDustCard(
+            HeyWeatherDustCard(
               fine: '13',
               fineState: '최고 좋음',
               ultra: '10',
               ultraState: '좋음',
+              onTap: (id, status) {},
             ),
             // 강수
             HeyWeatherSmallCard(
+              id: kWeatherCardRain,
               title: 'rain'.tr,
               iconName: 'rain',
               subtitle: '없음',
-              state: '0',
+              weatherState: '0',
+              onTap: (id, status) {},
             ),
             // 습도
             HeyWeatherSmallCard(
+              id: kWeatherCardHumidity,
               title: 'humidity'.tr,
               iconName: 'humidity',
               subtitle: '낮음',
-              state: '16',
-              secondState: '17',
+              weatherState: '16',
+              secondWeatherState: '17',
+              onTap: (id, status) {},
             ),
             // 체감온도
             HeyWeatherSmallCard(
-              title: 'wind_chill'.tr,
-              iconName: 'wind_chill',
-              state: '30 28',
+              id: kWeatherCardFeel,
+              title: 'feel_temp'.tr,
+              iconName: 'feel_temp',
+              weatherState: '30 28',
+              onTap: (id, status) {},
             ),
             // 바람
             HeyWeatherSmallCard(
+              id: kWeatherCardWind,
               title: 'wind'.tr,
               iconName: 'wind',
               subtitle: '없음',
-              state: '3',
-              secondState: '북동',
+              weatherState:'3',
+              secondWeatherState: '북동',
+              onTap: (id, status) {},
             ),
             // 일출 일몰
-            const HeyWeatherSunCard(
+            HeyWeatherSunCard(
               sunrise: '7시 34분',
               sunset: '5시 34분',
+              onTap: (id, status) {},
             ),
             // 자외선
             HeyWeatherSmallCard(
+              id: kWeatherCardUltraviolet,
               title: 'ultraviolet'.tr,
               iconName: 'ultraviolet',
               subtitle: '낮음',
-              state: '3',
-              secondState: '3',
+              weatherState: '3',
+              secondWeatherState: '3',
+              onTap: (id, status) {},
             ),
           ],
         ),
@@ -358,352 +489,3 @@ class HomePage extends GetView<HomeController> {
     );
   }
 }
-
-
-
-/*Widget _samples(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          _buttons(context),
-          _cards(context),
-        ],
-      ),
-    );
-  }
-
-  Widget _buttons(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          margin: const EdgeInsets.only(top: 20, left: 20),
-          child: HeyText.largeTitleBold('Buttons'),
-        ),
-
-        Container(
-          margin: const EdgeInsets.only(top: 16, left: 20, right: 20),
-          child: HeyElevatedButton.primaryText1(
-            text: 'PrimaryText',
-            onPressed: () {},
-          ),
-        ),
-
-        Container(
-          margin: const EdgeInsets.only(top: 16, left: 20, right: 20),
-          child: HeyElevatedButton.secondaryIcon1(
-            context,
-            text: 'SecondaryText',
-            onPressed: () {},
-          ),
-        ),
-
-        Container(
-            margin: const EdgeInsets.only(top: 16, left: 20, right: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                HeyElevatedButton.primaryText2(
-                  text: 'Btn',
-                  onPressed: () {},
-                ),
-
-                HeyElevatedButton.secondaryText2(
-                  text: 'Btn',
-                  onPressed: () {},
-                ),
-
-                HeyElevatedButton.secondaryIcon2(
-                  context,
-                  iconName: 'plus',
-                  onPressed: () {},
-                ),
-
-                HeyCustomButton.icon(
-                  icon: ImageUtils.icon(context, 'circle', width: 20, height: 20),
-                  onPressed: () {
-
-                  },
-                ),
-              ],
-            )
-        ),
-
-        Container(
-          margin: const EdgeInsets.only(top: 16, left: 20, right: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              HeyElevatedButton.primaryIcon3(
-                context,
-                iconName: 'arrow_right',
-                text: 'Btn',
-                isLeftIcon: false,
-                onPressed: () {},
-              ),
-
-              HeyElevatedButton.secondaryIcon3(
-                context,
-                iconName: 'arrow_right',
-                text: 'Btn',
-                isLeftIcon: false,
-                onPressed: () {},
-              ),
-
-              HeyElevatedButton.primaryText3(
-                text: 'Btn',
-                onPressed: () {},
-              ),
-
-              HeyElevatedButton.secondaryText3(
-                text: 'Btn',
-                onPressed: () {},
-              ),
-            ],
-          ),
-        ),
-
-        Container(
-          margin: const EdgeInsets.only(top: 16, left: 20, right: 20),
-          child: Row(
-            children: [
-              Flexible(
-                child: HeyElevatedButton.primaryPopup(
-                  text: 'Popup',
-                  onPressed: () {},
-                ),
-              ),
-              const SizedBox(width: 10),
-              Flexible(
-                child: HeyElevatedButton.secondaryPopup(
-                  text: 'Popup',
-                  onPressed: () {},
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        Container(
-          margin: const EdgeInsets.only(top: 16, left: 20, right: 20, bottom: 20),
-          child: Row(
-            children: [
-              HeyCustomSwitch(
-                onChange: (value) {
-
-                },
-                isSelected: true,
-              ),
-              const SizedBox(width: 10),
-              HeyCustomSwitch(
-                onChange: (value) {
-
-                },
-                isSelected: false,
-              ),
-            ],
-          ),
-        ),
-
-        const Divider(color: kIconColor, height: 1),
-      ],
-    );
-  }
-
-  Widget _cards(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          margin: const EdgeInsets.only(top: 20, left: 20),
-          child: HeyText.largeTitleBold('Cards'),
-        ),
-
-        Container(
-          margin: const EdgeInsets.only(top: 20),
-          child: Center(
-            child: Wrap(
-              spacing: 15,
-              runSpacing: 15,
-              children: [
-                HeyWeatherSmallCard(
-                  title: 'humidity'.tr,
-                  iconName: 'humidity',
-                  subtitle: '낮음',
-                  state: '16',
-                  secondState: '17',
-                ),
-                HeyWeatherSmallCard(
-                  title: 'humidity'.tr,
-                  iconName: 'humidity',
-                  subtitle: '보통',
-                  state: '55',
-                  secondState: '32',
-                ),
-                HeyWeatherSmallCard(
-                  title: 'humidity'.tr,
-                  iconName: 'humidity',
-                  subtitle: '높음',
-                  state: '80',
-                  secondState: '80',
-                ),
-
-                HeyWeatherSmallCard(
-                  title: 'wind'.tr,
-                  iconName: 'wind',
-                  subtitle: '없음',
-                  state: '3',
-                  secondState: '북동',
-                ),
-                HeyWeatherSmallCard(
-                  title: 'wind'.tr,
-                  iconName: 'wind',
-                  subtitle: '약함',
-                  state: '13',
-                  secondState: '남서',
-                ),
-                HeyWeatherSmallCard(
-                  title: 'wind'.tr,
-                  iconName: 'wind',
-                  subtitle: '보통',
-                  state: '23',
-                  secondState: '남동',
-                ),
-                HeyWeatherSmallCard(
-                  title: 'wind'.tr,
-                  iconName: 'wind',
-                  subtitle: '강함',
-                  state: '33',
-                  secondState: '남동',
-                ),
-
-                // 강수
-                HeyWeatherSmallCard(
-                  title: 'rain'.tr,
-                  iconName: 'rain',
-                  subtitle: '없음',
-                  state: '0',
-                ),
-                HeyWeatherSmallCard(
-                  title: 'rain'.tr,
-                  iconName: 'rain',
-                  subtitle: '확률 50%',
-                  state: '13',
-                  secondState: '20분',
-                ),
-                HeyWeatherSmallCard(
-                  title: 'rain'.tr,
-                  iconName: 'rain',
-                  subtitle: '확률 100%',
-                  state: '32',
-                  secondState: '10분',
-                ),
-
-                // 자외선
-                HeyWeatherSmallCard(
-                  title: 'ultraviolet'.tr,
-                  iconName: 'ultraviolet',
-                  subtitle: '낮음',
-                  state: '3',
-                  secondState: '3',
-                ),
-                HeyWeatherSmallCard(
-                  title: 'ultraviolet'.tr,
-                  iconName: 'ultraviolet',
-                  subtitle: '보통',
-                  state: '10',
-                ),
-                HeyWeatherSmallCard(
-                  title: 'ultraviolet'.tr,
-                  iconName: 'ultraviolet',
-                  subtitle: '높음',
-                  state: '40',
-                ),
-                HeyWeatherSmallCard(
-                  title: 'ultraviolet'.tr,
-                  iconName: 'ultraviolet',
-                  subtitle: '매우 높음',
-                  state: '50',
-                  secondState: '',
-                ),
-                HeyWeatherSmallCard(
-                  title: 'ultraviolet'.tr,
-                  iconName: 'ultraviolet',
-                  subtitle: '위험',
-                  state: '80',
-                ),
-
-                // 미세먼지
-                HeyWeatherSmallCard(
-                  title: 'fine_dust'.tr,
-                  iconName: 'fine_dust',
-                  subtitle: '최고 좋음',
-                  state: '0',
-                ),
-                HeyWeatherSmallCard(
-                  title: 'fine_dust'.tr,
-                  iconName: 'fine_dust',
-                  subtitle: '좋음',
-                  state: '3',
-                ),
-                HeyWeatherSmallCard(
-                  title: 'fine_dust'.tr,
-                  iconName: 'fine_dust',
-                  subtitle: '보통',
-                  state: '10',
-                ),
-                HeyWeatherSmallCard(
-                  title: 'fine_dust'.tr,
-                  iconName: 'fine_dust',
-                  subtitle: '나쁨',
-                  state: '15',
-                ),
-                HeyWeatherSmallCard(
-                  title: 'fine_dust'.tr,
-                  iconName: 'fine_dust',
-                  subtitle: '매우 나쁨',
-                  state: '20',
-                ),
-
-                // 초미세먼지
-                HeyWeatherSmallCard(
-                  title: 'ultra_fine_dust'.tr,
-                  iconName: 'fine_dust',
-                  subtitle: '좋음',
-                  state: '2',
-                ),
-
-                // 체감온도
-                HeyWeatherSmallCard(
-                  title: 'wind_chill'.tr,
-                  iconName: 'fine_dust',
-                  state: '30 28',
-                ),
-
-                // 일출 일몰
-                const HeyWeatherMediumCard(
-                  sunrise: '7시 34분',
-                  sunset: '5시 34분',
-                ),
-
-                // 시간대별 날씨
-                const HeyWeatherLargeCard(
-                  sunrise: '7시 34분',
-                  sunset: '5시 34분',
-                ),
-
-                // 주간 날씨
-                const HeyWeatherBigCard(
-                  sunrise: '7시 34분',
-                  sunset: '5시 34분',
-                ),
-              ],
-            ),
-          ),
-        ),
-
-        const SizedBox(height: 20),
-        const Divider(color: kIconColor, height: 1),
-      ],
-    );
-  }*/

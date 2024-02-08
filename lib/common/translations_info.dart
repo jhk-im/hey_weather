@@ -74,7 +74,7 @@ class TranslationsInfo extends Translations {
     'dust_ultra': '초미세',
     'fine_dust': '미세먼지',
     'ultra_fine_dust': '초미세먼지',
-    'wind_chill': '체감온도',
+    'feel_temp': '체감온도',
     'weather_by_time': '시간대별 날씨',
     'weather_week': '주간 날씨',
     'sunrise_sunset' : '일출일몰',

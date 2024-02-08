@@ -100,8 +100,8 @@ class HeyBottomSheet {
                       ),
                       // 체감온도
                       HeyWeatherSelectCard(
-                        title: 'wind_chill'.tr,
-                        iconName: 'wind_chill',
+                        title: 'feel_temp'.tr,
+                        iconName: 'feel_temp',
                       ),
                       // 바람
                       HeyWeatherSelectCard(

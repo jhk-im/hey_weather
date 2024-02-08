@@ -46,10 +46,21 @@ const kWidgetGradientLeft = Color(0x0d17171b);
 const kWidgetGradientRight = Color(0xcc17171b);
 const kHomeBottomColor = Color(0xFF0E0E0E);
 
-// 현재 위치 id
-const kCurrentLocationId = 'current_location_id';
+// AddressCard
+const kCurrentLocationId = 'current_location_id'; // 현재위치 주소 id
 
 // SharedPreferences key
-const kLocationPermission = 'location_permission';
-const kNotificationPermission = 'notification_permission';
-const kFahrenheit = 'fahrenheit';
+const kLocationPermission = 'location_permission'; // 위치 권한 toggle
+const kNotificationPermission = 'notification_permission'; // 알림 권한 toggle
+const kFahrenheit = 'fahrenheit'; // 화씨 toggle
+
+// WeatherCardIDs
+const kWeatherCardTime = 'weather_card_time'; // 시간대별 날씨
+const kWeatherCardWeek = 'weather_card_week'; // 주간 날씨
+const kWeatherCardDust = 'weather_card_dust'; // 대기질
+const kWeatherCardRain = 'weather_card_rain'; // 강수
+const kWeatherCardHumidity = 'weather_card_humidity'; // 습도
+const kWeatherCardFeel = 'weather_card_feel'; // 체감온도
+const kWeatherCardWind = 'weather_card_wind'; // 바람
+const kWeatherCardSun = 'weather_card_sun'; // 일출, 일몰
+const kWeatherCardUltraviolet = 'weather_card_ultraviolet'; // 자외선

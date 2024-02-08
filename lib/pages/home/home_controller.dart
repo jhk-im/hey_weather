@@ -28,9 +28,6 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   final RxBool _isEditMode = false.obs;
   bool get isEditMode => _isEditMode.value;
 
-  final RxBool _isEmptyWeathers = true.obs;
-  bool get isEmptyWeathers => _isEmptyWeathers.value;
-
   final RxString _addressText = ''.obs;
   String get addressText => _addressText.value;
 
@@ -40,10 +37,14 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   final RxList<Address> _recentAddressList = <Address>[].obs;
   List<Address> get recentAddressList => _recentAddressList;
 
+  final RxList<String> _myWeatherList = <String>[].obs;
+  List<String> get myWeatherList => _myWeatherList;
+
   // scroll
   final ScrollController scrollController = ScrollController();
   final RxDouble _scrollY = 0.0.obs;
   double get scrollY => _scrollY.value;
+  final ScrollController myScrollController = ScrollController();
 
   var logger = Logger();
 
@@ -72,7 +73,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     }
   }
 
-  void _scrollListener() {
+  _scrollListener() {
     double scrollPosition = scrollController.position.pixels;
     _scrollY.value = scrollPosition;
   }
@@ -142,6 +143,19 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   Future _getData() async {
     _isLoading(true);
+
+    // 임시
+    _myWeatherList([
+      kWeatherCardTime,
+      kWeatherCardWeek,
+      kWeatherCardDust,
+      kWeatherCardRain,
+      kWeatherCardHumidity,
+      kWeatherCardFeel,
+      kWeatherCardWind,
+      kWeatherCardSun,
+      kWeatherCardUltraviolet,
+    ]);
 
     // 사용자 주소 리스트
     var getUserAddressList =  await _repository.getUserAddressList();

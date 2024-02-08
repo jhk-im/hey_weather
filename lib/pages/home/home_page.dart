@@ -191,18 +191,18 @@ class HomePage extends GetView<HomeController> {
                                     return widget;
                                   },
                                   onReorder: (oldIndex, newIndex) {
-                                    if (oldIndex < newIndex) {
-                                      newIndex -= 1;
-                                    }
                                     final item = controller.myWeatherList.removeAt(oldIndex);
-                                    controller.myWeatherList.insert(newIndex, item);
+                                    if (controller.myWeatherList.length - 1 >= newIndex) {
+                                      controller.myWeatherList.insert(newIndex, item);
+                                    } else {
+                                      controller.myWeatherList.add(item);
+                                    }
                                   },
                                   children: List.generate(controller.myWeatherList.length, (index) {
                                     return _myWeatherWidgets(
                                       controller.myWeatherList[index],
                                       controller.isEditMode ? 3 : 0,
                                       onTap: (id, status) {
-                                        print('id: $id, status: $status');
                                         controller.myWeatherList.remove(id);
                                       },
                                     );
@@ -362,6 +362,17 @@ class HomePage extends GetView<HomeController> {
           subtitle: '낮음',
           weatherState: '16',
           secondWeatherState: '17',
+          buttonStatus: buttonStatus,
+          onTap: (id, status) {
+            onTap.call(id, status);
+          },
+        );
+      case kWeatherCardFeel:
+        return HeyWeatherSmallCard(
+          id: id,
+          title: 'feel_temp'.tr,
+          iconName: 'feel_temp',
+          weatherState: '30 28',
           buttonStatus: buttonStatus,
           onTap: (id, status) {
             onTap.call(id, status);

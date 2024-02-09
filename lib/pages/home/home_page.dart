@@ -13,8 +13,8 @@ import 'package:hey_weather/widgets/cards/weather/hey_weather_time_card.dart';
 import 'package:hey_weather/widgets/cards/weather/hey_weather_sun_card.dart';
 import 'package:hey_weather/widgets/cards/weather/hey_weather_small_card.dart';
 import 'package:hey_weather/widgets/loading_widget.dart';
+import 'package:hey_weather/widgets/reorder/hey_reorder_wrap.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:reorderables/reorderables.dart';
 
 class HomePage extends GetView<HomeController> {
   const HomePage({super.key});
@@ -180,14 +180,16 @@ class HomePage extends GetView<HomeController> {
                                 ),
                               } else ... {
                                 // My
-                                ReorderableWrap(
+                                HeyReorderWrap(
                                   spacing: 15,
                                   runSpacing: 15,
                                   padding: const EdgeInsets.only(top: 16, bottom: 24, left: 20, right: 20),
                                   scrollPhysics: const NeverScrollableScrollPhysics(),
+                                  scrollAnimationDuration: const Duration(milliseconds: 100),
+                                  reorderAnimationDuration: const Duration(milliseconds: 100),
                                   enableReorder: controller.isEditMode,
-                                  controller: controller.myScrollController,
                                   buildDraggableFeedback: (context, constraints, widget) {
+                                    controller.updateScroll();
                                     return widget;
                                   },
                                   onReorder: (oldIndex, newIndex) {
@@ -196,6 +198,23 @@ class HomePage extends GetView<HomeController> {
                                       controller.myWeatherList.insert(newIndex, item);
                                     } else {
                                       controller.myWeatherList.add(item);
+                                    }
+                                  },
+                                  onReorderStarted: (index) {
+                                    controller.setSelectIndex(index, controller.myWeatherList[index]);
+                                  },
+                                  onUpdateReorder: (moveIndex) {
+                                    if (moveIndex != controller.currentIndex) {
+                                      final scrollPosition = controller.scrollController.position.pixels;
+                                      var toScroll = 396.0;
+                                      if (controller.currentIndex > moveIndex) {
+                                        toScroll = scrollPosition - controller.selectHeight;
+                                      } else {
+                                        toScroll = scrollPosition + controller.selectHeight;
+                                      }
+                                      controller.setCurrentIndex(moveIndex);
+                                      if (toScroll < 396) toScroll = 396;
+                                      controller.updateScroll(isUpdate: true, toScroll: toScroll);
                                     }
                                   },
                                   children: List.generate(controller.myWeatherList.length, (index) {
@@ -320,6 +339,9 @@ class HomePage extends GetView<HomeController> {
       case kWeatherCardTime:
         return HeyWeatherTimeCard(
           buttonStatus: buttonStatus,
+          setHeight: (id, height) {
+            controller.weatherHeightMap[id] = height;
+          },
           onTap: (id, status) {
             onTap.call(id, status);
           },
@@ -327,6 +349,9 @@ class HomePage extends GetView<HomeController> {
       case kWeatherCardWeek:
         return HeyWeatherWeekCard(
           buttonStatus: buttonStatus,
+          setHeight: (id, height) {
+            controller.weatherHeightMap[id] = height;
+          },
           onTap: (id, status) {
             onTap.call(id, status);
           },
@@ -338,6 +363,9 @@ class HomePage extends GetView<HomeController> {
           ultra: '10',
           ultraState: '좋음',
           buttonStatus: buttonStatus,
+          setHeight: (id, height) {
+            controller.weatherHeightMap[id] = height;
+          },
           onTap: (id, status) {
             onTap.call(id, status);
           },
@@ -350,6 +378,9 @@ class HomePage extends GetView<HomeController> {
           subtitle: '없음',
           weatherState: '0',
           buttonStatus: buttonStatus,
+          setHeight: (id, height) {
+            controller.weatherHeightMap[id] = height;
+          },
           onTap: (id, status) {
             onTap.call(id, status);
           },
@@ -362,6 +393,9 @@ class HomePage extends GetView<HomeController> {
           subtitle: '낮음',
           weatherState: '16',
           secondWeatherState: '17',
+          setHeight: (id, height) {
+            controller.weatherHeightMap[id] = height;
+          },
           buttonStatus: buttonStatus,
           onTap: (id, status) {
             onTap.call(id, status);
@@ -374,6 +408,9 @@ class HomePage extends GetView<HomeController> {
           iconName: 'feel_temp',
           weatherState: '30 28',
           buttonStatus: buttonStatus,
+          setHeight: (id, height) {
+            controller.weatherHeightMap[id] = height;
+          },
           onTap: (id, status) {
             onTap.call(id, status);
           },
@@ -387,6 +424,9 @@ class HomePage extends GetView<HomeController> {
           weatherState:'3',
           secondWeatherState: '북동',
           buttonStatus: buttonStatus,
+          setHeight: (id, height) {
+            controller.weatherHeightMap[id] = height;
+          },
           onTap: (id, status) {
             onTap.call(id, status);
           },
@@ -396,6 +436,9 @@ class HomePage extends GetView<HomeController> {
           sunrise: '7시 34분',
           sunset: '5시 34분',
           buttonStatus: buttonStatus,
+          setHeight: (id, height) {
+            controller.weatherHeightMap[id] = height;
+          },
           onTap: (id, status) {
             onTap.call(id, status);
           },
@@ -409,6 +452,9 @@ class HomePage extends GetView<HomeController> {
           weatherState: '3',
           secondWeatherState: '3',
           buttonStatus: buttonStatus,
+          setHeight: (id, height) {
+            controller.weatherHeightMap[id] = height;
+          },
           onTap: (id, status) {
             onTap.call(id, status);
           },

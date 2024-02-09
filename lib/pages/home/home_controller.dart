@@ -40,11 +40,35 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   final RxList<String> _myWeatherList = <String>[].obs;
   List<String> get myWeatherList => _myWeatherList;
 
-  // scroll
+  // Scroll
   final ScrollController scrollController = ScrollController();
   final RxDouble _scrollY = 0.0.obs;
   double get scrollY => _scrollY.value;
-  final ScrollController myScrollController = ScrollController();
+
+  // Drag
+  final RxBool _isDragMode = false.obs;
+  bool get isDragMode => _isDragMode.value;
+
+  final RxInt _currentIndex = 0.obs;
+  int get currentIndex => _currentIndex.value;
+
+  final RxInt _selectIndex = 0.obs;
+  int get selectIndex => _selectIndex.value;
+
+  final RxDouble _selectHeight = 0.0.obs;
+  double get selectHeight => _selectHeight.value;
+
+  Map<String, double> weatherHeightMap = {
+    kWeatherCardTime: 0,
+    kWeatherCardWeek: 0,
+    kWeatherCardDust: 0,
+    kWeatherCardRain: 0,
+    kWeatherCardHumidity: 0,
+    kWeatherCardFeel: 0,
+    kWeatherCardWind: 0,
+    kWeatherCardSun: 0,
+    kWeatherCardUltraviolet: 0,
+  };
 
   var logger = Logger();
 
@@ -117,6 +141,37 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   editToggle(bool isEdit) {
     _isEditMode(isEdit);
+    if (isEdit) {
+      updateScroll();
+    }
+  }
+
+  updateScroll({bool isUpdate = false, double toScroll = 396}) async {
+    await Future.delayed(const Duration(milliseconds: 100));
+    if (isUpdate) {
+      await scrollController.animateTo(
+        toScroll,
+        duration: const Duration(seconds: 1),
+        curve: Curves.ease,
+      );
+    } else {
+      if (scrollY < 395) {
+        scrollController.animateTo(
+          toScroll,
+          duration: const Duration(seconds: 1),
+          curve: Curves.ease,
+        );
+      }
+    }
+  }
+
+  setSelectIndex(int index, String id) {
+    _selectIndex(index);
+    _selectHeight(weatherHeightMap[id]);
+  }
+
+  setCurrentIndex(int index) {
+    _currentIndex(index);
   }
 
   /// Data

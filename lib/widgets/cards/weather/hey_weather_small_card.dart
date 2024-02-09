@@ -14,6 +14,7 @@ class HeyWeatherSmallCard extends StatefulWidget {
     this.weatherState = '',
     this.secondWeatherState = '',
     this.buttonStatus = 0,
+    this.setHeight,
     required this.onTap,
   });
 
@@ -25,6 +26,7 @@ class HeyWeatherSmallCard extends StatefulWidget {
   final String weatherState;
   final String secondWeatherState;
   final int buttonStatus;
+  final Function? setHeight;
 
   @override
   State<HeyWeatherSmallCard> createState() => _HeyWeatherSmallCardState();
@@ -63,6 +65,7 @@ class _HeyWeatherSmallCardState extends State<HeyWeatherSmallCard> {
   Widget build(BuildContext context) {
     double width = (MediaQuery.of(context).size.width / 2) - 28;
     status(widget.buttonStatus);
+    widget.setHeight?.call(widget.id, width);
 
     // humidity
     int today = 0;

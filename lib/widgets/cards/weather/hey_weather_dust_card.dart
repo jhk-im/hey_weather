@@ -12,6 +12,7 @@ class HeyWeatherDustCard extends StatefulWidget {
     required this.ultra,
     required this.ultraState,
     this.buttonStatus = 0,
+    this.setHeight,
     required this.onTap,
   });
 
@@ -21,6 +22,7 @@ class HeyWeatherDustCard extends StatefulWidget {
   final String ultraState;
   final int buttonStatus;
   final Function onTap;
+  final Function? setHeight;
 
   @override
   State<HeyWeatherDustCard> createState() => _HeyWeatherDustCardState();
@@ -49,7 +51,9 @@ class _HeyWeatherDustCardState extends State<HeyWeatherDustCard> {
   @override
   Widget build(BuildContext context) {
     double width = (MediaQuery.of(context).size.width) - 28;
+    double height = 173;
     status(widget.buttonStatus);
+    widget.setHeight?.call(id, height);
     return Obx(() => Material(
       color: Colors.transparent,
       child: InkWell(

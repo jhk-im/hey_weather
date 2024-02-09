@@ -8,11 +8,13 @@ class HeyWeatherWeekCard extends StatefulWidget {
   const HeyWeatherWeekCard({
     super.key,
     this.buttonStatus = 0,
+    this.setHeight,
     required this.onTap,
   });
 
   final int buttonStatus;
   final Function onTap;
+  final Function? setHeight;
 
   @override
   State<HeyWeatherWeekCard> createState() => _HeyWeatherWeekCardState();
@@ -25,7 +27,9 @@ class _HeyWeatherWeekCardState extends State<HeyWeatherWeekCard> {
   @override
   Widget build(BuildContext context) {
     double width = (MediaQuery.of(context).size.width) - 28;
+    double height = 432;
     status(widget.buttonStatus);
+    widget.setHeight?.call(id, height);
     return Obx(() => Material(
       color: Colors.transparent,
       child: InkWell(
@@ -42,7 +46,7 @@ class _HeyWeatherWeekCardState extends State<HeyWeatherWeekCard> {
         } : null,
         child: Container(
           width: width,
-          height: 432,
+          height: height,
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: kBaseColor,

@@ -10,6 +10,7 @@ class HeyWeatherSunCard extends StatefulWidget {
     required this.sunrise,
     required this.sunset,
     this.buttonStatus = 0,
+    this.setHeight,
     required this.onTap,
   });
 
@@ -17,6 +18,7 @@ class HeyWeatherSunCard extends StatefulWidget {
   final String sunset;
   final int buttonStatus;
   final Function onTap;
+  final Function? setHeight;
 
   @override
   State<HeyWeatherSunCard> createState() => _HeyWeatherSunCardState();
@@ -29,7 +31,9 @@ class _HeyWeatherSunCardState extends State<HeyWeatherSunCard> {
   @override
   Widget build(BuildContext context) {
     double width = (MediaQuery.of(context).size.width) - 28;
+    double height = 173;
     status(widget.buttonStatus);
+    widget.setHeight?.call(id, height);
     return Obx(() => Material(
       color: Colors.transparent,
       child: InkWell(
@@ -46,7 +50,7 @@ class _HeyWeatherSunCardState extends State<HeyWeatherSunCard> {
         } : null,
         child: Container(
           width: width,
-          height: 173,
+          height: height,
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: kBaseColor,

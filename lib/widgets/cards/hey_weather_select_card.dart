@@ -7,12 +7,16 @@ import 'package:hey_weather/common/svg_utils.dart';
 class HeyWeatherSelectCard extends StatefulWidget {
   const HeyWeatherSelectCard({
     super.key,
+    required this.id,
     required this.title,
     required this.iconName,
+    this.onSelect,
   });
 
+  final String id;
   final String title;
   final String iconName;
+  final Function? onSelect;
 
   @override
   State<HeyWeatherSelectCard> createState() => _HeyWeatherSelectCardState();
@@ -28,10 +32,10 @@ class _HeyWeatherSelectCardState extends State<HeyWeatherSelectCard> {
     return Obx(() => GestureDetector(
       onTap: () {
         isSelected(isSelected.value != true);
+        widget.onSelect?.call(widget.id, isSelected.value);
       },
       child: Container(
         width: width,
-
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         decoration: BoxDecoration(
           color: kBaseColor,

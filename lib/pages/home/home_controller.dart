@@ -70,10 +70,13 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     kWeatherCardUltraviolet: 0,
   };
 
+  var _isOnBoard = false;
+
   var logger = Logger();
 
   @override
   void onInit() {
+    _isOnBoard = SharedPreferencesUtil().getBool(kOnBoard) ?? false;
     _isLocationPermission(SharedPreferencesUtil().getBool(kLocationPermission));
     scrollController.addListener(_scrollListener);
     WidgetsBinding.instance.addObserver(this);
@@ -112,8 +115,15 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   _showOnboardBottomSheet() {
-    if (Get.context != null) {
-      HeyBottomSheet.showOnBoardingBottomSheet(Get.context!);
+    if (Get.context != null && !_isOnBoard) {
+      _isOnBoard = true;
+      SharedPreferencesUtil().setBool(kOnBoard, true);
+      HeyBottomSheet.showOnBoardingBottomSheet(
+          Get.context!,
+          onAdd: (idList) {
+            updateUserMyWeather(idList, isUpdate: true);
+          }
+      );
     }
   }
 
@@ -174,6 +184,20 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     _currentIndex(index);
   }
 
+  showAddWeather() async {
+    if (Get.context != null) {
+      HeyBottomSheet.showAddWeatherBottomSheet(
+          Get.context!,
+          _myWeatherList,
+          onConfirm: (idList) {
+            List<String> updateList = List<String>.from(_myWeatherList);
+            updateList.addAll(idList);
+            updateUserMyWeather(updateList, isUpdate: true);
+          }
+      );
+    }
+  }
+
   /// Data
   Future _getUpdateAddressWithCoordinate({bool isAddressUpdate = false, List<Address>? addressList}) async {
     var getUpdateAddressWithCoordinate = await _repository.getUpdateAddressWithCoordinate();
@@ -198,24 +222,9 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   Future _getData() async {
     _isLoading(true);
-
-    // 임시
-    _myWeatherList([
-      kWeatherCardTime,
-      kWeatherCardWeek,
-      kWeatherCardDust,
-      kWeatherCardRain,
-      kWeatherCardHumidity,
-      kWeatherCardFeel,
-      kWeatherCardWind,
-      kWeatherCardSun,
-      kWeatherCardUltraviolet,
-    ]);
-
     // 사용자 주소 리스트
     var getUserAddressList =  await _repository.getUserAddressList();
     getUserAddressList.when(success: (addressList) async {
-
       // 최근 선택 주소 idList
       var getUserAddressRecentIdList =  await _repository.getUserAddressRecentIdList();
       getUserAddressRecentIdList.when(
@@ -232,10 +241,11 @@ class HomeController extends GetxController with WidgetsBindingObserver {
           }
         },
         error: (Exception e) {
-          logger.e('HomeController.getData $e');
+          logger.e('HomeController.getData.getUserAddressRecentIdList $e');
         },
       );
-
+      _getUserMyWeatherIdList();
+      _showOnboardBottomSheet();
       _isLoading(false);
     }, error: (Exception e) async {
       // 최초 진입
@@ -244,10 +254,30 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       await _repository.insertUserAddressEditIdList(kCurrentLocationId);
       await _repository.insertUserAddressRecentIdList(kCurrentLocationId);
       await _getUpdateAddressWithCoordinate();
+      _showOnboardBottomSheet();
       _isLoading(false);
     });
+  }
 
-    _showOnboardBottomSheet();
+  _getUserMyWeatherIdList() async {
+    // My Weather idList
+    var getUserMyWeatherIdList = await _repository.getUserMyWeather();
+    getUserMyWeatherIdList.when(
+      success: (idList) {
+        _myWeatherList(idList);
+      },
+      error: (Exception e) {
+        logger.i('HomeController.getData.getUserMyWeatherIdList $e');
+      },
+    );
+  }
+
+  Future updateUserMyWeather(List<String> idList, {bool isUpdate = false}) async {
+    await _repository.updateUserMyWeather(idList);
+    if (idList.isEmpty) editToggle(false);
+    if (isUpdate) {
+      _getData();
+    }
   }
 
   Future updateUserAddressList() async {

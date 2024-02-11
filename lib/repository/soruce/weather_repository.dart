@@ -201,7 +201,7 @@ class WeatherRepository {
   // 편집 주소 업데이트
   Future updateUserAddressEditIdList(List<String> idList) async {
     logger.i('updateUserAddressEditIdList(idList: $idList)');
-    await _dao.updateUserAddressEdit(idList);
+    await _dao.updateUserAddressEdit(idList.toSet().toList());
   }
 
   /// 최근 선택한 주소 리스트 정보
@@ -238,10 +238,10 @@ class WeatherRepository {
   // 최근 선택 주소 업데이트
   Future updateUserAddressRecentIdList(List<String> idList) async {
     logger.i('updateUserAddressRecentIdList(idList: $idList)');
-    await _dao.updateUserAddressEdit(idList);
+    await _dao.updateUserAddressEdit(idList.toSet().toList());
   }
 
-  /// 알림 DateTime 리스트
+  /// 알림 리스트
   Future<Result<List<UserNotification>>> getUserNotificationList() async {
     final list = await _dao.getUserNotificationList();
     if (list != null) {
@@ -260,5 +260,19 @@ class WeatherRepository {
   // 알림 삭제
   Future deleteUserNotification(String id) async {
     await _dao.deleteUserNotification(id);
+  }
+
+  /// My Weather
+  Future<Result<List<String>?>> getUserMyWeather() async {
+    final list = await _dao.getUserMyWeatherIdList();
+    if (list != null) {
+      return Result.success(list);
+    } else {
+      return Result.error(Exception('getUserMyWeather empty'));
+    }
+  }
+  Future updateUserMyWeather(List<String> idList) async {
+    logger.i('updateUserMyWeather(idList: $idList)');
+    return _dao.updateUserMyWeather(idList.toSet().toList());
   }
 }

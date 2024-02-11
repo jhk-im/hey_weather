@@ -15,18 +15,21 @@ class HeyWeatherSmallCard extends StatefulWidget {
     this.secondWeatherState = '',
     this.buttonStatus = 0,
     this.setHeight,
-    required this.onTap,
+    this.onSelect,
+    this.onRemove,
   });
 
   final String id;
   final String title;
   final String iconName;
-  final Function onTap;
+
   final String subtitle;
   final String weatherState;
   final String secondWeatherState;
   final int buttonStatus;
   final Function? setHeight;
+  final Function? onSelect;
+  final Function? onRemove;
 
   @override
   State<HeyWeatherSmallCard> createState() => _HeyWeatherSmallCardState();
@@ -91,17 +94,14 @@ class _HeyWeatherSmallCardState extends State<HeyWeatherSmallCard> {
 
     return Obx(() => Material(
       color: Colors.transparent,
-      child: InkWell(
-        splashColor: kBaseColor,
-        highlightColor: Colors.transparent,
-        hoverColor: Colors.transparent,
+      child: GestureDetector(
         onTap: status.value == 1 || status.value == 2 ? () {
           if (status.value == 1) {
             status(2);
           } else {
             status(1);
           }
-          widget.onTap(widget.id, status.value);
+          widget.onSelect?.call(widget.id, status.value == 2);
         } : null,
         child: Container(
           width: width,
@@ -386,7 +386,7 @@ class _HeyWeatherSmallCardState extends State<HeyWeatherSmallCard> {
                         highlightColor: Colors.transparent,
                         hoverColor: Colors.transparent,
                         onTap: status.value == 3 ? () {
-                          widget.onTap(widget.id, status.value);
+                          widget.onRemove?.call(widget.id);
                         } : null,
                         child: Row(
                           children: [

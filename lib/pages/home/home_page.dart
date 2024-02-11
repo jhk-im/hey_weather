@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hey_weather/common/constants.dart';
+import 'package:hey_weather/common/hey_dialog.dart';
 import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/svg_utils.dart';
 import 'package:hey_weather/getx/routes.dart';
@@ -22,7 +23,7 @@ class HomePage extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     double statusBarHeight = MediaQuery.of(context).padding.top;
-    double emptyHeight = (MediaQuery.of(context).size.height) - 157;
+    double emptyHeight = (MediaQuery.of(context).size.height) - 72;
     return Scaffold(
       body: Obx(() => Stack(
         children: [
@@ -165,9 +166,7 @@ class HomePage extends GetView<HomeController> {
                                         HeyElevatedButton.secondaryIcon2(
                                           context,
                                           width: 58,
-                                          onPressed: () {
-
-                                          },
+                                          onPressed: controller.showAddWeather,
                                         ),
                                         const SizedBox(height: 20),
                                         HeyText.subHeadline(
@@ -185,8 +184,8 @@ class HomePage extends GetView<HomeController> {
                                   runSpacing: 15,
                                   padding: const EdgeInsets.only(top: 16, bottom: 24, left: 20, right: 20),
                                   scrollPhysics: const NeverScrollableScrollPhysics(),
-                                  scrollAnimationDuration: const Duration(milliseconds: 100),
-                                  reorderAnimationDuration: const Duration(milliseconds: 100),
+                                  scrollAnimationDuration: const Duration(milliseconds: 150),
+                                  reorderAnimationDuration: const Duration(milliseconds: 250),
                                   enableReorder: controller.isEditMode,
                                   buildDraggableFeedback: (context, constraints, widget) {
                                     controller.updateScroll();
@@ -199,6 +198,7 @@ class HomePage extends GetView<HomeController> {
                                     } else {
                                       controller.myWeatherList.add(item);
                                     }
+                                    controller.updateUserMyWeather(controller.myWeatherList);
                                   },
                                   onReorderStarted: (index) {
                                     controller.setSelectIndex(index, controller.myWeatherList[index]);
@@ -218,11 +218,33 @@ class HomePage extends GetView<HomeController> {
                                     }
                                   },
                                   children: List.generate(controller.myWeatherList.length, (index) {
+                                    Map<String, String> weatherNameMap = {
+                                      kWeatherCardTime: '시간대별 날씨',
+                                      kWeatherCardWeek: '주간 날씨',
+                                      kWeatherCardDust: '대기질',
+                                      kWeatherCardRain: '강수',
+                                      kWeatherCardHumidity: '습도',
+                                      kWeatherCardFeel: '체감온도',
+                                      kWeatherCardWind: '바람',
+                                      kWeatherCardSun: '일출일몰',
+                                      kWeatherCardUltraviolet: '자외',
+                                    };
                                     return _myWeatherWidgets(
                                       controller.myWeatherList[index],
                                       controller.isEditMode ? 3 : 0,
-                                      onTap: (id, status) {
-                                        controller.myWeatherList.remove(id);
+                                      onRemove: (id) {
+                                        if (Get.context != null) {
+                                          HeyDialog.showCommonDialog(
+                                            Get.context!,
+                                            title: 'dialog_delete_weather_title'.trParams({'name' : weatherNameMap[id] ?? ''}),
+                                            subtitle: 'dialog_delete_weather_subtitle'.tr,
+                                            onOk: () {
+                                              Get.back();
+                                              controller.myWeatherList.remove(id);
+                                              controller.updateUserMyWeather(controller.myWeatherList);
+                                            },
+                                          );
+                                        }
                                       },
                                     );
                                   }),
@@ -273,14 +295,14 @@ class HomePage extends GetView<HomeController> {
           padding: const EdgeInsets.only(left: 10, top: 24, bottom: 12, right: 20),
           child: controller.isEditMode ? Row(
             children: [
-              const SizedBox(width: 10),
-              HeyElevatedButton.secondaryIcon2(
-                context,
-                width: 58,
-                onPressed: () {
-
-                },
-              ),
+              if (controller.myWeatherList.length < 9) ... {
+                const SizedBox(width: 10),
+                HeyElevatedButton.secondaryIcon2(
+                  context,
+                  width: 58,
+                  onPressed: controller.showAddWeather,
+                ),
+              },
               const Spacer(),
               HeyElevatedButton.secondaryText2(
                 text: 'done'.tr,
@@ -334,7 +356,7 @@ class HomePage extends GetView<HomeController> {
     );
   }
 
-  Widget _myWeatherWidgets(String id, int buttonStatus, {required Function onTap}) {
+  Widget _myWeatherWidgets(String id, int buttonStatus, {required Function onRemove}) {
     switch (id) {
       case kWeatherCardTime:
         return HeyWeatherTimeCard(
@@ -342,8 +364,8 @@ class HomePage extends GetView<HomeController> {
           setHeight: (id, height) {
             controller.weatherHeightMap[id] = height;
           },
-          onTap: (id, status) {
-            onTap.call(id, status);
+          onRemove: (id) {
+            onRemove(id);
           },
         );
       case kWeatherCardWeek:
@@ -352,8 +374,8 @@ class HomePage extends GetView<HomeController> {
           setHeight: (id, height) {
             controller.weatherHeightMap[id] = height;
           },
-          onTap: (id, status) {
-            onTap.call(id, status);
+          onRemove: (id) {
+            onRemove(id);
           },
         );
       case kWeatherCardDust:
@@ -366,8 +388,8 @@ class HomePage extends GetView<HomeController> {
           setHeight: (id, height) {
             controller.weatherHeightMap[id] = height;
           },
-          onTap: (id, status) {
-            onTap.call(id, status);
+          onRemove: (id) {
+            onRemove(id);
           },
         );
       case kWeatherCardRain:
@@ -381,8 +403,8 @@ class HomePage extends GetView<HomeController> {
           setHeight: (id, height) {
             controller.weatherHeightMap[id] = height;
           },
-          onTap: (id, status) {
-            onTap.call(id, status);
+          onRemove: (id) {
+            onRemove(id);
           },
         );
       case kWeatherCardHumidity:
@@ -397,8 +419,8 @@ class HomePage extends GetView<HomeController> {
             controller.weatherHeightMap[id] = height;
           },
           buttonStatus: buttonStatus,
-          onTap: (id, status) {
-            onTap.call(id, status);
+          onRemove: (id) {
+            onRemove(id);
           },
         );
       case kWeatherCardFeel:
@@ -411,8 +433,8 @@ class HomePage extends GetView<HomeController> {
           setHeight: (id, height) {
             controller.weatherHeightMap[id] = height;
           },
-          onTap: (id, status) {
-            onTap.call(id, status);
+          onRemove: (id) {
+            onRemove(id);
           },
         );
       case kWeatherCardWind:
@@ -427,8 +449,8 @@ class HomePage extends GetView<HomeController> {
           setHeight: (id, height) {
             controller.weatherHeightMap[id] = height;
           },
-          onTap: (id, status) {
-            onTap.call(id, status);
+          onRemove: (id) {
+            onRemove(id);
           },
         );
       case kWeatherCardSun:
@@ -439,8 +461,8 @@ class HomePage extends GetView<HomeController> {
           setHeight: (id, height) {
             controller.weatherHeightMap[id] = height;
           },
-          onTap: (id, status) {
-            onTap.call(id, status);
+          onRemove: (id) {
+            onRemove(id);
           },
         );
       default :
@@ -455,8 +477,8 @@ class HomePage extends GetView<HomeController> {
           setHeight: (id, height) {
             controller.weatherHeightMap[id] = height;
           },
-          onTap: (id, status) {
-            onTap.call(id, status);
+          onRemove: (id) {
+            onRemove(id);
           },
         );
     }
@@ -472,20 +494,15 @@ class HomePage extends GetView<HomeController> {
           runSpacing: 15,
           children: [
             // 시간대별 날씨
-            HeyWeatherTimeCard(
-              onTap: (id, status) {},
-            ),
+            const HeyWeatherTimeCard(),
             // 주간 날씨
-            HeyWeatherWeekCard(
-              onTap: (id, status) {},
-            ),
+            const HeyWeatherWeekCard(),
             // 대기질
-            HeyWeatherDustCard(
+            const HeyWeatherDustCard(
               fine: '13',
               fineState: '최고 좋음',
               ultra: '10',
               ultraState: '좋음',
-              onTap: (id, status) {},
             ),
             // 강수
             HeyWeatherSmallCard(
@@ -494,7 +511,6 @@ class HomePage extends GetView<HomeController> {
               iconName: 'rain',
               subtitle: '없음',
               weatherState: '0',
-              onTap: (id, status) {},
             ),
             // 습도
             HeyWeatherSmallCard(
@@ -504,7 +520,6 @@ class HomePage extends GetView<HomeController> {
               subtitle: '낮음',
               weatherState: '16',
               secondWeatherState: '17',
-              onTap: (id, status) {},
             ),
             // 체감온도
             HeyWeatherSmallCard(
@@ -512,7 +527,6 @@ class HomePage extends GetView<HomeController> {
               title: 'feel_temp'.tr,
               iconName: 'feel_temp',
               weatherState: '30 28',
-              onTap: (id, status) {},
             ),
             // 바람
             HeyWeatherSmallCard(
@@ -522,13 +536,11 @@ class HomePage extends GetView<HomeController> {
               subtitle: '없음',
               weatherState:'3',
               secondWeatherState: '북동',
-              onTap: (id, status) {},
             ),
             // 일출 일몰
-            HeyWeatherSunCard(
+            const HeyWeatherSunCard(
               sunrise: '7시 34분',
               sunset: '5시 34분',
-              onTap: (id, status) {},
             ),
             // 자외선
             HeyWeatherSmallCard(
@@ -538,7 +550,6 @@ class HomePage extends GetView<HomeController> {
               subtitle: '낮음',
               weatherState: '3',
               secondWeatherState: '3',
-              onTap: (id, status) {},
             ),
           ],
         ),

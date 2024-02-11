@@ -53,6 +53,7 @@ const kCurrentLocationId = 'current_location_id'; // 현재위치 주소 id
 const kLocationPermission = 'location_permission'; // 위치 권한 toggle
 const kNotificationPermission = 'notification_permission'; // 알림 권한 toggle
 const kFahrenheit = 'fahrenheit'; // 화씨 toggle
+const kOnBoard = 'on_board'; // 화씨 toggle
 
 // WeatherCardIDs
 const kWeatherCardTime = 'weather_card_time'; // 시간대별 날씨

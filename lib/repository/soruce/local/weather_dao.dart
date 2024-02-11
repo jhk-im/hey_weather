@@ -47,6 +47,19 @@ class WeatherDao {
     return box.get(userAddressRecent);
   }
 
+  static const userWeatherSort = 'user_weather_sort';
+  static const userMyWeather = 'user_my_weather';
+  Future updateUserMyWeather(List<String> idList) async {
+    final box = await Hive.openBox<List<String>>(userWeatherSort);
+    await box.put(userMyWeather, idList);
+  }
+
+  Future<List<String>?> getUserMyWeatherIdList() async {
+    final box = await Hive.openBox<List<String>>(userWeatherSort);
+    return box.get(userMyWeather);
+  }
+
+
   static const userNotification = 'user_notification';
   Future updateUserNotification(String id, UserNotificationEntity notification) async {
     final box = await Hive.openBox<UserNotificationEntity>(userNotification);

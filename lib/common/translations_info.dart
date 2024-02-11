@@ -41,6 +41,7 @@ class TranslationsInfo extends Translations {
     'add': '추가',
     'edit': '편집',
     'done': '완료',
+    'confirm' : '확인',
     'setting' : '설정',
     'setting_location': '지역 설정',
     'setting_notification' : '알림 설정',
@@ -85,11 +86,15 @@ class TranslationsInfo extends Translations {
     'bs_address_title_1': '어느 지역으로 바꿀까요?',
     'bs_address_title_2': '바꿀 지역이 없어요',
     'bs_address_btn': '다른 지역 찾아보기',
+    'bs_weather_title': '필요한 위젯을 선택하세요',
 
     // Dialog
     'dialog_setting_title': '설정하러 이동할까요??',
     'dialog_setting_subtitle': '시스템 알림이 꺼져 있어 알림 기능을 켤 수 없어요. 설정에서 알림을 켜주세요',
     'dialog_setting_ok': '설정 바로가기',
+
+    'dialog_delete_weather_title': '@name 위젯을 삭제할까요?',
+    'dialog_delete_weather_subtitle': '이 위젯을 삭제해도 다시 추가할 수 있어요',
 
     // toast
     'toast_added_location': '지역이 추가되었어요',

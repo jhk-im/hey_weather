@@ -4,7 +4,7 @@ import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/utils.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
-import 'package:hey_weather/repository/soruce/remote/model/search_address.dart';
+import 'package:hey_weather/repository/soruce/local/model/search_address.dart';
 import 'package:hey_weather/widgets/buttons/hey_custom_button.dart';
 import 'package:hey_weather/widgets/buttons/hey_elevated_button.dart';
 import 'package:hey_weather/widgets/buttons/hey_weather_address_button.dart';
@@ -14,6 +14,7 @@ import 'package:hey_weather/widgets/cards/weather/hey_weather_dust_card.dart';
 import 'package:hey_weather/widgets/cards/weather/hey_weather_small_card.dart';
 import 'package:hey_weather/widgets/cards/weather/hey_weather_sun_card.dart';
 import 'package:hey_weather/widgets/cards/weather/hey_weather_time_card.dart';
+import 'package:hey_weather/widgets/cards/weather/hey_weather_ultraviolet_card.dart';
 import 'package:hey_weather/widgets/cards/weather/hey_weather_week_card.dart';
 
 import 'svg_utils.dart';
@@ -206,7 +207,12 @@ class HeyBottomSheet {
     );
   }
 
-  static void showAddWeatherBottomSheet(BuildContext context, List<String> idList, {Function? onConfirm}) {
+  static void showAddWeatherBottomSheet(BuildContext context, List<String> idList, {
+    Function? onConfirm,
+    int ultraviolet = 0,
+    String sunrise = '',
+    String sunset = '',
+  }) {
     double height = (MediaQuery.of(context).size.height) - 97;
 
     Map<String, bool> weatherInitMap = {
@@ -391,8 +397,8 @@ class HeyBottomSheet {
                             Visibility(
                               visible: weatherInitMap[kWeatherCardSun] ?? true,
                               child: HeyWeatherSunCard(
-                                sunrise: '7시 34분',
-                                sunset: '5시 34분',
+                                sunrise: sunrise,
+                                sunset: sunset,
                                 buttonStatus: 1,
                                 onSelect: (id, selected) {
                                   weatherSelectMap[id] = selected;
@@ -402,13 +408,9 @@ class HeyBottomSheet {
                             // 자외선
                             Visibility(
                               visible: weatherInitMap[kWeatherCardUltraviolet] ?? true,
-                              child: HeyWeatherSmallCard(
+                              child: HeyWeatherUltravioletCard(
                                 id: kWeatherCardUltraviolet,
-                                title: 'ultraviolet'.tr,
-                                iconName: 'ultraviolet',
-                                subtitle: '낮음',
-                                weatherState: '3',
-                                secondWeatherState: '3',
+                                ultraviolet: ultraviolet,
                                 buttonStatus: 1,
                                 onSelect: (id, selected) {
                                   weatherSelectMap[id] = selected;

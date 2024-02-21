@@ -1,5 +1,8 @@
 import 'package:hey_weather/repository/soruce/local/entity/address_entity.dart';
+import 'package:hey_weather/repository/soruce/local/entity/observatory_entity.dart';
+import 'package:hey_weather/repository/soruce/local/entity/weather_sun_rise_set_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/user_notification_entity.dart';
+import 'package:hey_weather/repository/soruce/local/entity/weather_ultraviolet_entity.dart';
 import 'package:hive/hive.dart';
 
 class WeatherDao {
@@ -79,5 +82,53 @@ class WeatherDao {
   Future<List<UserNotificationEntity>?> getUserNotificationList() async {
     final box = await Hive.openBox<UserNotificationEntity>(userNotification);
     return box.values.toList();
+  }
+
+  static const observatory = 'weather_observatory';
+  Future<void> insertObservatoryList(List<ObservatoryEntity> list) async {
+    final box = await Hive.openBox<ObservatoryEntity>(observatory);
+    await box.addAll(list);
+  }
+
+  Future clearObservatory() async {
+    final box = await Hive.openBox<ObservatoryEntity>(observatory);
+    await box.clear();
+  }
+
+  Future<List<ObservatoryEntity>> getAllObservatoryList() async {
+    final box = await Hive.openBox<ObservatoryEntity>(observatory);
+    return box.values.toList();
+  }
+
+  static const weatherUltraviolet = 'weather_ultraviolet';
+  Future updateWeatherUltraviolet(String id, WeatherUltravioletEntity weatherUltravioletEntity) async {
+    final box = await Hive.openBox<WeatherUltravioletEntity>(weatherUltraviolet);
+    await box.put(id, weatherUltravioletEntity);
+  }
+
+  Future deleteWeatherUltraviolet(String id) async {
+    final box = await Hive.openBox<WeatherUltravioletEntity>(weatherUltraviolet);
+    return box.delete(id);
+  }
+
+  Future<WeatherUltravioletEntity?> getWeatherUltravioletWithId(String id) async {
+    final box = await Hive.openBox<WeatherUltravioletEntity>(weatherUltraviolet);
+    return box.get(id);
+  }
+
+  static const weatherSunRiseSet = 'weather_sun_rise_set';
+  Future updateWeatherSunRiseSet(String id, WeatherSunRiseSetEntity sunRiseSetEntity) async {
+    final box = await Hive.openBox<WeatherSunRiseSetEntity>(weatherSunRiseSet);
+    await box.put(id, sunRiseSetEntity);
+  }
+
+  Future deleteSunRiseSet(String id) async {
+    final box = await Hive.openBox<WeatherSunRiseSetEntity>(weatherSunRiseSet);
+    return box.delete(id);
+  }
+
+  Future<WeatherSunRiseSetEntity?> getSunRiseSetWithId(String id) async {
+    final box = await Hive.openBox<WeatherSunRiseSetEntity>(weatherSunRiseSet);
+    return box.get(id);
   }
 }

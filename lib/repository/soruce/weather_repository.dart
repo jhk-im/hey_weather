@@ -1,16 +1,23 @@
   import 'dart:convert';
 
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/utils.dart';
+import 'package:hey_weather/repository/soruce/local/csv/observatory_parser.dart';
 import 'package:hey_weather/repository/soruce/local/weather_dao.dart';
 import 'package:hey_weather/repository/soruce/mapper/weather_mapper.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
-import 'package:hey_weather/repository/soruce/remote/model/search_address.dart';
-import 'package:hey_weather/repository/soruce/remote/model/user_notification.dart';
+import 'package:hey_weather/repository/soruce/local/model/search_address.dart';
+import 'package:hey_weather/repository/soruce/local/model/user_notification.dart';
+import 'package:hey_weather/repository/soruce/remote/model/observatory.dart';
+import 'package:hey_weather/repository/soruce/remote/model/sun_rise_set.dart';
+import 'package:hey_weather/repository/soruce/remote/model/ultraviolet.dart';
 import 'package:hey_weather/repository/soruce/remote/result/result.dart';
 import 'package:hey_weather/repository/soruce/remote/weather_api.dart';
 import 'package:logger/logger.dart';
+import 'package:xml/xml.dart';
+import 'package:xml2json/xml2json.dart';
 
 class WeatherRepository {
 
@@ -274,5 +281,136 @@ class WeatherRepository {
   Future updateUserMyWeather(List<String> idList) async {
     logger.i('updateUserMyWeather(idList: $idList)');
     return _dao.updateUserMyWeather(idList.toSet().toList());
+  }
+
+  /// Weather API
+  // 관측소
+  Future<Result<Observatory>> getObservatoryWithAddress(String depth1, String depth2) async {
+    final localList = await _dao.getAllObservatoryList();
+    List<Observatory> list = [];
+    Observatory result = Observatory();
+    if (localList.isNotEmpty) {
+      list = localList.map((e) => e.toObservatory()).toList();
+      logger.i('getObservatoryWithAddress local return');
+    } else {
+      var csv = await rootBundle.loadString(
+        "assets/data/observatory.csv",
+      );
+      var observatoryParser = ObservatoryParser();
+      list = await observatoryParser.parse(csv);
+      _dao.clearObservatory();
+      _dao.insertObservatoryList(
+          list.map((e) => e.toObservatoryEntity()).toList());
+      logger.i('getObservatoryWithAddress csv return = $list');
+    }
+
+    var d1 = list.where((e) => e.depth1 == depth1 && e.depth2 == depth2);
+    if (d1.isNotEmpty) {
+      result = d1.toList()[0];
+    } else {
+      var d2 = list.where((e) => e.depth1 == depth1 && e.depth2 == '');
+      if (d2.isNotEmpty) {
+        result = d2.toList()[0];
+      } else {
+        var d3 = list.where((e) => e.depth1 == '서울특별시');
+        if (d3.isNotEmpty) {
+          result = d3.toList()[0];
+        }
+      }
+    }
+
+    if (result.depth1 != null) {
+      return Result.success(result);
+    } else {
+      return Result.error(
+          Exception('getObservatoryWithAddress failed: not found'));
+    }
+  }
+
+  // 자외선
+  Future<Result<Ultraviolet>> getUltraviolet(String id, String areaNo) async {
+    final ultraviolet = await _dao.getWeatherUltravioletWithId(id);
+
+    String dt = DateTime.now()
+        .toString()
+        .replaceAll(RegExp("[^0-9\\s]"), "")
+        .replaceAll(" ", "");
+    String currentDateTime = dt.substring(0, 10);
+
+    if (ultraviolet != null && ultraviolet.date == currentDateTime) {
+      logger.i('getUltraviolet() -> local return');
+      return Result.success(ultraviolet.toUltraviolet());
+    }
+
+    // remote
+    Ultraviolet result = Ultraviolet();
+    try {
+      final response = await _api.getUltraviolet(currentDateTime, areaNo);
+      final jsonResult = jsonDecode(response.body);
+      UltravioletList list = UltravioletList.fromJson(jsonResult['response']['body']);
+      if (list.items != null) {
+        if (list.items!.item != null) {
+          result = list.items!.item![0];
+          logger.i('getUltraviolet() api result = $result');
+          // 로컬 업데이트
+          if (result.code != null) {
+            for (Ultraviolet uv in list.items!.item!) {
+              uv.date = currentDateTime;
+            }
+            _dao.updateWeatherUltraviolet(id, result.toWeatherUltravioletEntity());
+          }
+        }
+      }
+    } catch (e) {
+      return Result.error(Exception('getUVRays failed: ${e.toString()}'));
+    }
+
+    if (result.code != null) {
+      return Result.success(result);
+    } else {
+      return Result.error(Exception('getUVRays failed: not found'));
+    }
+  }
+
+  // 일출 일몰
+  Future<Result<SunRiseSet>> getSunRiseSetWithCoordinate(String id, double longitude, double latitude) async {
+    final sunRiseSet = await _dao.getSunRiseSetWithId(id);
+
+    String dateTime = DateTime.now()
+        .toString()
+        .replaceAll(RegExp("[^0-9\\s]"), "")
+        .replaceAll(" ", "");
+    String currentDate = dateTime.toString().substring(0, 8);
+
+    // 로컬에 있고 날짜가 변경 되지 않은 경우
+    if (sunRiseSet != null && currentDate == sunRiseSet.locdate) {
+      logger.i('getSunRiseSetWithCoordinate() -> local return');
+      return Result.success(sunRiseSet.toSunRiseSet());
+    }
+
+    // remote
+    try {
+      final response = await _api.getRiseSetInfoWithCoordinate(
+          currentDate, longitude, latitude);
+
+      final xmlResult = XmlDocument.parse(utf8.decode(response.bodyBytes))
+          .findAllElements('item');
+
+      final jsonTransformer = Xml2Json();
+      jsonTransformer.parse(xmlResult.toString());
+      var json = jsonDecode(jsonTransformer.toParker());
+
+      SunRiseSet result = SunRiseSet.fromJson(json['item']);
+
+      // 로컬 업데이트
+      if (result.locdate != null) {
+        _dao.updateWeatherSunRiseSet(id, result.toSunRiseSetEntity());
+      }
+      print('getRiseSetWithCoordinate() -> api return');
+      return Result.success(result);
+    } catch (e) {
+      return Result.error(
+          Exception('getRiseSetWithCoordinate failed: ${e.toString()}'));
+    }
   }
 }

@@ -29,4 +29,34 @@ class WeatherApi {
     };
     return await http.get(url, headers: headers);
   }
+
+  static const weatherUrl = "apis.data.go.kr";
+  static final serviceKey = dotenv.env['SERVICE_KEY'];
+
+  // 자외선 지수 조회
+  Future<http.Response> getUltraviolet(String time, String areaNo) async {
+    var url =
+    Uri.https(weatherUrl, '/1360000/LivingWthrIdxServiceV4/getUVIdxV4', {
+      'serviceKey': serviceKey ?? '',
+      'dataType': 'JSON',
+      'numOfRows': '10',
+      'pageNo': '1',
+      'time': time,
+      'areaNo': areaNo,
+    });
+    return await http.get(url);
+  }
+
+  // 좌표로 출몰시간 조회 (XML)
+  Future<http.Response> getRiseSetInfoWithCoordinate(String locdate, double longitude, double latitude) async {
+    var url =
+    Uri.https(weatherUrl, '/B090041/openapi/service/RiseSetInfoService/getLCRiseSetInfo', {
+      'serviceKey': serviceKey ?? '',
+      'locdate': locdate,
+      'longitude': '$longitude',
+      'latitude': '$latitude',
+      'dnYn': 'Y',
+    });
+    return await http.get(url);
+  }
 }

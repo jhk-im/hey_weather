@@ -132,7 +132,7 @@ class _HeyWeatherSunCardState extends State<HeyWeatherSunCard> {
                               Row(
                                 children: [
                                   HeyText.bodySemiBold(
-                                    'am'.tr,
+                                    'pm'.tr,
                                     fontSize: kFont16,
                                     color: kTextDisabledColor,
                                   ),

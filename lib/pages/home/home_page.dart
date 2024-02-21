@@ -7,6 +7,7 @@ import 'package:hey_weather/common/svg_utils.dart';
 import 'package:hey_weather/getx/routes.dart';
 import 'package:hey_weather/pages/home/home_controller.dart';
 import 'package:hey_weather/widgets/buttons/hey_elevated_button.dart';
+import 'package:hey_weather/widgets/cards/weather/hey_weather_ultraviolet_card.dart';
 import 'package:hey_weather/widgets/cards/weather/hey_weather_week_card.dart';
 import 'package:hey_weather/widgets/cards/weather/hey_weather_dust_card.dart';
 import 'package:hey_weather/widgets/cards/hey_weather_home_card.dart';
@@ -455,8 +456,8 @@ class HomePage extends GetView<HomeController> {
         );
       case kWeatherCardSun:
         return HeyWeatherSunCard(
-          sunrise: '7시 34분',
-          sunset: '5시 34분',
+          sunrise: controller.sunrise,
+          sunset: controller.sunset,
           buttonStatus: buttonStatus,
           setHeight: (id, height) {
             controller.weatherHeightMap[id] = height;
@@ -466,13 +467,9 @@ class HomePage extends GetView<HomeController> {
           },
         );
       default :
-        return HeyWeatherSmallCard(
+        return HeyWeatherUltravioletCard(
           id: id,
-          title: 'ultraviolet'.tr,
-          iconName: 'ultraviolet',
-          subtitle: '낮음',
-          weatherState: '3',
-          secondWeatherState: '3',
+          ultraviolet: controller.ultraviolet,
           buttonStatus: buttonStatus,
           setHeight: (id, height) {
             controller.weatherHeightMap[id] = height;
@@ -538,19 +535,14 @@ class HomePage extends GetView<HomeController> {
               secondWeatherState: '북동',
             ),
             // 일출 일몰
-            const HeyWeatherSunCard(
-              sunrise: '7시 34분',
-              sunset: '5시 34분',
+            HeyWeatherSunCard(
+              sunrise: controller.sunrise,
+              sunset: controller.sunset,
             ),
-            // 자외선
-            HeyWeatherSmallCard(
+            HeyWeatherUltravioletCard(
               id: kWeatherCardUltraviolet,
-              title: 'ultraviolet'.tr,
-              iconName: 'ultraviolet',
-              subtitle: '낮음',
-              weatherState: '3',
-              secondWeatherState: '3',
-            ),
+              ultraviolet: controller.ultraviolet,
+            )
           ],
         ),
       ),

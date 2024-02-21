@@ -3,6 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class Utils {
+  static String convertToTime(String number) {
+    int time = int.parse(number);
+    int hour = time ~/ 100;
+    int minute = time % 100;
+    if (hour > 12) {
+      hour = hour - 12;
+    }
+    return '$hour시 $minute분';
+  }
+
   static Future<bool> checkInternetConnection() async {
     var connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult == ConnectivityResult.none) {

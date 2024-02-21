@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_bottom_sheet.dart';
 import 'package:hey_weather/common/shared_preferences_util.dart';
+import 'package:hey_weather/common/utils.dart';
 import 'package:hey_weather/getx/routes.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
 import 'package:hey_weather/repository/soruce/weather_repository.dart';
@@ -69,6 +70,15 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     kWeatherCardSun: 0,
     kWeatherCardUltraviolet: 0,
   };
+
+  // Weather
+  final RxString _sunrise = ''.obs;
+  String get sunrise => _sunrise.value;
+  final RxString _sunset = ''.obs;
+  String get sunset => _sunset.value;
+
+  final RxInt _ultraviolet = 0.obs;
+  int get ultraviolet => _ultraviolet.value;
 
   var _isOnBoard = false;
 
@@ -189,6 +199,9 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       HeyBottomSheet.showAddWeatherBottomSheet(
           Get.context!,
           _myWeatherList,
+          ultraviolet: _ultraviolet.value,
+          sunrise: _sunrise.value,
+          sunset: _sunset.value,
           onConfirm: (idList) {
             List<String> updateList = List<String>.from(_myWeatherList);
             updateList.addAll(idList);
@@ -199,27 +212,6 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   /// Data
-  Future _getUpdateAddressWithCoordinate({bool isAddressUpdate = false, List<Address>? addressList}) async {
-    var getUpdateAddressWithCoordinate = await _repository.getUpdateAddressWithCoordinate();
-    getUpdateAddressWithCoordinate.when(success: (address) async {
-      if (addressList != null) { // 리스트 업데이트
-        final oldAddress = addressList.firstWhere((element) => element.id == kCurrentLocationId);
-        final index = addressList.indexOf(oldAddress);
-        addressList.remove(oldAddress);
-        addressList.insert(index, address);
-        if (isAddressUpdate) {
-          _addressText(address.addressName);
-        }
-        _recentAddressList(addressList);
-      } else { // 최초 진입
-        _addressText(address.addressName);
-        _recentAddressList.add(address);
-      }
-    }, error: (Exception e) {
-      logger.e('HomeController.getUpdateAddressWithCoordinate $e');
-    });
-  }
-
   Future _getData() async {
     _isLoading(true);
     // 사용자 주소 리스트
@@ -256,6 +248,73 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       await _getUpdateAddressWithCoordinate();
       _showOnboardBottomSheet();
       _isLoading(false);
+    });
+  }
+
+  Future _getUpdateAddressWithCoordinate({bool isAddressUpdate = false, List<Address>? addressList}) async {
+    var getUpdateAddressWithCoordinate = await _repository.getUpdateAddressWithCoordinate();
+    getUpdateAddressWithCoordinate.when(success: (address) async {
+      if (addressList != null) { // 리스트 업데이트
+        final oldAddress = addressList.firstWhere((element) => element.id == kCurrentLocationId);
+        final index = addressList.indexOf(oldAddress);
+        addressList.remove(oldAddress);
+        addressList.insert(index, address);
+        if (isAddressUpdate) {
+          _addressText(address.addressName);
+        }
+        _recentAddressList(addressList);
+      } else { // 최초 진입
+        _addressText(address.addressName);
+        _recentAddressList.add(address);
+      }
+
+      _updateWeatherWidget(address);
+
+    }, error: (Exception e) {
+      logger.e('HomeController.getUpdateAddressWithCoordinate $e');
+    });
+  }
+
+  _updateWeatherWidget(Address address) {
+    _updateSunRiseSet(address);
+    _updateObservatory(address);
+  }
+
+  _updateSunRiseSet(Address address) async {
+    String addressId = address.id ?? '';
+    double longitude = address.x ?? 0;
+    double latitude = address.y ?? 0;
+    // 일출 일몰
+    var getSunRiseSet = await _repository.getSunRiseSetWithCoordinate(addressId, longitude, latitude);
+    getSunRiseSet.when(success: (sunRiseSet) {
+      logger.i('HomeController.getSunRiseSetWithCoordinate success -> $sunRiseSet');
+      _sunrise(Utils.convertToTime(sunRiseSet.sunrise ?? '0500'));
+      _sunset(Utils.convertToTime(sunRiseSet.sunset ?? '1900'));
+
+    }, error: (e) {
+      logger.e('HomeController.getSunRiseSetWithCoordinate error -> $e');
+    });
+  }
+
+  _updateObservatory(Address address) async {
+    // 관측소
+    String depth1 = address.region1depthName ?? '';
+    String depth2 = address.region2depthName ?? '';
+    String addressId = address.id ?? '';
+    var getObservatory = await _repository.getObservatoryWithAddress(depth1, depth2);
+    getObservatory.when(success: (observatory) async {
+      logger.i('HomeController.getObservatoryWithAddress success -> $observatory');
+
+      // 자외선
+      var getUltraviolet = await _repository.getUltraviolet(addressId, observatory.code.toString());
+      getUltraviolet.when(success: (ultraviolet) {
+        logger.i('HomeController.getUltraviolet success -> $ultraviolet');
+        _ultraviolet(int.parse(ultraviolet.h0 ?? '0'));
+      }, error: (e) {
+        logger.e('HomeController.getUltraviolet error -> $e');
+      });
+    }, error: (e) {
+      logger.e('HomeController.getObservatoryWithAddress error -> $e');
     });
   }
 

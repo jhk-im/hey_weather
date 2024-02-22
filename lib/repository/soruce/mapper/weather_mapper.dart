@@ -1,14 +1,19 @@
 import 'package:hey_weather/repository/soruce/local/entity/address_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/observatory_entity.dart';
+import 'package:hey_weather/repository/soruce/local/entity/weather_fine_dust_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_sun_rise_set_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/user_notification_entity.dart';
+import 'package:hey_weather/repository/soruce/local/entity/weather_ultra_short_term_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_ultraviolet_entity.dart';
 import 'package:hey_weather/repository/soruce/remote/dto/observatory_dto.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
 import 'package:hey_weather/repository/soruce/local/model/user_notification.dart';
+import 'package:hey_weather/repository/soruce/remote/model/fine_dust.dart';
 import 'package:hey_weather/repository/soruce/remote/model/observatory.dart';
 import 'package:hey_weather/repository/soruce/remote/model/sun_rise_set.dart';
+import 'package:hey_weather/repository/soruce/remote/model/ultra_short_term.dart';
 import 'package:hey_weather/repository/soruce/remote/model/ultraviolet.dart';
+import 'package:hey_weather/repository/soruce/remote/model/weather_category.dart';
 
 // 주소
 extension ToAddressEntity on Address {
@@ -67,6 +72,40 @@ extension ToUserNotification on UserNotificationEntity {
       isOn: isOn,
     );
     return userNotification;
+  }
+}
+
+// 초단기 실황
+extension ToUltraShortTerm on WeatherUltraShortTermEntity {
+  UltraShortTerm toUltraShortTerm() {
+    var ncst = UltraShortTerm(
+      baseDate: baseDate,
+      baseTime: baseTime,
+      category: category,
+      nx: nx,
+      ny: ny,
+      obsrValue: obsrValue,
+    );
+    ncst.weatherCategory =
+        WeatherCategory(name: name, unit: unit, codeValues: codeValues);
+    return ncst;
+  }
+}
+
+extension ToUltraShortTermEntity on UltraShortTerm {
+  WeatherUltraShortTermEntity toWeatherUltraShortTermEntity() {
+    var entity = WeatherUltraShortTermEntity(
+      category: category ?? '',
+      obsrValue: obsrValue ?? '',
+    );
+    entity.baseTime = baseTime;
+    entity.baseDate = baseDate;
+    entity.nx = nx;
+    entity.ny = ny;
+    entity.name = weatherCategory?.name ?? '';
+    entity.unit = weatherCategory?.unit ?? '';
+    entity.codeValues = weatherCategory?.codeValues ?? [];
+    return entity;
   }
 }
 
@@ -203,5 +242,62 @@ extension ToSunRiseSet on WeatherSunRiseSetEntity {
       latitudeNum: latitudeNum,
     );
     return address;
+  }
+}
+
+// 미세먼지
+extension ToFineDust on WeatherFineDustEntity {
+  FineDust toFineDust() {
+    var dnsty = FineDust();
+    dnsty.so2Grade = so2Grade;
+    dnsty.coFlag = coFlag;
+    dnsty.khaiValue = khaiValue;
+    dnsty.so2Value = so2Value;
+    dnsty.coValue = coValue;
+    dnsty.pm10Flag = pm10Flag;
+    dnsty.pm10Value = pm10Value;
+    dnsty.pm10Value24 = pm10Value24;
+    dnsty.pm25Value = pm25Value;
+    dnsty.pm25Value24 = pm25Value24;
+    dnsty.o3Grade = o3Grade;
+    dnsty.khaiGrade = khaiGrade;
+    dnsty.no2Flag = no2Flag;
+    dnsty.no2Grade = no2Grade;
+    dnsty.o3Flag = o3Flag;
+    dnsty.so2Flag = so2Flag;
+    dnsty.dataTime = dataTime;
+    dnsty.coGrade = coGrade;
+    dnsty.no2Value = no2Value;
+    dnsty.pm10Grade = pm10Grade;
+    dnsty.o3Value = o3Value;
+    return dnsty;
+  }
+}
+
+extension ToWeatherFineDustEntity on FineDust {
+  WeatherFineDustEntity toWeatherFineDustEntity() {
+    var dnstyEntity = WeatherFineDustEntity();
+    dnstyEntity.so2Grade = so2Grade;
+    dnstyEntity.coFlag = coFlag;
+    dnstyEntity.khaiValue = khaiValue;
+    dnstyEntity.so2Value = so2Value;
+    dnstyEntity.coValue = coValue;
+    dnstyEntity.pm10Flag = pm10Flag;
+    dnstyEntity.pm10Value = pm10Value;
+    dnstyEntity.pm10Value24 = pm10Value24;
+    dnstyEntity.pm25Value = pm25Value;
+    dnstyEntity.pm25Value24 = pm25Value24;
+    dnstyEntity.o3Grade = o3Grade;
+    dnstyEntity.khaiGrade = khaiGrade;
+    dnstyEntity.no2Flag = no2Flag;
+    dnstyEntity.no2Grade = no2Grade;
+    dnstyEntity.o3Flag = o3Flag;
+    dnstyEntity.so2Flag = so2Flag;
+    dnstyEntity.dataTime = dataTime;
+    dnstyEntity.coGrade = coGrade;
+    dnstyEntity.no2Value = no2Value;
+    dnstyEntity.pm10Grade = pm10Grade;
+    dnstyEntity.o3Value = o3Value;
+    return dnstyEntity;
   }
 }

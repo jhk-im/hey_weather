@@ -11,11 +11,14 @@ import 'package:hey_weather/widgets/buttons/hey_weather_address_button.dart';
 import 'package:hey_weather/widgets/cards/hey_weather_home_card.dart';
 import 'package:hey_weather/widgets/cards/hey_weather_select_card.dart';
 import 'package:hey_weather/widgets/cards/weather/hey_weather_dust_card.dart';
+import 'package:hey_weather/widgets/cards/weather/hey_weather_humidity_card.dart';
+import 'package:hey_weather/widgets/cards/weather/hey_weather_rain_card.dart';
 import 'package:hey_weather/widgets/cards/weather/hey_weather_small_card.dart';
 import 'package:hey_weather/widgets/cards/weather/hey_weather_sun_card.dart';
 import 'package:hey_weather/widgets/cards/weather/hey_weather_time_card.dart';
 import 'package:hey_weather/widgets/cards/weather/hey_weather_ultraviolet_card.dart';
 import 'package:hey_weather/widgets/cards/weather/hey_weather_week_card.dart';
+import 'package:hey_weather/widgets/cards/weather/hey_weather_wind_card.dart';
 
 import 'svg_utils.dart';
 
@@ -209,7 +212,16 @@ class HeyBottomSheet {
 
   static void showAddWeatherBottomSheet(BuildContext context, List<String> idList, {
     Function? onConfirm,
+    double windSpeed = 0.0,
+    int windDirection = 0,
+    int todayHumidity = 0,
+    int yesterdayHumidity = 0,
+    int rain = 0,
+    String rainStatus = '',
+    int rainPercentage = 0,
     int ultraviolet = 0,
+    int fineDust = 0,
+    int ultraFineDust = 0,
     String sunrise = '',
     String sunset = '',
   }) {
@@ -322,10 +334,8 @@ class HeyBottomSheet {
                             Visibility(
                               visible: weatherInitMap[kWeatherCardDust] ?? true,
                               child: HeyWeatherDustCard(
-                                fine: '13',
-                                fineState: '최고 좋음',
-                                ultra: '10',
-                                ultraState: '좋음',
+                                fine: fineDust,
+                                ultra: ultraFineDust,
                                 buttonStatus: 1,
                                 onSelect: (id, selected) {
                                   weatherSelectMap[id] = selected;
@@ -335,12 +345,10 @@ class HeyBottomSheet {
                             // 강수
                             Visibility(
                               visible: weatherInitMap[kWeatherCardRain] ?? true,
-                              child: HeyWeatherSmallCard(
-                                id: kWeatherCardRain,
-                                title: 'rain'.tr,
-                                iconName: 'rain',
-                                subtitle: '없음',
-                                weatherState: '0',
+                              child: HeyWeatherRainCard(
+                                rain: rain,
+                                rainStatus: rainStatus,
+                                percentage: rainPercentage,
                                 buttonStatus: 1,
                                 onSelect: (id, selected) {
                                   weatherSelectMap[id] = selected;
@@ -350,13 +358,9 @@ class HeyBottomSheet {
                             // 습도
                             Visibility(
                               visible: weatherInitMap[kWeatherCardHumidity] ?? true,
-                              child: HeyWeatherSmallCard(
-                                id: kWeatherCardHumidity,
-                                title: 'humidity'.tr,
-                                iconName: 'humidity',
-                                subtitle: '낮음',
-                                weatherState: '16',
-                                secondWeatherState: '17',
+                              child: HeyWeatherHumidityCard(
+                                today: todayHumidity,
+                                yesterday: yesterdayHumidity,
                                 buttonStatus: 1,
                                 onSelect: (id, selected) {
                                   weatherSelectMap[id] = selected;
@@ -380,13 +384,9 @@ class HeyBottomSheet {
                             // 바람
                             Visibility(
                               visible: weatherInitMap[kWeatherCardWind] ?? true,
-                              child: HeyWeatherSmallCard(
-                                id: kWeatherCardWind,
-                                title: 'wind'.tr,
-                                iconName: 'wind',
-                                subtitle: '없음',
-                                weatherState:'3',
-                                secondWeatherState: '북동',
+                              child: HeyWeatherWindCard(
+                                speed: windSpeed,
+                                direction: windDirection,
                                 buttonStatus: 1,
                                 onSelect: (id, selected) {
                                   weatherSelectMap[id] = selected;

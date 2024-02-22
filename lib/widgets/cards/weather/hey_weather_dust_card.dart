@@ -8,19 +8,15 @@ class HeyWeatherDustCard extends StatefulWidget {
   const HeyWeatherDustCard({
     super.key,
     required this.fine,
-    required this.fineState,
     required this.ultra,
-    required this.ultraState,
     this.buttonStatus = 0,
     this.setHeight,
     this.onSelect,
     this.onRemove,
   });
 
-  final String fine;
-  final String fineState;
-  final String ultra;
-  final String ultraState;
+  final int fine;
+  final int ultra;
   final int buttonStatus;
   final Function? onSelect;
   final Function? onRemove;
@@ -36,19 +32,18 @@ class _HeyWeatherDustCardState extends State<HeyWeatherDustCard> {
 
   // Colors
   final Map<String, Color> stateColors = {
-    'none'.tr : kIconColor,
-    'low'.tr : kPrimaryDarkerColor,
     'good'.tr : kPrimaryDarkerColor,
-    'weak'.tr : kPrimaryDarkerColor,
-    'high'.tr : kSubColor,
     'normal'.tr : kHeyGreenColor,
     'bad'.tr : kHeyOrangeColor,
-    'very_high'.tr: kHeyOrangeColor,
-    'strong'.tr: kHeyRedColor,
-    'danger'.tr: kHeyRedColor,
     'very_bad'.tr: kHeyRedColor,
-    'very_good'.tr: kHeySkyBlueColor,
   };
+
+  final stateList = [
+    'good'.tr,
+    'normal'.tr,
+    'bad'.tr,
+    'very_bad'.tr,
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +51,25 @@ class _HeyWeatherDustCardState extends State<HeyWeatherDustCard> {
     double height = 173;
     status(widget.buttonStatus);
     widget.setHeight?.call(id, height);
+
+    String fineState = stateList[0];
+    if (widget.fine > 30 && widget.fine <= 80) {
+      fineState = stateList[1];
+    } else if (widget.fine > 80 && widget.fine <= 150) {
+      fineState = stateList[2];
+    } else if (widget.fine > 150) {
+      fineState = stateList[3];
+    }
+
+    String ultraState = stateList[0];
+    if (widget.ultra > 15 && widget.ultra <= 50) {
+      ultraState = stateList[1];
+    } else if (widget.ultra > 50 && widget.ultra <= 100) {
+      ultraState = stateList[2];
+    } else if (widget.ultra > 100) {
+      ultraState = stateList[3];
+    }
+
     return Obx(() => Material(
       color: Colors.transparent,
       child: GestureDetector(
@@ -121,9 +135,9 @@ class _HeyWeatherDustCardState extends State<HeyWeatherDustCard> {
                                     ),
                                     const SizedBox(width: 8),
                                     HeyText.bodySemiBold(
-                                      widget.fineState,
+                                      fineState,
                                       fontSize: kFont15,
-                                      color: stateColors[widget.fineState] ?? kTextPointColor,
+                                      color: stateColors[fineState] ?? kTextPointColor,
                                     ),
                                   ],
                                 ),
@@ -132,7 +146,7 @@ class _HeyWeatherDustCardState extends State<HeyWeatherDustCard> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     HeyText.largeTitleBold(
-                                      widget.fine,
+                                      widget.fine.toString(),
                                       color: kTextPointColor,
                                     ),
                                     const SizedBox(width: 4),
@@ -170,9 +184,9 @@ class _HeyWeatherDustCardState extends State<HeyWeatherDustCard> {
                                       ),
                                       const SizedBox(width: 8),
                                       HeyText.bodySemiBold(
-                                        widget.ultraState,
+                                        ultraState,
                                         fontSize: kFont15,
-                                        color: stateColors[widget.ultraState] ?? kTextPointColor,
+                                        color: stateColors[ultraState] ?? kTextPointColor,
                                       ),
                                     ],
                                   ),
@@ -181,7 +195,7 @@ class _HeyWeatherDustCardState extends State<HeyWeatherDustCard> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       HeyText.largeTitleBold(
-                                        widget.ultra,
+                                        widget.ultra.toString(),
                                         color: kTextPointColor,
                                       ),
                                       const SizedBox(width: 4),

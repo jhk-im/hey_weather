@@ -3,6 +3,7 @@
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hey_weather/common/constants.dart';
+import 'package:hey_weather/common/convert_gps.dart';
 import 'package:hey_weather/common/utils.dart';
 import 'package:hey_weather/repository/soruce/local/csv/observatory_parser.dart';
 import 'package:hey_weather/repository/soruce/local/weather_dao.dart';
@@ -10,9 +11,12 @@ import 'package:hey_weather/repository/soruce/mapper/weather_mapper.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
 import 'package:hey_weather/repository/soruce/local/model/search_address.dart';
 import 'package:hey_weather/repository/soruce/local/model/user_notification.dart';
+import 'package:hey_weather/repository/soruce/remote/model/fine_dust.dart';
 import 'package:hey_weather/repository/soruce/remote/model/observatory.dart';
 import 'package:hey_weather/repository/soruce/remote/model/sun_rise_set.dart';
+import 'package:hey_weather/repository/soruce/remote/model/ultra_short_term.dart';
 import 'package:hey_weather/repository/soruce/remote/model/ultraviolet.dart';
+import 'package:hey_weather/repository/soruce/remote/model/weather_category.dart';
 import 'package:hey_weather/repository/soruce/remote/result/result.dart';
 import 'package:hey_weather/repository/soruce/remote/weather_api.dart';
 import 'package:logger/logger.dart';
@@ -327,10 +331,98 @@ class WeatherRepository {
     }
   }
 
+  // 날씨 category 에 따른 정보
+  Future<WeatherCategory> getWeatherCode(String category) async {
+    final jsonString = await rootBundle.loadString('assets/data/code.json');
+    final jsonObject = jsonDecode(jsonString);
+    return WeatherCategory.fromJson(jsonObject[category]);
+  }
+
+  // 초단기 실황
+  Future<Result<List<UltraShortTerm>>> getUltraShortTermList(String id, double longitude, double latitude) async {
+    final ultraShortTemperature = await _dao.getWeatherUltraShortTemperature(id);
+    final ultraShortHumidity = await _dao.getWeatherUltraShortHumidity(id);
+    final ultraShortRain = await _dao.getWeatherUltraShortRain(id);
+    final ultraShortRainStatus = await _dao.getWeatherUltraShortRainStatus(id);
+    final ultraShortWindSpeed = await _dao.getWeatherUltraShortWindSpeed(id);
+    final ultraShortWindDirection = await _dao.getWeatherUltraShortWindDirection(id);
+    List<UltraShortTerm> result = [];
+
+    // 시간 기준 업데이트
+    DateTime dateTime = DateTime.now();
+    String dt = DateTime(dateTime.year, dateTime.month, dateTime.day,
+        dateTime.hour, dateTime.minute - 30)
+        .toString()
+        .replaceAll(RegExp("[^0-9\\s]"), "")
+        .replaceAll(" ", "");
+    String date = dt.substring(0, 8);
+    String time = dt.substring(8, 12);
+    String checkTime = dt.substring(8, 10);
+
+    // local
+    if (ultraShortTemperature != null && ultraShortTemperature.baseTime != null) {
+      String localTime = ultraShortTemperature.baseTime!.substring(0, 2);
+      String localDate = ultraShortTemperature.baseDate ?? '';
+      if (date == localDate) {
+        if (checkTime == localTime) {
+          result.add(ultraShortTemperature.toUltraShortTerm());
+          if (ultraShortHumidity != null) result.add(ultraShortHumidity.toUltraShortTerm());
+          if (ultraShortRain != null) result.add(ultraShortRain.toUltraShortTerm());
+          if (ultraShortRainStatus != null) result.add(ultraShortRainStatus.toUltraShortTerm());
+          if (ultraShortWindSpeed != null) result.add(ultraShortWindSpeed.toUltraShortTerm());
+          if (ultraShortWindDirection != null) result.add(ultraShortWindDirection.toUltraShortTerm());
+          logger.i('getUltraShortTerm() -> local return');
+          return Result.success(result);
+        }
+      }
+    }
+
+    // get location
+    var gpsToData = ConvertGps.gpsToGRID(latitude, longitude);
+    int x = gpsToData['x'];
+    int y = gpsToData['y'];
+
+    // remote
+    try {
+      final response = await _api.getUltraShortTerm(date, time, x, y);
+      final jsonResult = jsonDecode(response.body);
+      UltraShortTermList list = UltraShortTermList.fromJson(jsonResult['response']['body']);
+      if (list.items?.item != null) {
+        for (var item in list.items!.item!) {
+
+          String category = item.category ?? '';
+          item.weatherCategory = await getWeatherCode(category);
+          result.add(item);
+
+          // local update
+          switch (category) {
+            case kWeatherCategoryTemperature:
+              await _dao.updateWeatherUltraShortTemperature(id, item.toWeatherUltraShortTermEntity());
+            case kWeatherCategoryHumidity:
+              await _dao.updateWeatherUltraShortHumidity(id, item.toWeatherUltraShortTermEntity());
+            case kWeatherCategoryRain:
+              await _dao.updateWeatherUltraShortRain(id, item.toWeatherUltraShortTermEntity());
+            case kWeatherCategoryRainStatus:
+              await _dao.updateWeatherUltraShortRainStatus(id, item.toWeatherUltraShortTermEntity());
+            case kWeatherCategoryWindSpeed:
+              await _dao.updateWeatherUltraShortWindSpeed(id, item.toWeatherUltraShortTermEntity());
+            case kWeatherCategoryWindDirection:
+              await _dao.updateWeatherUltraShortWindDirection(id, item.toWeatherUltraShortTermEntity());
+          }
+        }
+      }
+      logger.i('getUltraShortTerm() api return');
+      return Result.success(result);
+    } catch (e) {
+      return Result.error(Exception('getUltraShortTerm failed: ${e.toString()}'));
+    }
+  }
+
   // 자외선
   Future<Result<Ultraviolet>> getUltraviolet(String id, String areaNo) async {
-    final ultraviolet = await _dao.getWeatherUltravioletWithId(id);
+    final ultraviolet = await _dao.getWeatherUltraviolet(id);
 
+    // 시간 기준 업데이트
     String dt = DateTime.now()
         .toString()
         .replaceAll(RegExp("[^0-9\\s]"), "")
@@ -338,7 +430,7 @@ class WeatherRepository {
     String currentDateTime = dt.substring(0, 10);
 
     if (ultraviolet != null && ultraviolet.date == currentDateTime) {
-      logger.i('getUltraviolet() -> local return');
+      logger.i('getUltraviolet() -> Local return');
       return Result.success(ultraviolet.toUltraviolet());
     }
 
@@ -362,19 +454,19 @@ class WeatherRepository {
         }
       }
     } catch (e) {
-      return Result.error(Exception('getUVRays failed: ${e.toString()}'));
+      return Result.error(Exception('getUltraviolet failed: ${e.toString()}'));
     }
 
     if (result.code != null) {
       return Result.success(result);
     } else {
-      return Result.error(Exception('getUVRays failed: not found'));
+      return Result.error(Exception('getUltraviolet failed: not found'));
     }
   }
 
   // 일출 일몰
   Future<Result<SunRiseSet>> getSunRiseSetWithCoordinate(String id, double longitude, double latitude) async {
-    final sunRiseSet = await _dao.getSunRiseSetWithId(id);
+    final sunRiseSet = await _dao.getWeatherSunRiseSet(id);
 
     String dateTime = DateTime.now()
         .toString()
@@ -406,11 +498,54 @@ class WeatherRepository {
       if (result.locdate != null) {
         _dao.updateWeatherSunRiseSet(id, result.toSunRiseSetEntity());
       }
-      print('getRiseSetWithCoordinate() -> api return');
+      logger.i('getRiseSetWithCoordinate() -> api return');
       return Result.success(result);
     } catch (e) {
       return Result.error(
           Exception('getRiseSetWithCoordinate failed: ${e.toString()}'));
+    }
+  }
+
+  // 미세먼지
+  Future<Result<FineDust>> getFineDust(String id, String depth2) async {
+    final fineDust = await _dao.getWeatherFineDust(id);
+
+    // local
+    if (fineDust != null && fineDust.dataTime != null) {
+      DateTime dateTime = DateTime.now();
+      String dt = DateTime(dateTime.year, dateTime.month, dateTime.day,
+          dateTime.hour, dateTime.minute)
+          .toString()
+          .replaceAll(RegExp("[^0-9\\s]"), "")
+          .replaceAll(" ", "");
+      String currentDate = dt.substring(0, 8);
+      String dataTime = fineDust.dataTime!;
+      String prevDate = dataTime.substring(0, 10).replaceAll("-", "");
+      String currentTime = dt.substring(8, 10);
+      String prevTime =
+      dataTime.substring(dataTime.length - 5, dataTime.length - 3);
+
+      if (currentDate == prevDate && currentTime == prevTime) {
+        logger.i('getFineDust() -> local return');
+        return Result.success(fineDust.toFineDust());
+      }
+    }
+
+    // remote
+    try {
+      final response = await _api.getFineDust(depth2);
+      final jsonResult = jsonDecode(response.body);
+      DnstyList list = DnstyList.fromJson(jsonResult['response']['body']);
+      var fineDust = FineDust();
+      if (list.items != null) {
+        fineDust = list.items![0];
+      }
+      // 로컬 업데이트
+      _dao.updateWeatherFineDust(id, fineDust.toWeatherFineDustEntity());
+      logger.i('getFineDust() -> api return');
+      return Result.success(fineDust);
+    } catch (e) {
+      return Result.error(Exception('getFineDust failed: ${e.toString()}'));
     }
   }
 }

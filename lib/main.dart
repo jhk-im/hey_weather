@@ -10,8 +10,10 @@ import 'package:hey_weather/getx/bindings/init_binding.dart';
 import 'package:hey_weather/getx/routes.dart';
 import 'package:hey_weather/repository/soruce/local/entity/address_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/observatory_entity.dart';
+import 'package:hey_weather/repository/soruce/local/entity/weather_fine_dust_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_sun_rise_set_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/user_notification_entity.dart';
+import 'package:hey_weather/repository/soruce/local/entity/weather_ultra_short_term_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_ultraviolet_entity.dart';
 import 'package:hey_weather/repository/soruce/local/weather_dao.dart';
 import 'package:hey_weather/repository/soruce/remote/weather_api.dart';
@@ -27,6 +29,8 @@ void main() async {
   Hive.registerAdapter(ObservatoryEntityAdapter());
   Hive.registerAdapter(WeatherUltravioletEntityAdapter());
   Hive.registerAdapter(WeatherSunRiseSetEntityAdapter());
+  Hive.registerAdapter(WeatherFineDustEntityAdapter());
+  Hive.registerAdapter(WeatherUltraShortTermAdapter());
 
   final repository = WeatherRepository(WeatherApi(), WeatherDao());
   GetIt.instance.registerSingleton<WeatherRepository>(repository);

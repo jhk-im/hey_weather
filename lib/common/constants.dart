@@ -65,3 +65,11 @@ const kWeatherCardFeel = 'weather_card_feel'; // 체감온도
 const kWeatherCardWind = 'weather_card_wind'; // 바람
 const kWeatherCardSun = 'weather_card_sun'; // 일출, 일몰
 const kWeatherCardUltraviolet = 'weather_card_ultraviolet'; // 자외선
+
+// WeatherCategory
+const kWeatherCategoryTemperature = 'T1H';
+const kWeatherCategoryHumidity = 'REH';
+const kWeatherCategoryRain = 'RN1';
+const kWeatherCategoryRainStatus = 'PTY';
+const kWeatherCategoryWindSpeed = 'WSD';
+const kWeatherCategoryWindDirection = 'VEC';

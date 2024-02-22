@@ -71,7 +71,29 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     kWeatherCardUltraviolet: 0,
   };
 
+  var _isOnBoard = false;
+
+  var logger = Logger();
+
   // Weather
+  final RxInt _ultraShortTemperature = 0.obs;
+  int get ultraShortTemperature => _ultraShortTemperature.value;
+  final RxInt _ultraShortHumidity = 0.obs;
+  int get ultraShortHumidity => _ultraShortHumidity.value;
+  final RxInt _ultraShortRain = 0.obs;
+  int get ultraShortRain => _ultraShortRain.value;
+  final RxString _ultraShortRainStatus = '없음'.obs;
+  String get ultraShortRainStatus => _ultraShortRainStatus.value;
+  final RxDouble _ultraShortWindSpeed = 0.0.obs;
+  double get ultraShortWindSpeed => _ultraShortWindSpeed.value;
+  final RxInt _ultraShortWindDirection = 0.obs;
+  int get ultraShortWindDirection => _ultraShortWindDirection.value;
+
+  final RxInt _yesterdayHumidity = 0.obs;
+  int get yesterdayHumidity => _yesterdayHumidity.value;
+  final RxInt _rainPercentage = 0.obs;
+  int get rainPercentage => _rainPercentage.value;
+
   final RxString _sunrise = ''.obs;
   String get sunrise => _sunrise.value;
   final RxString _sunset = ''.obs;
@@ -80,9 +102,10 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   final RxInt _ultraviolet = 0.obs;
   int get ultraviolet => _ultraviolet.value;
 
-  var _isOnBoard = false;
-
-  var logger = Logger();
+  final RxInt _fineDust = 0.obs;
+  int get fineDust => _fineDust.value;
+  final RxInt _ultraFineDust = 0.obs;
+  int get ultraFineDust => _ultraFineDust.value;
 
   @override
   void onInit() {
@@ -199,9 +222,18 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       HeyBottomSheet.showAddWeatherBottomSheet(
           Get.context!,
           _myWeatherList,
+          windSpeed: _ultraShortWindSpeed.value,
+          windDirection: _ultraShortWindDirection.value,
+          todayHumidity: _ultraShortHumidity.value,
+          yesterdayHumidity: _yesterdayHumidity.value,
+          rain: _ultraShortRain.value,
+          rainStatus: _ultraShortRainStatus.value,
+          rainPercentage: _rainPercentage.value,
           ultraviolet: _ultraviolet.value,
           sunrise: _sunrise.value,
           sunset: _sunset.value,
+          fineDust: _fineDust.value,
+          ultraFineDust: _ultraFineDust.value,
           onConfirm: (idList) {
             List<String> updateList = List<String>.from(_myWeatherList);
             updateList.addAll(idList);
@@ -276,23 +308,41 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   _updateWeatherWidget(Address address) {
+    _updateUltraShortTerm(address);
     _updateSunRiseSet(address);
     _updateObservatory(address);
+    _updateFineDust(address);
   }
 
-  _updateSunRiseSet(Address address) async {
-    String addressId = address.id ?? '';
+  _updateUltraShortTerm(Address address) async {
     double longitude = address.x ?? 0;
     double latitude = address.y ?? 0;
-    // 일출 일몰
-    var getSunRiseSet = await _repository.getSunRiseSetWithCoordinate(addressId, longitude, latitude);
-    getSunRiseSet.when(success: (sunRiseSet) {
-      logger.i('HomeController.getSunRiseSetWithCoordinate success -> $sunRiseSet');
-      _sunrise(Utils.convertToTime(sunRiseSet.sunrise ?? '0500'));
-      _sunset(Utils.convertToTime(sunRiseSet.sunset ?? '1900'));
+    String addressId = address.id ?? '';
+    var getUltraShortTerm = await _repository.getUltraShortTermList(addressId, longitude, latitude);
+    getUltraShortTerm.when(success: (ultraShortTermList) async {
+      logger.i('HomeController.getUltraShortTermList success -> $ultraShortTermList');
+
+      for (var item in ultraShortTermList) {
+        String category = item.category ?? '';
+        double value = double.parse(item.obsrValue ?? '0');
+        switch (category) {
+          case kWeatherCategoryTemperature:
+            _ultraShortTemperature(value.round());
+          case kWeatherCategoryHumidity:
+            _ultraShortHumidity(value.round());
+          case kWeatherCategoryRain:
+            _ultraShortRain(value.round());
+          case kWeatherCategoryRainStatus:
+            _ultraShortRainStatus(item.weatherCategory?.codeValues?[value.round()]);
+          case kWeatherCategoryWindSpeed:
+            _ultraShortWindSpeed(value);
+          case kWeatherCategoryWindDirection:
+            _ultraShortWindDirection(value.round());
+        }
+      }
 
     }, error: (e) {
-      logger.e('HomeController.getSunRiseSetWithCoordinate error -> $e');
+      logger.e('HomeController.getUltraShortTermList error -> $e');
     });
   }
 
@@ -315,6 +365,35 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       });
     }, error: (e) {
       logger.e('HomeController.getObservatoryWithAddress error -> $e');
+    });
+  }
+
+  _updateSunRiseSet(Address address) async {
+    String addressId = address.id ?? '';
+    double longitude = address.x ?? 0;
+    double latitude = address.y ?? 0;
+    // 일출 일몰
+    var getSunRiseSet = await _repository.getSunRiseSetWithCoordinate(addressId, longitude, latitude);
+    getSunRiseSet.when(success: (sunRiseSet) {
+      logger.i('HomeController.getSunRiseSetWithCoordinate success -> $sunRiseSet');
+      _sunrise(Utils.convertToTime(sunRiseSet.sunrise ?? '0500'));
+      _sunset(Utils.convertToTime(sunRiseSet.sunset ?? '1900'));
+
+    }, error: (e) {
+      logger.e('HomeController.getSunRiseSetWithCoordinate error -> $e');
+    });
+  }
+
+  _updateFineDust(Address address) async {
+    String addressId = address.id ?? '';
+    String depth2 = address.region2depthName ?? '';
+    var getFineDust = await _repository.getFineDust(addressId,  depth2);
+    getFineDust.when(success: (fineDust) async {
+      logger.i('HomeController.getFineDust success -> $fineDust');
+      _fineDust(int.parse((fineDust.pm10Value ?? '0')));
+      _ultraFineDust(int.parse((fineDust.pm25Value ?? '0')));
+    }, error: (e) {
+      logger.e('HomeController.getFineDust error -> $e');
     });
   }
 

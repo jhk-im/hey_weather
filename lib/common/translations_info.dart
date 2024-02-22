@@ -27,6 +27,7 @@ class TranslationsInfo extends Translations {
     'danger' : '위험',
     'very_bad' : '매우 나쁨',
     'very_good' : '최고 좋음',
+    'very_strong' : '매우 강함',
     'highest' : '최고',
     'lowest' : '최저',
     'within' : '이내',

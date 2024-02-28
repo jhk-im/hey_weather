@@ -555,6 +555,13 @@ class WeatherRepository {
       DateTime todayDateTime = DateTime(dateTime.year, dateTime.month, dateTime.day - 1, 23);
       var twentyFourHoursLater = todayDateTime.add(const Duration(hours: 25));
 
+      // 오늘 바람
+      var windList = result.where((element) => element.category == kWeatherCategoryWindSpeed).toList();
+      var todayWindList = windList.where((item) {
+        var forecastDateTime = DateTime.parse("${item.fcstDate} ${item.fcstTime.toString().padLeft(4, '0')}");
+        return forecastDateTime.isAfter(todayDateTime) && forecastDateTime.isBefore(twentyFourHoursLater);
+      }).toList();
+
       // 오늘 최고-최저 기온
       var temperatureList = result.where((element) => element.category == kWeatherCategoryTemperatureShort).toList();
       var todayTemperatureList = temperatureList.where((item) {
@@ -568,6 +575,25 @@ class WeatherRepository {
       SharedPreferencesUtil().setInt(kTodayMinTemperature, minValue);
       // print('todayTemperatureList -> ${todayTemperatureList.length}');
       // todayTemperatureList.forEach((element) {print(element);});
+
+      // 오늘 체감 온도 업데이트
+      int feelMax = 100;
+      int feelMin = -100;
+      for (int i = 0; i < todayWindList.length; i++) {
+        double temp = double.parse(temperatureList[i].fcstValue ?? '0');
+        double wind = double.parse(windList[i].fcstValue ?? '0');
+        int feel = Utils.calculateWindChill(temp, wind).toInt();
+        if (feelMax == 100 || feel > feelMax) {
+          feelMax = feel;
+        }
+
+        if (feelMin == -100 || feel < feelMin) {
+          feelMin = feel;
+        }
+      }
+      SharedPreferencesUtil().setInt(kTodayMaxFeel, feelMax);
+      SharedPreferencesUtil().setInt(kTodayMinFeel, feelMin);
+
 
       // 오늘 오전-오후 강수 확률
       var rainPercentageList = result.where((element) => element.category == kWeatherCategoryRainPercent).toList();

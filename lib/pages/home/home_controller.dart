@@ -404,8 +404,6 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       _rainPercentList(rainPercentList);
       _rainPercentage(int.parse(rainPercentList[0].fcstValue ?? '0'));
 
-
-      // 바람
       int min = SharedPreferencesUtil().getInt(kTodayMinFeel);
       int max = SharedPreferencesUtil().getInt(kTodayMaxFeel);
       _apparentTemperatureMin(min);

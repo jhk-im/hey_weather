@@ -426,7 +426,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
     var getYesterdayShortTerm = await _repository.getYesterdayShortTermList(addressId, longitude, latitude);
     getYesterdayShortTerm.when(success: (shortTermList) async {
-      logger.i('HomeController.getYesterdayShortTerm success -> $shortTermList');
+      logger.i('HomeController.getYesterdayShortTerm success');
     }, error: (e) {
       logger.e('HomeController.getYesterdayShortTerm error -> $e');
     });

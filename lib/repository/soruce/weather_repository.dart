@@ -386,17 +386,11 @@ class WeatherRepository {
     final shortTermList = await _dao.getWeatherShortListTemperature(id);
 
     DateTime dateTime = DateTime.now();
-    // int day = dateTime.day;
-    // if (dateTime.hour == 23 || dateTime.hour < 3) {
-    //   day -= 1;
-    //
-    // }
-    String dt = DateTime(dateTime.year, dateTime.month, dateTime.day - 1, 23)
+    String dt = DateTime(dateTime.year, dateTime.month, dateTime.day - 1)
         .toString()
         .replaceAll(RegExp("[^0-9\\s]"), "")
         .replaceAll(" ", "");
     String date = dt.substring(0, 8);
-    String checkTime = '${dt.substring(8, 10)}00';
 
     // filter
     DateTime currentDateTime = DateTime(dateTime.year, dateTime.month, dateTime.day, dateTime.hour - 1);
@@ -407,8 +401,6 @@ class WeatherRepository {
         && shortTermList.items != null
         && shortTermList.items!.isNotEmpty
         && shortTermList.items![0].baseTime != null) {
-      // String localTime = shortTermList.items![0].baseTime!.substring(0, 2);
-      //String callTime = checkTime.substring(0, 2);
       String localDate = shortTermList.items![0].baseDate ?? '';
       if (date == localDate) {
         if (/*callTime == localTime*/true) {
@@ -435,8 +427,8 @@ class WeatherRepository {
 
     // remote
     try {
-      logger.i('getShortTermList(date: $date, time: $checkTime, x: $x, y: $y)');
-      final response = await _api.getShortTerm(date, checkTime, x, y);
+      logger.i('getShortTermList(date: $date, time: 2300, x: $x, y: $y)');
+      final response = await _api.getShortTerm(date, '2300', x, y);
       final jsonResult = jsonDecode(response.body);
       ShortTermList list = ShortTermList.fromJson(jsonResult['response']['body']);
       List<ShortTerm> result = [];
@@ -470,15 +462,14 @@ class WeatherRepository {
     final shortTermList = await _dao.getWeatherYesterdayShortListTemperature(id);
 
     DateTime dateTime = DateTime.now();
-    String dt = DateTime(dateTime.year, dateTime.month, dateTime.day - 2, 23)
+    String dt = DateTime(dateTime.year, dateTime.month, dateTime.day - 1)
         .toString()
         .replaceAll(RegExp("[^0-9\\s]"), "")
         .replaceAll(" ", "");
     String date = dt.substring(0, 8);
-    String checkTime = '${dt.substring(8, 10)}00';
 
     // filter
-    DateTime currentDateTime = DateTime(dateTime.year, dateTime.month, dateTime.day, dateTime.hour);
+    DateTime currentDateTime = DateTime(dateTime.year, dateTime.month, dateTime.day, dateTime.hour - 1);
     var twelveHoursLater = currentDateTime.add(const Duration(hours: 13));
 
     // local
@@ -510,10 +501,11 @@ class WeatherRepository {
 
     // remote
     try {
-      logger.i('getShortTermList(date: $date, time: $checkTime, x: $x, y: $y, numberOfRows: 300)');
-      final response = await _api.getShortTerm(date, checkTime, x, y, numberOfRows: '300');
+      logger.i('getYesterdayShortTermList(date: $date, time: 0200, x: $x, y: $y, numberOfRows: 300)');
+      final response = await _api.getShortTerm(date, '0200', x, y, numberOfRows: '300');
       final jsonResult = jsonDecode(response.body);
       ShortTermList list = ShortTermList.fromJson(jsonResult['response']['body']);
+
       List<ShortTerm> result = [];
       if (list.items?.item != null) {
         for (var item in list.items!.item!) {

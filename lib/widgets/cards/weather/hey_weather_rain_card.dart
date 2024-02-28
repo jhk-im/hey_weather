@@ -150,7 +150,7 @@ class _HeyWeatherRainCardState extends State<HeyWeatherRainCard> {
                                   color: widget.secondWeatherState.isNotEmpty ? kPrimaryDarkerColor : kIconColor,*/
                                   widget.percentage == 0
                                       ? 'no_forecast'.tr
-                                      : '${widget.percentage}%',
+                                      : '확률 ${widget.percentage}%',
                                   color: widget.percentage == 0 ? kIconColor : kPrimaryDarkerColor,
                                 ),
                                 const SizedBox(width: 4),

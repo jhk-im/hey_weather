@@ -2,17 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_text.dart';
+import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:hey_weather/common/svg_utils.dart';
+import 'package:hey_weather/common/utils.dart';
+import 'package:hey_weather/repository/soruce/remote/model/short_term.dart';
 
 class HeyWeatherTimeCard extends StatefulWidget {
   const HeyWeatherTimeCard({
     super.key,
+    required this.temperatureList,
+    required this.skyStatusList,
+    required this.rainStatusList,
+    required this.rainPercentList,
+    this.sunset = 500,
+    this.sunrise = 1900,
+    this.currentTemperature = 0,
     this.buttonStatus = 0,
     this.setHeight,
     this.onSelect,
     this.onRemove,
   });
 
+  final List<ShortTerm> skyStatusList;
+  final List<ShortTerm> temperatureList;
+  final List<ShortTerm> rainStatusList;
+  final List<ShortTerm> rainPercentList;
+  final int sunset;
+  final int sunrise;
+  final int currentTemperature;
   final int buttonStatus;
   final Function? setHeight;
   final Function? onSelect;
@@ -32,6 +49,10 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
     double height = 286;
     status(widget.buttonStatus);
     widget.setHeight?.call(id, height);
+
+    int maxTemperatureValue = SharedPreferencesUtil().getInt(kTodayMaxTemperature);
+    int minTemperatureValue = SharedPreferencesUtil().getInt(kTodayMinTemperature);
+
     return Obx(() => Material(
       color: Colors.transparent,
       child: GestureDetector(
@@ -82,68 +103,40 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
                     ),
                     const SizedBox(height: 20),
                     Expanded(
-                      child: SingleChildScrollView(
+                      child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            _weatherItem(
-                              temp: 23,
-                              progress: 0.3,
-                              iconName: 'partly_cloudy',
-                              percent: 0,
-                              timeText: '',
-                            ),
-                            _weatherItem(
-                              temp: 25,
-                              progress: 0.6,
-                              iconName: 'drizzle_on',
-                              percent: 60,
-                              timeText: '오후 6시',
-                            ),
-                            _weatherItem(
-                              temp: 22,
-                              progress: 0.55,
-                              iconName: 'drizzle_on',
-                              percent: 50,
-                              timeText: '오후 7시',
-                            ),
-                            _weatherItem(
-                              temp: 21,
-                              progress: 0.5,
-                              iconName: 'drizzle_on',
-                              percent: 80,
-                              timeText: '오후 8시',
-                            ),
-                            _weatherItem(
-                              temp: 20,
-                              progress: 0.4,
-                              iconName: 'drizzle_on',
-                              percent: 20,
-                              timeText: '오후 9시',
-                            ),
-                            _weatherItem(
-                              temp: 19,
-                              progress: 0.3,
-                              iconName: 'drizzle_on',
-                              percent: 30,
-                              timeText: '오후 10시',
-                            ),
-                            _weatherItem(
-                              temp: 19,
-                              progress: 0.3,
-                              iconName: 'drizzle_on',
-                              percent: 30,
-                              timeText: '오후 11시',
-                            ),
-                            _weatherItem(
-                              temp: 19,
-                              progress: 0.3,
-                              iconName: 'drizzle_on',
-                              percent: 30,
-                              timeText: '오후 12시',
-                            ),
-                          ],
-                        ),
+                        itemCount: widget.skyStatusList.length,
+                        itemBuilder: (context, index) {
+                          String temperature = '';
+
+                          String time = widget.temperatureList[index].fcstTime ?? '0000';
+                          int currentTime = int.parse(time);
+                          String timeText = '';
+                          if (index > 0) {
+                            temperature = widget.temperatureList[index].fcstValue ?? '';
+                            timeText = Utils.convertToTimeFormat(time);
+                          } else {
+                            temperature = widget.currentTemperature.toString();
+                          }
+
+                          int rainPercent = int.parse(widget.rainPercentList[index].fcstValue ?? '0');
+                          int rainIndex = int.parse(widget.rainStatusList[index].fcstValue ?? '0');
+                          String rainStatus = widget.rainStatusList[index].weatherCategory?.codeValues?[rainIndex] ?? '없음';
+                          int skyIndex = int.parse(widget.skyStatusList[index].fcstValue ?? '0');
+                          String skyStatus = widget.skyStatusList[index].weatherCategory?.codeValues?[skyIndex] ?? '';
+
+                          int iconIndex = Utils.getIconIndex(rainStatus: rainStatus, skyStatus: skyStatus, currentTime: currentTime, sunrise: widget.sunrise, sunset: widget.sunset);
+
+                          double progress = ((int.parse(temperature) - minTemperatureValue) / (maxTemperatureValue - minTemperatureValue));
+
+                          return _weatherItem(
+                            temperature: temperature,
+                            progress: progress,
+                            iconName: '${kWeatherIconList[iconIndex]}_on',
+                            rainPercent: rainPercent,
+                            timeText: timeText,
+                          );
+                        },
                       ),
                     ),
                   ],
@@ -204,10 +197,10 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
   }
 
   Widget _weatherItem({
-    int temp = 0,
+    String temperature = '0',
     double progress = 0,
     String iconName = '',
-    int percent = 0,
+    int rainPercent = 0,
     String timeText = '',
   }) {
     return SizedBox(
@@ -215,7 +208,7 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
       child: Column(
         children: [
           HeyText.title3Bold(
-            '$temp˚',
+            '$temperature˚',
             fontSize: kFont16,
             color: kTextDisabledColor,
           ),
@@ -230,7 +223,7 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
                   borderRadius: BorderRadius.circular(10.0),
                   backgroundColor: kButtonColor,
                   valueColor: const AlwaysStoppedAnimation<Color>( kProgressForegroundColor),
-                  value: 0.5,
+                  value: progress,
                   minHeight: 6,
                 ),
               ),
@@ -246,8 +239,8 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
 
           const SizedBox(height: 1.5),
           HeyText.caption1(
-            '$percent%',
-            color: percent > 0 ? kPrimarySecondColor : Colors.transparent,
+            '$rainPercent%',
+            color: rainPercent > 0 ? kPrimarySecondColor : Colors.transparent,
           ),
           const Spacer(),
           HeyText.subHeadline(

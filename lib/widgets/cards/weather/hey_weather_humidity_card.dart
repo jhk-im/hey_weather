@@ -2,20 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_text.dart';
+import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:hey_weather/common/svg_utils.dart';
 
 class HeyWeatherHumidityCard extends StatefulWidget {
   const HeyWeatherHumidityCard({
     super.key,
     this.today = 0,
-    this.yesterday = 0,
     this.buttonStatus = 0,
     this.setHeight,
     this.onSelect,
     this.onRemove,
   });
   final int today;
-  final int yesterday;
   final int buttonStatus;
   final Function? setHeight;
   final Function? onSelect;
@@ -52,11 +51,10 @@ class _HeyWeatherHumidityCardState extends State<HeyWeatherHumidityCard> {
 
     // humidity
     int today = 0;
-    int yesterday = 0;
     int diff = 0;
     bool isUp = false;
     today = widget.today;
-    yesterday = widget.yesterday;
+    int yesterday = SharedPreferencesUtil().getInt(kYesterdayHumidity);
     if (today > yesterday) {
       isUp = true;
       diff = today - yesterday;

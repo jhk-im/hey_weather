@@ -7,15 +7,13 @@ import 'package:hey_weather/common/svg_utils.dart';
 class HeyWeatherUltravioletCard extends StatefulWidget {
   const HeyWeatherUltravioletCard({
     super.key,
-    required this.id,
-    required this.ultraviolet,
+    this.ultraviolet = 0,
     this.buttonStatus = 0,
     this.setHeight,
     this.onSelect,
     this.onRemove,
   });
 
-  final String id;
   final int ultraviolet;
 
   final int buttonStatus;
@@ -49,9 +47,10 @@ class _HeyWeatherUltravioletCardState extends State<HeyWeatherUltravioletCard> {
 
   @override
   Widget build(BuildContext context) {
+    String id = kWeatherCardUltraviolet;
     double width = (MediaQuery.of(context).size.width / 2) - 28;
     status(widget.buttonStatus);
-    widget.setHeight?.call(widget.id, width);
+    widget.setHeight?.call(id, width);
 
     int stateIndex = 0;
     int ultraviolet = widget.ultraviolet;
@@ -78,7 +77,7 @@ class _HeyWeatherUltravioletCardState extends State<HeyWeatherUltravioletCard> {
           } else {
             status(1);
           }
-          widget.onSelect?.call(widget.id, status.value == 2);
+          widget.onSelect?.call(id, status.value == 2);
         } : null,
         child: Container(
           width: width,
@@ -206,7 +205,7 @@ class _HeyWeatherUltravioletCardState extends State<HeyWeatherUltravioletCard> {
                         highlightColor: Colors.transparent,
                         hoverColor: Colors.transparent,
                         onTap: status.value == 3 ? () {
-                          widget.onRemove?.call(widget.id);
+                          widget.onRemove?.call(id);
                         } : null,
                         child: Row(
                           children: [

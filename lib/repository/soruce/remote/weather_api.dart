@@ -47,6 +47,50 @@ class WeatherApi {
     return await http.get(url);
   }
 
+  // 단기 예보
+  Future<http.Response> getShortTerm(String date, String time, int x, int y, {String numberOfRows = '600'}) async {
+    var url =
+    Uri.https(weatherUrl, '/1360000/VilageFcstInfoService_2.0/getVilageFcst', {
+      'dataType': 'JSON',
+      'serviceKey': serviceKey ?? '',
+      'numOfRows': numberOfRows,
+      'pageNo': '1',
+      'base_date': date,
+      'base_time': time,
+      'nx': '$x',
+      'ny': '$y',
+    });
+    return await http.get(url);
+  }
+
+  // 중기 기온 예보
+  Future<http.Response> getMidTermTemperature(String tmFc, String regId) async {
+    var url =
+    Uri.https(weatherUrl, '/1360000/MidFcstInfoService/getMidTa', {
+      'serviceKey': serviceKey ?? '',
+      'dataType': 'JSON',
+      'numOfRows': '10',
+      'pageNo': '1',
+      'tmFc': tmFc,
+      'regId': regId,
+    });
+    return await http.get(url);
+  }
+
+  // 중기 육상 예보
+  Future<http.Response> getMidTermLand(String tmFc, String regId) async {
+    var url =
+    Uri.https(weatherUrl, '1360000/MidFcstInfoService/getMidLandFcst', {
+      'serviceKey': serviceKey ?? '',
+      'dataType': 'JSON',
+      'numOfRows': '10',
+      'pageNo': '1',
+      'tmFc': tmFc,
+      'regId': regId,
+    });
+    return await http.get(url);
+  }
+
   // 자외선 지수 조회
   Future<http.Response> getUltraviolet(String time, String areaNo) async {
     var url = Uri.https(weatherUrl, '/1360000/LivingWthrIdxServiceV4/getUVIdxV4', {

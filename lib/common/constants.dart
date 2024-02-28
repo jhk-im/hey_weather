@@ -54,6 +54,21 @@ const kLocationPermission = 'location_permission'; // 위치 권한 toggle
 const kNotificationPermission = 'notification_permission'; // 알림 권한 toggle
 const kFahrenheit = 'fahrenheit'; // 화씨 toggle
 const kOnBoard = 'on_board'; // 화씨 toggle
+const kYesterdayHumidity = 'yesterday_humidity';
+const kTodayMaxTemperature = 'today_max_temperature';
+const kTodayMinTemperature = 'today_min_temperature';
+const kTodayAmRainPercentage = 'today_am_rain_percentage';
+const kTodayPmRainPercentage = 'today_pm_rain_percentage';
+const kTodayAmStatus = 'today_am_status';
+const kTodayPmStatus = 'today_pm_status';
+const kTodayMaxFeel = 'today_max_feel';
+const kTodayMinFeel = 'today_min_feel';
+const kTomorrowMaxTemperature = 'tomorrow_max_temperature';
+const kTomorrowMinTemperature = 'tomorrow_min_temperature';
+const kTomorrowAmRainPercentage = 'tomorrow_am_rain_percentage';
+const kTomorrowPmRainPercentage = 'tomorrow_pm_rain_percentage';
+const kTomorrowAmStatus = 'tomorrow_am_status';
+const kTomorrowPmStatus = 'tomorrow_pm_status';
 
 // WeatherCardIDs
 const kWeatherCardTime = 'weather_card_time'; // 시간대별 날씨
@@ -68,8 +83,83 @@ const kWeatherCardUltraviolet = 'weather_card_ultraviolet'; // 자외선
 
 // WeatherCategory
 const kWeatherCategoryTemperature = 'T1H';
+const kWeatherCategoryTemperatureShort = 'TMP';
 const kWeatherCategoryHumidity = 'REH';
 const kWeatherCategoryRain = 'RN1';
 const kWeatherCategoryRainStatus = 'PTY';
 const kWeatherCategoryWindSpeed = 'WSD';
 const kWeatherCategoryWindDirection = 'VEC';
+const kWeatherCategorySky = 'SKY';
+const kWeatherCategoryRainPercent = 'POP';
+
+// 단기 예보
+const List<String> kBaseTimeList = [
+  '2300',
+  '2300',
+  '2300',
+  '0200',
+  '0200',
+  '0200',
+  '0500',
+  '0500',
+  '0500',
+  '0800',
+  '0800',
+  '0800',
+  '1100',
+  '1100',
+  '1100',
+  '1400',
+  '1400',
+  '1400',
+  '1700',
+  '1700',
+  '1700',
+  '2000',
+  '2000',
+  '2000',
+];
+
+const Map<String, String> kMidCode = {
+  '서울특별시, 인천광역시, 경기도': '11B00000',
+  '고성, 속초, 양양, 강릉, 동해, 삼척, 태백': '11D10000',
+  '강원도, 철원, 화천, 춘천, 양구, 인제, 홍천, 횡성, 평창, 정선, 영월': '11D20000',
+  '대전광역시, 세종특별자치시, 충청남도': '11C20000',
+  '충청북도': '11C10000',
+  '광주광역시, 전라남도': '11F20000',
+  '전라북도': '11F10000',
+  '대구광역시, 경상북도': '11H10000',
+  '부산광역시, 울산광역시 경상남도': '11H20000',
+  '제주도': '11G00000',
+};
+
+const Map<String, int> kStatusStates = {
+  '비' : 0,
+  '비/눈' : 0,
+  '소나기' : 0,
+  '빗방울' : 0,
+  '빗방울/눈날림' : 0,
+  '눈' : 1,
+  '눈날림' : 1,
+  '맑음' : 2,
+  '구름많음' : 3,
+  '흐림' : 4,
+};
+
+const List<String> kWeatherWeekIconList = [
+  'drizzle',
+  'blizzard',
+  'clear',
+  'cloudy_clear',
+  'cloudy',
+];
+
+const kWeatherIconList = [
+  'drizzle',
+  'blizzard',
+  'clear',
+  'night_clear',
+  'cloudy_clear',
+  'night_cloudy_clear',
+  'cloudy'
+];

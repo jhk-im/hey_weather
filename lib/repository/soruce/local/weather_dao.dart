@@ -1,10 +1,16 @@
 import 'package:hey_weather/repository/soruce/local/entity/address_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/observatory_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_fine_dust_entity.dart';
+import 'package:hey_weather/repository/soruce/local/entity/weather_mid_code_entity.dart';
+import 'package:hey_weather/repository/soruce/local/entity/weather_mid_term_land_entity.dart';
+import 'package:hey_weather/repository/soruce/local/entity/weather_mid_term_temperature_entity.dart';
+import 'package:hey_weather/repository/soruce/local/entity/weather_short_term_list_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_sun_rise_set_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/user_notification_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_ultra_short_term_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_ultraviolet_entity.dart';
+import 'package:hey_weather/repository/soruce/mapper/weather_mapper.dart';
+import 'package:hey_weather/repository/soruce/remote/model/short_term.dart';
 import 'package:hive/hive.dart';
 
 class WeatherDao {
@@ -100,6 +106,44 @@ class WeatherDao {
   Future<List<ObservatoryEntity>> getAllObservatoryList() async {
     final box = await Hive.openBox<ObservatoryEntity>(observatory);
     return box.values.toList();
+  }
+
+  static const weatherShortListTemperature = 'weather_short_list_temperature';
+  Future updateWeatherShortListTemperature(String id, List<ShortTerm> shortTermList) async {
+    var entity = WeatherShortTermListEntity();
+    entity.id = id;
+    entity.items = shortTermList.map((e) => e.toShortTermEntity()).toList();
+    final box = await Hive.openBox<WeatherShortTermListEntity>(weatherShortListTemperature);
+    await box.put(id, entity);
+  }
+
+  Future deleteWeatherShortListTemperature(String id) async {
+    final box = await Hive.openBox<WeatherShortTermListEntity>(weatherShortListTemperature);
+    return box.delete(id);
+  }
+
+  Future<WeatherShortTermListEntity?> getWeatherShortListTemperature(String id) async {
+    final box = await Hive.openBox<WeatherShortTermListEntity>(weatherShortListTemperature);
+    return box.get(id);
+  }
+
+  static const weatherYesterdayShortListTemperature = 'weather_yesterday_short_list_temperature';
+  Future updateWeatherYesterdayShortListTemperature(String id, List<ShortTerm> shortTermList) async {
+    var entity = WeatherShortTermListEntity();
+    entity.id = id;
+    entity.items = shortTermList.map((e) => e.toShortTermEntity()).toList();
+    final box = await Hive.openBox<WeatherShortTermListEntity>(weatherYesterdayShortListTemperature);
+    await box.put(id, entity);
+  }
+
+  Future deleteWeatherYesterdayShortListTemperature(String id) async {
+    final box = await Hive.openBox<WeatherShortTermListEntity>(weatherYesterdayShortListTemperature);
+    return box.delete(id);
+  }
+
+  Future<WeatherShortTermListEntity?> getWeatherYesterdayShortListTemperature(String id) async {
+    final box = await Hive.openBox<WeatherShortTermListEntity>(weatherYesterdayShortListTemperature);
+    return box.get(id);
   }
 
   static const weatherUltraShortTemperature = 'weather_ultra_short_temperature';
@@ -243,6 +287,54 @@ class WeatherDao {
 
   Future<WeatherFineDustEntity?> getWeatherFineDust(String id) async {
     final box = await Hive.openBox<WeatherFineDustEntity>(weatherFineDust);
+    return box.get(id);
+  }
+
+  static const midCode = 'midCode';
+  Future<void> insertMidCodeList(List<WeatherMidCodeEntity> list) async {
+    final box = await Hive.openBox<WeatherMidCodeEntity>(midCode);
+    await box.addAll(list);
+  }
+
+  Future clearMidCodeList() async {
+    final box = await Hive.openBox<WeatherMidCodeEntity>(midCode);
+    await box.clear();
+  }
+
+  Future<List<WeatherMidCodeEntity>> getAllMidCodeList() async {
+    final box = await Hive.openBox<WeatherMidCodeEntity>(midCode);
+    return box.values.toList();
+  }
+
+  static const weatherMidTermLand = 'weather_mid_term_land';
+  Future updateWeatherMidTermLand(String id, WeatherMidTermLandEntity midTermLandEntity) async {
+    final box = await Hive.openBox<WeatherMidTermLandEntity>(weatherMidTermLand);
+    await box.put(id, midTermLandEntity);
+  }
+
+  Future deleteWeatherMidTermLand(String id) async {
+    final box = await Hive.openBox<WeatherMidTermLandEntity>(weatherMidTermLand);
+    return box.delete(id);
+  }
+
+  Future<WeatherMidTermLandEntity?> getWeatherMidTermLand(String id) async {
+    final box = await Hive.openBox<WeatherMidTermLandEntity>(weatherMidTermLand);
+    return box.get(id);
+  }
+
+  static const weatherMidTermTemperature = 'weather_mid_term_temperature';
+  Future updateWeatherMidTermTemperature(String id, WeatherMidTermTemperatureEntity midTermTemperatureEntity) async {
+    final box = await Hive.openBox<WeatherMidTermTemperatureEntity>(weatherMidTermTemperature);
+    await box.put(id, midTermTemperatureEntity);
+  }
+
+  Future deleteWeatherMidTermTemperature(String id) async {
+    final box = await Hive.openBox<WeatherMidTermTemperatureEntity>(weatherMidTermTemperature);
+    return box.delete(id);
+  }
+
+  Future<WeatherMidTermTemperatureEntity?> getWeatherMidTermTemperature(String id) async {
+    final box = await Hive.openBox<WeatherMidTermTemperatureEntity>(weatherMidTermTemperature);
     return box.get(id);
   }
 }

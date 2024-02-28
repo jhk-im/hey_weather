@@ -1,10 +1,12 @@
-  import 'dart:convert';
+import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/convert_gps.dart';
+import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:hey_weather/common/utils.dart';
+import 'package:hey_weather/repository/soruce/local/csv/mid_code_parser.dart';
 import 'package:hey_weather/repository/soruce/local/csv/observatory_parser.dart';
 import 'package:hey_weather/repository/soruce/local/weather_dao.dart';
 import 'package:hey_weather/repository/soruce/mapper/weather_mapper.dart';
@@ -12,7 +14,11 @@ import 'package:hey_weather/repository/soruce/remote/model/address.dart';
 import 'package:hey_weather/repository/soruce/local/model/search_address.dart';
 import 'package:hey_weather/repository/soruce/local/model/user_notification.dart';
 import 'package:hey_weather/repository/soruce/remote/model/fine_dust.dart';
+import 'package:hey_weather/repository/soruce/remote/model/mid_code.dart';
+import 'package:hey_weather/repository/soruce/remote/model/mid_term_land.dart';
+import 'package:hey_weather/repository/soruce/remote/model/mid_term_temperature.dart';
 import 'package:hey_weather/repository/soruce/remote/model/observatory.dart';
+import 'package:hey_weather/repository/soruce/remote/model/short_term.dart';
 import 'package:hey_weather/repository/soruce/remote/model/sun_rise_set.dart';
 import 'package:hey_weather/repository/soruce/remote/model/ultra_short_term.dart';
 import 'package:hey_weather/repository/soruce/remote/model/ultraviolet.dart';
@@ -288,50 +294,7 @@ class WeatherRepository {
   }
 
   /// Weather API
-  // 관측소
-  Future<Result<Observatory>> getObservatoryWithAddress(String depth1, String depth2) async {
-    final localList = await _dao.getAllObservatoryList();
-    List<Observatory> list = [];
-    Observatory result = Observatory();
-    if (localList.isNotEmpty) {
-      list = localList.map((e) => e.toObservatory()).toList();
-      logger.i('getObservatoryWithAddress local return');
-    } else {
-      var csv = await rootBundle.loadString(
-        "assets/data/observatory.csv",
-      );
-      var observatoryParser = ObservatoryParser();
-      list = await observatoryParser.parse(csv);
-      _dao.clearObservatory();
-      _dao.insertObservatoryList(
-          list.map((e) => e.toObservatoryEntity()).toList());
-      logger.i('getObservatoryWithAddress csv return = $list');
-    }
-
-    var d1 = list.where((e) => e.depth1 == depth1 && e.depth2 == depth2);
-    if (d1.isNotEmpty) {
-      result = d1.toList()[0];
-    } else {
-      var d2 = list.where((e) => e.depth1 == depth1 && e.depth2 == '');
-      if (d2.isNotEmpty) {
-        result = d2.toList()[0];
-      } else {
-        var d3 = list.where((e) => e.depth1 == '서울특별시');
-        if (d3.isNotEmpty) {
-          result = d3.toList()[0];
-        }
-      }
-    }
-
-    if (result.depth1 != null) {
-      return Result.success(result);
-    } else {
-      return Result.error(
-          Exception('getObservatoryWithAddress failed: not found'));
-    }
-  }
-
-  // 날씨 category 에 따른 정보
+  // 날씨 category 에 따른 정보 (초단기, 단기)
   Future<WeatherCategory> getWeatherCode(String category) async {
     final jsonString = await rootBundle.loadString('assets/data/code.json');
     final jsonObject = jsonDecode(jsonString);
@@ -418,49 +381,451 @@ class WeatherRepository {
     }
   }
 
-  // 자외선
-  Future<Result<Ultraviolet>> getUltraviolet(String id, String areaNo) async {
-    final ultraviolet = await _dao.getWeatherUltraviolet(id);
+  // 단기 예보 (오늘, 내일)
+  Future<Result<List<ShortTerm>>> getShortTermList(String id, double longitude, double latitude) async {
+    final shortTermList = await _dao.getWeatherShortListTemperature(id);
 
-    // 시간 기준 업데이트
-    String dt = DateTime.now()
+    DateTime dateTime = DateTime.now();
+    // int day = dateTime.day;
+    // if (dateTime.hour == 23 || dateTime.hour < 3) {
+    //   day -= 1;
+    //
+    // }
+    String dt = DateTime(dateTime.year, dateTime.month, dateTime.day - 1, 23)
         .toString()
         .replaceAll(RegExp("[^0-9\\s]"), "")
         .replaceAll(" ", "");
-    String currentDateTime = dt.substring(0, 10);
+    String date = dt.substring(0, 8);
+    String checkTime = '${dt.substring(8, 10)}00';
 
-    if (ultraviolet != null && ultraviolet.date == currentDateTime) {
-      logger.i('getUltraviolet() -> Local return');
-      return Result.success(ultraviolet.toUltraviolet());
+    // filter
+    DateTime currentDateTime = DateTime(dateTime.year, dateTime.month, dateTime.day, dateTime.hour - 1);
+    var twelveHoursLater = currentDateTime.add(const Duration(hours: 13));
+
+    // local
+    if (shortTermList != null
+        && shortTermList.items != null
+        && shortTermList.items!.isNotEmpty
+        && shortTermList.items![0].baseTime != null) {
+      // String localTime = shortTermList.items![0].baseTime!.substring(0, 2);
+      //String callTime = checkTime.substring(0, 2);
+      String localDate = shortTermList.items![0].baseDate ?? '';
+      if (date == localDate) {
+        if (/*callTime == localTime*/true) {
+          logger.i('getShortTermList() -> local return');
+
+          var result = shortTermList.items!.map((e) => e.toShortTerm()).toList();
+
+          _updateOthers(result);
+
+          var filterList = result.where((item) {
+            var forecastDateTime = DateTime.parse("${item.fcstDate} ${item.fcstTime.toString().padLeft(4, '0')}");
+            return forecastDateTime.isAfter(currentDateTime) && forecastDateTime.isBefore(twelveHoursLater);
+          }).toList();
+
+          return Result.success(filterList);
+        }
+      }
+    }
+
+    // get location
+    var gpsToData = ConvertGps.gpsToGRID(latitude, longitude);
+    int x = gpsToData['x'];
+    int y = gpsToData['y'];
+
+    // remote
+    try {
+      logger.i('getShortTermList(date: $date, time: $checkTime, x: $x, y: $y)');
+      final response = await _api.getShortTerm(date, checkTime, x, y);
+      final jsonResult = jsonDecode(response.body);
+      ShortTermList list = ShortTermList.fromJson(jsonResult['response']['body']);
+      List<ShortTerm> result = [];
+      if (list.items?.item != null) {
+        for (var item in list.items!.item!) {
+          item.weatherCategory = await getWeatherCode(item.category ?? '');
+          result.add(item);
+        }
+      }
+
+      // local update
+      if (result.isNotEmpty) {
+        _dao.updateWeatherShortListTemperature(id, result);
+      }
+
+      _updateOthers(result);
+
+      logger.i('getShortTermList() -> api return');
+      var filterList = result.where((item) {
+        var forecastDateTime = DateTime.parse("${item.fcstDate} ${item.fcstTime.toString().padLeft(4, '0')}");
+        return forecastDateTime.isAfter(currentDateTime) && forecastDateTime.isBefore(twelveHoursLater);
+      }).toList();
+
+      return Result.success(filterList);
+    } catch (e) {
+      return Result.error(Exception('getShortTermList failed: ${e.toString()}'));
+    }
+  }
+
+  Future<Result<List<ShortTerm>>> getYesterdayShortTermList(String id, double longitude, double latitude) async {
+    final shortTermList = await _dao.getWeatherYesterdayShortListTemperature(id);
+
+    DateTime dateTime = DateTime.now();
+    String dt = DateTime(dateTime.year, dateTime.month, dateTime.day - 2, 23)
+        .toString()
+        .replaceAll(RegExp("[^0-9\\s]"), "")
+        .replaceAll(" ", "");
+    String date = dt.substring(0, 8);
+    String checkTime = '${dt.substring(8, 10)}00';
+
+    // filter
+    DateTime currentDateTime = DateTime(dateTime.year, dateTime.month, dateTime.day, dateTime.hour);
+    var twelveHoursLater = currentDateTime.add(const Duration(hours: 13));
+
+    // local
+    if (shortTermList != null
+        && shortTermList.items != null
+        && shortTermList.items!.isNotEmpty
+        && shortTermList.items![0].baseTime != null) {
+      String localDate = shortTermList.items![0].baseDate ?? '';
+      if (date == localDate) {
+        logger.i('getYesterdayShortTermList() -> local return');
+
+        var result = shortTermList.items!.map((e) => e.toShortTerm()).toList();
+
+        _updateOthers(result, isYesterday: true);
+
+        var filterList = result.where((item) {
+          var forecastDateTime = DateTime.parse("${item.fcstDate} ${item.fcstTime.toString().padLeft(4, '0')}");
+          return forecastDateTime.isAfter(currentDateTime) && forecastDateTime.isBefore(twelveHoursLater);
+        }).toList();
+
+        return Result.success(filterList);
+      }
+    }
+
+    // get location
+    var gpsToData = ConvertGps.gpsToGRID(latitude, longitude);
+    int x = gpsToData['x'];
+    int y = gpsToData['y'];
+
+    // remote
+    try {
+      logger.i('getShortTermList(date: $date, time: $checkTime, x: $x, y: $y, numberOfRows: 300)');
+      final response = await _api.getShortTerm(date, checkTime, x, y, numberOfRows: '300');
+      final jsonResult = jsonDecode(response.body);
+      ShortTermList list = ShortTermList.fromJson(jsonResult['response']['body']);
+      List<ShortTerm> result = [];
+      if (list.items?.item != null) {
+        for (var item in list.items!.item!) {
+          item.weatherCategory = await getWeatherCode(item.category ?? '');
+          result.add(item);
+        }
+      }
+
+      // local update
+      if (result.isNotEmpty) {
+        _dao.updateWeatherYesterdayShortListTemperature(id, result);
+      }
+
+      _updateOthers(result, isYesterday: true);
+
+      logger.i('getYesterdayShortTermList() -> api return');
+      var filterList = result.where((item) {
+        var forecastDateTime = DateTime.parse("${item.fcstDate} ${item.fcstTime.toString().padLeft(4, '0')}");
+        return forecastDateTime.isAfter(currentDateTime) && forecastDateTime.isBefore(twelveHoursLater);
+      }).toList();
+
+      return Result.success(filterList);
+    } catch (e) {
+      return Result.error(Exception('getYesterdayShortTermList failed: ${e.toString()}'));
+    }
+  }
+
+  _updateOthers(List<ShortTerm> result, {bool isYesterday = false}) {
+    if (isYesterday) {
+      DateTime dateTime = DateTime.now();
+      DateTime yesterdayDateTime = DateTime(dateTime.year, dateTime.month, dateTime.day - 2, 23);
+      var yesterdayTwentyFourHoursLater = yesterdayDateTime.add(const Duration(hours: 25));
+
+      // 어제 평균 습도
+      var humidityList = result.where((element) => element.category == kWeatherCategoryHumidity).toList();
+      var yesterdayFilterList = humidityList.where((item) {
+        var forecastDateTime = DateTime.parse("${item.fcstDate} ${item.fcstTime.toString().padLeft(4, '0')}");
+        return forecastDateTime.isAfter(yesterdayDateTime) && forecastDateTime.isBefore(yesterdayTwentyFourHoursLater);
+      }).toList();
+      // print('yesterdayFilterList -> ${yesterdayFilterList.length}');
+      // yesterdayFilterList.forEach((element) {print(element);});
+      int humidity = yesterdayFilterList.map((e) => int.parse(e.fcstValue ?? '0')).reduce((value, element) => value + element);
+      double humidityAverage = humidity / yesterdayFilterList.length;
+      SharedPreferencesUtil().setInt(kYesterdayHumidity, humidityAverage.toInt());
+    } else {
+      DateTime dateTime = DateTime.now();
+      DateTime todayDateTime = DateTime(dateTime.year, dateTime.month, dateTime.day - 1, 23);
+      var twentyFourHoursLater = todayDateTime.add(const Duration(hours: 25));
+
+      // 오늘 최고-최저 기온
+      var temperatureList = result.where((element) => element.category == kWeatherCategoryTemperatureShort).toList();
+      var todayTemperatureList = temperatureList.where((item) {
+        var forecastDateTime = DateTime.parse("${item.fcstDate} ${item.fcstTime.toString().padLeft(4, '0')}");
+        return forecastDateTime.isAfter(todayDateTime) && forecastDateTime.isBefore(twentyFourHoursLater);
+      }).toList();
+      var tempList = todayTemperatureList.map((e) => int.parse(e.fcstValue ?? '0')).toList();
+      int maxValue = tempList.reduce((value, element) => value > element ? value : element);
+      int minValue = tempList.reduce((value, element) => value < element ? value : element);
+      SharedPreferencesUtil().setInt(kTodayMaxTemperature, maxValue);
+      SharedPreferencesUtil().setInt(kTodayMinTemperature, minValue);
+      // print('todayTemperatureList -> ${todayTemperatureList.length}');
+      // todayTemperatureList.forEach((element) {print(element);});
+
+      // 오늘 오전-오후 강수 확률
+      var rainPercentageList = result.where((element) => element.category == kWeatherCategoryRainPercent).toList();
+      var todayRainPercentageList = rainPercentageList.where((item) {
+        var forecastDateTime = DateTime.parse("${item.fcstDate} ${item.fcstTime.toString().padLeft(4, '0')}");
+        return forecastDateTime.isAfter(todayDateTime) && forecastDateTime.isBefore(twentyFourHoursLater);
+      }).toList();
+      var amList = todayRainPercentageList.sublist(0, 12);
+      var amTempList = amList.map((e) => int.parse(e.fcstValue ?? '0')).toList();
+      int amMaxValue = amTempList.reduce((value, element) => value > element ? value : element);
+      SharedPreferencesUtil().setInt(kTodayAmRainPercentage, amMaxValue);
+      // print('amList -> ${amList.length}');
+      // amList.forEach((element) {print(element);});
+
+      var pmList = todayRainPercentageList.sublist(12, 24);
+      var pmTempList = pmList.map((e) => int.parse(e.fcstValue ?? '0')).toList();
+      int pmMaxValue = pmTempList.reduce((value, element) => value > element ? value : element);
+      SharedPreferencesUtil().setInt(kTodayPmRainPercentage, pmMaxValue);
+      // print('pmList -> ${pmList.length}');
+      // pmList.forEach((element) {print(element);});
+
+      // 오늘 오전-오후 강수,하늘 상태
+      var statusList = result.where((element) => element.category == kWeatherCategoryRainStatus).toList();
+      var skyList = result.where((element) => element.category == kWeatherCategorySky).toList();
+      var amStatusList = statusList.sublist(0, 24);
+      var amStatusTempList = amStatusList.map((e) {
+        var value = e.weatherCategory?.codeValues?[int.parse(e.fcstValue ?? '0')] ?? '없음';
+        int result = 0;
+        int index = amStatusList.indexOf(e);
+        if (value != '없음') {
+          result = kStatusStates[value] ?? 0;
+        } else {
+          var value2 = skyList[index].weatherCategory?.codeValues?[int.parse(skyList[index].fcstValue ?? '0')] ?? '없음';
+          result = kStatusStates[value2] ?? 0;
+        }
+        return result;
+      }).toList();
+      int amStatusMaxValue = amStatusTempList.reduce((value, element) => value > element ? value : element);
+      SharedPreferencesUtil().setInt(kTodayAmStatus, amStatusMaxValue);
+      // print('amStatusMaxValue -> $amStatusMaxValue');
+      // print('amStatusTempList -> ${amStatusTempList.length}');
+      // amStatusTempList.forEach((element) {print(element);});
+
+      var pmStatusList = statusList.sublist(24, 48);
+      var pmStatusTempList = pmStatusList.map((e) {
+        var value = e.weatherCategory?.codeValues?[int.parse(e.fcstValue ?? '0')] ?? '없음';
+        int result = 0;
+        int index = pmStatusList.indexOf(e) * 2;
+        if (value != '없음') {
+          result = kStatusStates[value] ?? 0;
+        } else {
+          var value2 = skyList[index].weatherCategory?.codeValues?[int.parse(skyList[index].fcstValue ?? '0')] ?? '없음';
+          result = kStatusStates[value2] ?? 0;
+        }
+        return result;
+      }).toList();
+      int pmStatusMaxValue = pmStatusTempList.reduce((value, element) => value > element ? value : element);
+      SharedPreferencesUtil().setInt(kTodayPmStatus, pmStatusMaxValue);
+      // print('pmStatusMaxValue -> $pmStatusMaxValue');
+      // print('pmStatusTempList -> ${pmStatusTempList.length}');
+      // pmStatusTempList.forEach((element) {print(element);});
+
+      DateTime tomorrowDateTime = DateTime(dateTime.year, dateTime.month, dateTime.day, 23);
+      var tomorrowTwentyFourHoursLater = tomorrowDateTime.add(const Duration(hours: 25));
+
+      // 내일 최고-최저 기온
+      var tomorrowTemperatureList = temperatureList.where((item) {
+        var forecastDateTime = DateTime.parse("${item.fcstDate} ${item.fcstTime.toString().padLeft(4, '0')}");
+        return forecastDateTime.isAfter(tomorrowDateTime) && forecastDateTime.isBefore(tomorrowTwentyFourHoursLater);
+      }).toList();
+      // print('tomorrowTemperatureList -> ${tomorrowTemperatureList.length}');
+      // tomorrowTemperatureList.forEach((element) {print(element);});
+
+      var tomorrowTempList = tomorrowTemperatureList.map((e) => int.parse(e.fcstValue ?? '0')).toList();
+      int tomorrowMaxValue = tomorrowTempList.reduce((value, element) => value > element ? value : element);
+      int tomorrowMinValue = tomorrowTempList.reduce((value, element) => value < element ? value : element);
+      SharedPreferencesUtil().setInt(kTomorrowMaxTemperature, tomorrowMaxValue);
+      SharedPreferencesUtil().setInt(kTomorrowMinTemperature, tomorrowMinValue);
+
+      // 내일 오전-오후 강수 확률
+      var tomorrowRainPercentageList = rainPercentageList.where((item) {
+        var forecastDateTime = DateTime.parse("${item.fcstDate} ${item.fcstTime.toString().padLeft(4, '0')}");
+        return forecastDateTime.isAfter(tomorrowDateTime) && forecastDateTime.isBefore(tomorrowTwentyFourHoursLater);
+      }).toList();
+      var tomorrowAmList = tomorrowRainPercentageList.sublist(0, 12);
+      var tomorrowAmTempList = tomorrowAmList.map((e) => int.parse(e.fcstValue ?? '0')).toList();
+      int tomorrowAmMaxValue = tomorrowAmTempList.reduce((value, element) => value > element ? value : element);
+      SharedPreferencesUtil().setInt(kTomorrowAmRainPercentage, tomorrowAmMaxValue);
+      // print('tomorrowAmList -> ${tomorrowAmList.length}');
+      // tomorrowAmList.forEach((element) {print(element);});
+
+      var tomorrowPmList = tomorrowRainPercentageList.sublist(12, 24);
+      var tomorrowPmTempList = tomorrowPmList.map((e) => int.parse(e.fcstValue ?? '0')).toList();
+      int tomorrowPmMaxValue = tomorrowPmTempList.reduce((value, element) => value > element ? value : element);
+      SharedPreferencesUtil().setInt(kTomorrowPmRainPercentage, tomorrowPmMaxValue);
+      // print('tomorrowPmList -> ${tomorrowPmList.length}');
+      // tomorrowPmList.forEach((element) {print(element);});
+    }
+  }
+
+  // 중기 지역별 코드 조회
+  Future<Result<MidCode>> getMidCode(String depth1, String depth2) async {
+    final localList = await _dao.getAllMidCodeList();
+    List<MidCode> list = [];
+    MidCode result = MidCode();
+    if (localList.isNotEmpty) {
+      logger.i('getMidCode() local return');
+      list = localList.map((e) => e.toMidCode()).toList();
+    } else {
+      logger.i('getMidCode() csv return');
+      var csv = await rootBundle.loadString(
+        "assets/data/mid_code.csv",
+      );
+      var midCodeParser = MidCodeParser();
+      list = await midCodeParser.parse(csv);
+      _dao.clearMidCodeList();
+      _dao.insertMidCodeList(list.map((e) => e.toMidCodeEntity()).toList());
+    }
+
+    var d1 = list.where((e) => e.city == depth2);
+    if (d1.isNotEmpty) {
+      result = d1.toList()[0];
+    } else {
+      var d2 = list.where((e) => e.city == depth1);
+      if (d2.isNotEmpty) {
+        result = d2.toList()[0];
+      } else {
+        var d3 = list.where((e) => e.city == '서울특별시');
+        if (d3.isNotEmpty) {
+          result = d3.toList()[0];
+        }
+      }
+    }
+
+    if (result.city != null) {
+      return Result.success(result);
+    } else {
+      return Result.error(Exception('getMidCode failed: not found'));
+    }
+  }
+
+  String _getMidDate() {
+    String date = '';
+    // 30분전
+    DateTime dateTime = DateTime.now();
+    String dt = DateTime(dateTime.year, dateTime.month, dateTime.day,
+        dateTime.hour, dateTime.minute - 30)
+        .toString()
+        .replaceAll(RegExp("[^0-9\\s]"), "")
+        .replaceAll(" ", "");
+    String current = dt.substring(0, 8);
+    int currentTime = int.parse(dt.substring(8, 10));
+    String prevDt = DateTime(dateTime.year, dateTime.month, dateTime.day - 1)
+        .toString()
+        .replaceAll(RegExp("[^0-9\\s]"), "")
+        .replaceAll(" ", "");
+    String prev = prevDt.substring(0, 8);
+    if (currentTime < 6) {
+      date = '${prev}1800';
+    } else if (currentTime > 6 && currentTime < 18) {
+      date = '${current}0600';
+    } else {
+      date = '${current}1800';
+    }
+    return date;
+  }
+
+  String _getMidFcstRegId(String depth1, String depth2) {
+    String regId = '11B00000';
+    for (String key in kMidCode.keys) {
+      if (depth1 == '강원도' && depth2.isNotEmpty) {
+        if (key.contains(depth2.substring(0, 2))) {
+          regId = kMidCode[key]!;
+          break;
+        }
+      } else {
+        if (key.contains(depth1)) {
+          regId = kMidCode[key]!;
+          break;
+        }
+      }
+    }
+    return regId;
+  }
+
+  // 중기 기온 예보
+  Future<Result<MidTermTemperature>> getMidTermTemperature(String id, String regId) async {
+    final getWeatherMidTermTemperature = await _dao.getWeatherMidTermTemperature(id);
+    String tmFc = _getMidDate();
+    if (getWeatherMidTermTemperature != null) {
+      if (tmFc == getWeatherMidTermTemperature.date) {
+        logger.i('getMidTermTemperature() -> local return');
+        return Result.success(getWeatherMidTermTemperature.toMidTermTemperature());
+      }
     }
 
     // remote
-    Ultraviolet result = Ultraviolet();
+    MidTermTemperature result = MidTermTemperature();
     try {
-      final response = await _api.getUltraviolet(currentDateTime, areaNo);
+      final response = await _api.getMidTermTemperature(tmFc, regId);
       final jsonResult = jsonDecode(response.body);
-      UltravioletList list = UltravioletList.fromJson(jsonResult['response']['body']);
-      if (list.items != null) {
-        if (list.items!.item != null) {
-          result = list.items!.item![0];
-          logger.i('getUltraviolet() api result = $result');
-          // 로컬 업데이트
-          if (result.code != null) {
-            for (Ultraviolet uv in list.items!.item!) {
-              uv.date = currentDateTime;
-            }
-            _dao.updateWeatherUltraviolet(id, result.toWeatherUltravioletEntity());
-          }
+      MidTaList list = MidTaList.fromJson(jsonResult['response']['body']);
+
+      if (list.items?.item != null) {
+        for (var item in list.items!.item!) {
+          item.date = tmFc;
+          result = item;
         }
       }
+
+      _dao.updateWeatherMidTermTemperature(id, result.toMidTermTemperatureEntity());
+      logger.i('getMidTermTemperature() -> api return');
+      return Result.success(result);
     } catch (e) {
-      return Result.error(Exception('getUltraviolet failed: ${e.toString()}'));
+      return Result.error(Exception('getMidTermTemperature failed: ${e.toString()}'));
+    }
+  }
+
+  // 중기 육상 예보
+  Future<Result<MidTermLand>> getMidTermLand(String id, String depth1, String depth2) async {
+
+    String tmFc = _getMidDate();
+    String regId = _getMidFcstRegId(depth1, depth2);
+    final getWeatherMidTermLand = await _dao.getWeatherMidTermLand(id);
+    if (getWeatherMidTermLand != null) {
+      if (tmFc == getWeatherMidTermLand.date) {
+        logger.i('getMidTermLand() -> local return');
+        return Result.success(getWeatherMidTermLand.toMidTermLand());
+      }
     }
 
-    if (result.code != null) {
+    // remote
+    MidTermLand result = MidTermLand();
+    try {
+      final response = await _api.getMidTermLand(tmFc, regId);
+      final jsonResult = jsonDecode(response.body);
+      MidLandFcstList list = MidLandFcstList.fromJson(jsonResult['response']['body']);
+
+      if (list.items?.item != null) {
+        for (var item in list.items!.item!) {
+          item.date = tmFc;
+          result = item;
+        }
+      }
+      // local update
+      _dao.updateWeatherMidTermLand(id, result.toMidTermLandEntity());
+      logger.i('getMidTermLand() -> api return');
       return Result.success(result);
-    } else {
-      return Result.error(Exception('getUltraviolet failed: not found'));
+    } catch (e) {
+      return Result.error(Exception('getMidTermLand failed: ${e.toString()}'));
     }
   }
 
@@ -506,7 +871,7 @@ class WeatherRepository {
     }
   }
 
-  // 미세먼지
+  // 미세 먼지
   Future<Result<FineDust>> getFineDust(String id, String depth2) async {
     final fineDust = await _dao.getWeatherFineDust(id);
 
@@ -537,15 +902,108 @@ class WeatherRepository {
       final jsonResult = jsonDecode(response.body);
       DnstyList list = DnstyList.fromJson(jsonResult['response']['body']);
       var fineDust = FineDust();
+      var isUpdate = false;
       if (list.items != null) {
+        isUpdate = true;
         fineDust = list.items![0];
       }
-      // 로컬 업데이트
-      _dao.updateWeatherFineDust(id, fineDust.toWeatherFineDustEntity());
+      // local update
+      if (isUpdate) {
+        _dao.updateWeatherFineDust(id, fineDust.toWeatherFineDustEntity());
+      }
       logger.i('getFineDust() -> api return');
       return Result.success(fineDust);
     } catch (e) {
       return Result.error(Exception('getFineDust failed: ${e.toString()}'));
+    }
+  }
+
+  // 관측소
+  Future<Result<Observatory>> getObservatoryWithAddress(String depth1, String depth2) async {
+    final localList = await _dao.getAllObservatoryList();
+    List<Observatory> list = [];
+    Observatory result = Observatory();
+    if (localList.isNotEmpty) {
+      list = localList.map((e) => e.toObservatory()).toList();
+      logger.i('getObservatoryWithAddress local return');
+    } else {
+      var csv = await rootBundle.loadString(
+        "assets/data/observatory.csv",
+      );
+      var observatoryParser = ObservatoryParser();
+      list = await observatoryParser.parse(csv);
+      _dao.clearObservatory();
+      _dao.insertObservatoryList(
+          list.map((e) => e.toObservatoryEntity()).toList());
+      logger.i('getObservatoryWithAddress csv return');
+    }
+
+    var d1 = list.where((e) => e.depth1 == depth1 && e.depth2 == depth2);
+    if (d1.isNotEmpty) {
+      result = d1.toList()[0];
+    } else {
+      var d2 = list.where((e) => e.depth1 == depth1 && e.depth2 == '');
+      if (d2.isNotEmpty) {
+        result = d2.toList()[0];
+      } else {
+        var d3 = list.where((e) => e.depth1 == '서울특별시');
+        if (d3.isNotEmpty) {
+          result = d3.toList()[0];
+        }
+      }
+    }
+
+    if (result.depth1 != null) {
+      return Result.success(result);
+    } else {
+      return Result.error(
+          Exception('getObservatoryWithAddress failed: not found'));
+    }
+  }
+
+  // 자외선
+  Future<Result<Ultraviolet>> getUltraviolet(String id, String areaNo) async {
+    final ultraviolet = await _dao.getWeatherUltraviolet(id);
+
+    // 시간 기준 업데이트
+    String dt = DateTime.now()
+        .toString()
+        .replaceAll(RegExp("[^0-9\\s]"), "")
+        .replaceAll(" ", "");
+    String currentDateTime = dt.substring(0, 10);
+
+    if (ultraviolet != null && ultraviolet.date == currentDateTime) {
+      logger.i('getUltraviolet() -> Local return');
+      return Result.success(ultraviolet.toUltraviolet());
+    }
+
+    // remote
+    Ultraviolet result = Ultraviolet();
+    try {
+      final response = await _api.getUltraviolet(currentDateTime, areaNo);
+      final jsonResult = jsonDecode(response.body);
+      UltravioletList list = UltravioletList.fromJson(jsonResult['response']['body']);
+      if (list.items != null) {
+        if (list.items!.item != null) {
+          result = list.items!.item![0];
+          logger.i('getUltraviolet() api result = $result');
+          // 로컬 업데이트
+          if (result.code != null) {
+            for (Ultraviolet uv in list.items!.item!) {
+              uv.date = currentDateTime;
+            }
+            _dao.updateWeatherUltraviolet(id, result.toWeatherUltravioletEntity());
+          }
+        }
+      }
+    } catch (e) {
+      return Result.error(Exception('getUltraviolet failed: ${e.toString()}'));
+    }
+
+    if (result.code != null) {
+      return Result.success(result);
+    } else {
+      return Result.error(Exception('getUltraviolet failed: not found'));
     }
   }
 }

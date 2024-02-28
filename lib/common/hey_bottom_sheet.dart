@@ -5,6 +5,9 @@ import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/utils.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
 import 'package:hey_weather/repository/soruce/local/model/search_address.dart';
+import 'package:hey_weather/repository/soruce/remote/model/mid_term_land.dart';
+import 'package:hey_weather/repository/soruce/remote/model/mid_term_temperature.dart';
+import 'package:hey_weather/repository/soruce/remote/model/short_term.dart';
 import 'package:hey_weather/widgets/buttons/hey_custom_button.dart';
 import 'package:hey_weather/widgets/buttons/hey_elevated_button.dart';
 import 'package:hey_weather/widgets/buttons/hey_weather_address_button.dart';
@@ -13,7 +16,7 @@ import 'package:hey_weather/widgets/cards/hey_weather_select_card.dart';
 import 'package:hey_weather/widgets/cards/weather/hey_weather_dust_card.dart';
 import 'package:hey_weather/widgets/cards/weather/hey_weather_humidity_card.dart';
 import 'package:hey_weather/widgets/cards/weather/hey_weather_rain_card.dart';
-import 'package:hey_weather/widgets/cards/weather/hey_weather_small_card.dart';
+import 'package:hey_weather/widgets/cards/weather/hey_weather_chill_card.dart';
 import 'package:hey_weather/widgets/cards/weather/hey_weather_sun_card.dart';
 import 'package:hey_weather/widgets/cards/weather/hey_weather_time_card.dart';
 import 'package:hey_weather/widgets/cards/weather/hey_weather_ultraviolet_card.dart';
@@ -215,8 +218,13 @@ class HeyBottomSheet {
     double windSpeed = 0.0,
     int windDirection = 0,
     int todayHumidity = 0,
-    int yesterdayHumidity = 0,
     int rain = 0,
+    int feelMax = 0,
+    int feelMin = 0,
+    List<ShortTerm>? skyStatusList,
+    List<ShortTerm>? temperatureList,
+    List<ShortTerm>? rainStatusList,
+    List<ShortTerm>? rainPercentList,
     String rainStatus = '',
     int rainPercentage = 0,
     int ultraviolet = 0,
@@ -224,6 +232,11 @@ class HeyBottomSheet {
     int ultraFineDust = 0,
     String sunrise = '',
     String sunset = '',
+    int sunriseTime = 0,
+    int sunsetTime = 0,
+    int currentTemperature = 0,
+    MidTermLand? midTermLand,
+    MidTermTemperature? midTermTemperature,
   }) {
     double height = (MediaQuery.of(context).size.height) - 97;
 
@@ -314,6 +327,13 @@ class HeyBottomSheet {
                             Visibility(
                               visible: weatherInitMap[kWeatherCardTime] ?? true,
                               child: HeyWeatherTimeCard(
+                                temperatureList: temperatureList ?? [],
+                                skyStatusList: skyStatusList ?? [],
+                                rainStatusList: rainStatusList ?? [],
+                                rainPercentList: rainPercentList ?? [],
+                                sunset: sunsetTime,
+                                sunrise: sunriseTime,
+                                currentTemperature: currentTemperature,
                                 buttonStatus: 1,
                                 onSelect: (id, selected) {
                                   weatherSelectMap[id] = selected;
@@ -324,6 +344,8 @@ class HeyBottomSheet {
                             Visibility(
                               visible: weatherInitMap[kWeatherCardWeek] ?? true,
                               child: HeyWeatherWeekCard(
+                                midTermLand: midTermLand ?? MidTermLand(),
+                                midTermTemperature: midTermTemperature ?? MidTermTemperature(),
                                 buttonStatus: 1,
                                 onSelect: (id, selected) {
                                   weatherSelectMap[id] = selected;
@@ -360,7 +382,6 @@ class HeyBottomSheet {
                               visible: weatherInitMap[kWeatherCardHumidity] ?? true,
                               child: HeyWeatherHumidityCard(
                                 today: todayHumidity,
-                                yesterday: yesterdayHumidity,
                                 buttonStatus: 1,
                                 onSelect: (id, selected) {
                                   weatherSelectMap[id] = selected;
@@ -370,11 +391,9 @@ class HeyBottomSheet {
                             // 체감온도
                             Visibility(
                               visible: weatherInitMap[kWeatherCardFeel] ?? true,
-                              child: HeyWeatherSmallCard(
-                                id: kWeatherCardFeel,
-                                title: 'feel_temp'.tr,
-                                iconName: 'feel_temp',
-                                weatherState: '30 28',
+                              child: HeyWeatherFeelCard(
+                                max: feelMax,
+                                min: feelMin,
                                 buttonStatus: 1,
                                 onSelect: (id, selected) {
                                   weatherSelectMap[id] = selected;
@@ -409,7 +428,6 @@ class HeyBottomSheet {
                             Visibility(
                               visible: weatherInitMap[kWeatherCardUltraviolet] ?? true,
                               child: HeyWeatherUltravioletCard(
-                                id: kWeatherCardUltraviolet,
                                 ultraviolet: ultraviolet,
                                 buttonStatus: 1,
                                 onSelect: (id, selected) {

@@ -7,6 +7,7 @@ import 'package:hey_weather/widgets/buttons/hey_custom_button.dart';
 class HeyWeatherHomeCard extends StatelessWidget {
   const HeyWeatherHomeCard({
     super.key,
+    this.iconName = '',
     this.weatherStatus,
     this.temperature,
     this.message1,
@@ -14,6 +15,7 @@ class HeyWeatherHomeCard extends StatelessWidget {
     this.message3,
   });
 
+  final String iconName;
   final String? weatherStatus;
   final String? temperature;
   final String? message1;
@@ -50,10 +52,13 @@ class HeyWeatherHomeCard extends StatelessWidget {
               children: [
                 HeyText.bodySemiBold('$temperature˚', fontSize: kFont73),
                 const Spacer(),
-                const ImageUtils(
-                  iconName: 'cloudy_sample',
-                  width: 136,
-                  height: 120,
+                Visibility(
+                  visible: iconName.isNotEmpty == true,
+                  child: ImageUtils(
+                    iconName: iconName,
+                    width: 136,
+                    height: 120,
+                  ),
                 ),
               ],
             ),

@@ -2,17 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_text.dart';
+import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:hey_weather/common/svg_utils.dart';
+import 'package:hey_weather/repository/soruce/remote/model/mid_term_land.dart';
+import 'package:hey_weather/repository/soruce/remote/model/mid_term_temperature.dart';
+import 'package:intl/intl.dart';
 
 class HeyWeatherWeekCard extends StatefulWidget {
   const HeyWeatherWeekCard({
     super.key,
+    required this.midTermLand,
+    required this.midTermTemperature,
     this.buttonStatus = 0,
     this.setHeight,
     this.onSelect,
     this.onRemove,
   });
-
+  final MidTermLand midTermLand;
+  final MidTermTemperature midTermTemperature;
   final int buttonStatus;
   final Function? setHeight;
   final Function? onSelect;
@@ -32,6 +39,55 @@ class _HeyWeatherWeekCardState extends State<HeyWeatherWeekCard> {
     double height = 432;
     status(widget.buttonStatus);
     widget.setHeight?.call(id, height);
+
+    var todayMaxTemperature = SharedPreferencesUtil().getInt(kTodayMaxTemperature);
+    var todayMinTemperature = SharedPreferencesUtil().getInt(kTodayMinTemperature);
+    var todayAmRainPercentage = SharedPreferencesUtil().getInt(kTodayAmRainPercentage);
+    var todayPmRainPercentage = SharedPreferencesUtil().getInt(kTodayPmRainPercentage);
+    var todayAmStatus = SharedPreferencesUtil().getInt(kTodayAmStatus);
+    var todayPmStatus = SharedPreferencesUtil().getInt(kTodayPmStatus);
+
+    var tomorrowMaxTemperature = SharedPreferencesUtil().getInt(kTomorrowMaxTemperature);
+    var tomorrowMinTemperature = SharedPreferencesUtil().getInt(kTomorrowMinTemperature);
+    var tomorrowAmRainPercentage = SharedPreferencesUtil().getInt(kTomorrowAmRainPercentage);
+    var tomorrowPmRainPercentage = SharedPreferencesUtil().getInt(kTomorrowPmRainPercentage);
+    var tomorrowAmStatus = SharedPreferencesUtil().getInt(kTomorrowAmStatus);
+    var tomorrowPmStatus = SharedPreferencesUtil().getInt(kTomorrowPmStatus);
+
+    int getIconIndex(String status) {
+      int result = 0;
+      if (!status.contains('비') && !status.contains('빗') && !status.contains('소')) {
+        if (status.contains('눈')) {
+          result = 1;
+        } else if (status.contains('맑음')) {
+          result = 2;
+        } else if (status.contains('구름많음')) {
+          result = 3;
+        } else if (status.contains('흐림')) {
+          result = 4;
+        }
+      }
+      return result;
+    }
+
+    DateTime today = DateTime.now();
+    DateFormat formatter = DateFormat('E MM.dd', 'ko_KR');
+    List<String> weekList = [];
+    List<String> dateList = [];
+    for (int i = 0; i <= 6; i++) {
+      DateTime nextDate = today.add(Duration(days: i));
+      String formattedDate = formatter.format(nextDate);
+      List<String> format = formattedDate.split(' ');
+      if (i == 0) {
+        weekList.add('오늘');
+      } else if (i == 1) {
+        weekList.add('내일');
+      } else {
+        weekList.add(format[0]);
+      }
+      dateList.add(format[1]);
+    }
+
     return Obx(() => Material(
       color: Colors.transparent,
       child: GestureDetector(
@@ -86,79 +142,79 @@ class _HeyWeatherWeekCardState extends State<HeyWeatherWeekCard> {
                         children: [
                           _weatherItem(
                             dateText: '',
-                            dateText2: '09.12',
-                            amPercent: 100,
-                            pmPercent: 100,
-                            amIconName: 'drizzle_on',
-                            pmIconName: 'drizzle_on',
-                            minTemp: -1,
-                            maxTemp: 5,
+                            dateText2: dateList[0],
+                            amPercent: todayAmRainPercentage,
+                            pmPercent: todayPmRainPercentage,
+                            amIconName: '${kWeatherWeekIconList[todayAmStatus]}_on',
+                            pmIconName: '${kWeatherWeekIconList[todayPmStatus]}_on',
+                            minTemp: todayMaxTemperature,
+                            maxTemp: todayMinTemperature,
                           ),
                       
                           _weatherItem(
-                            dateText: 'tomorrow'.tr,
-                            dateText2: '09.13',
-                            amPercent: 30,
-                            pmPercent: 30,
-                            amIconName: 'drizzle_on',
-                            pmIconName: 'drizzle_on',
-                            minTemp: 9,
-                            maxTemp: 11,
+                            dateText: weekList[1],
+                            dateText2: dateList[1],
+                            amPercent: tomorrowAmRainPercentage,
+                            pmPercent: tomorrowPmRainPercentage,
+                            amIconName: '${kWeatherWeekIconList[tomorrowAmStatus]}_on',
+                            pmIconName: '${kWeatherWeekIconList[tomorrowPmStatus]}_on',
+                            minTemp: tomorrowMaxTemperature,
+                            maxTemp: tomorrowMinTemperature,
                           ),
                       
                           _weatherItem(
-                            dateText: '화',
-                            dateText2: '09.13',
-                            amPercent: 10,
-                            pmPercent: 0,
-                            amIconName: 'drizzle_on',
-                            pmIconName: 'partly_cloudy',
-                            minTemp: 11,
-                            maxTemp: 15,
+                            dateText: weekList[2],
+                            dateText2: dateList[2],
+                            amPercent: widget.midTermLand.rnSt3Am ?? 0,
+                            pmPercent: widget.midTermLand.rnSt3Pm ?? 0,
+                            amIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf3Am ?? '')]}_on',
+                            pmIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf3Pm ?? '')]}_on',
+                            minTemp: widget.midTermTemperature.taMax3 ?? 0,
+                            maxTemp: widget.midTermTemperature.taMin3 ?? 0,
                           ),
                       
                           _weatherItem(
-                            dateText: '수',
-                            dateText2: '09.15',
-                            amPercent: 10,
-                            pmPercent: 0,
-                            amIconName: 'drizzle_on',
-                            pmIconName: 'partly_cloudy',
-                            minTemp: 13,
-                            maxTemp: 15,
+                            dateText: weekList[3],
+                            dateText2: dateList[3],
+                            amPercent: widget.midTermLand.rnSt4Am ?? 0,
+                            pmPercent: widget.midTermLand.rnSt4Pm ?? 0,
+                            amIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf4Am ?? '')]}_on',
+                            pmIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf4Pm ?? '')]}_on',
+                            minTemp: widget.midTermTemperature.taMax4 ?? 0,
+                            maxTemp: widget.midTermTemperature.taMin4 ?? 0,
                           ),
                       
                           _weatherItem(
-                            dateText: '목',
-                            dateText2: '09.16',
-                            amPercent: 10,
-                            pmPercent: 0,
-                            amIconName: 'drizzle_on',
-                            pmIconName: 'partly_cloudy',
-                            minTemp: 11,
-                            maxTemp: 25,
+                            dateText: weekList[4],
+                            dateText2: dateList[4],
+                            amPercent: widget.midTermLand.rnSt5Am ?? 0,
+                            pmPercent: widget.midTermLand.rnSt5Pm ?? 0,
+                            amIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf5Am ?? '')]}_on',
+                            pmIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf5Pm ?? '')]}_on',
+                            minTemp: widget.midTermTemperature.taMax5 ?? 0,
+                            maxTemp: widget.midTermTemperature.taMin5 ?? 0,
                           ),
                       
                           _weatherItem(
-                            dateText: '금',
-                            dateText2: '09.17',
-                            amPercent: 10,
-                            pmPercent: 0,
-                            amIconName: 'drizzle_on',
-                            pmIconName: 'partly_cloudy',
-                            minTemp: 11,
-                            maxTemp: 25,
+                            dateText: weekList[5],
+                            dateText2: dateList[5],
+                            amPercent: widget.midTermLand.rnSt6Am ?? 0,
+                            pmPercent: widget.midTermLand.rnSt6Pm ?? 0,
+                            amIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf6Am ?? '')]}_on',
+                            pmIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf6Pm ?? '')]}_on',
+                            minTemp: widget.midTermTemperature.taMax6 ?? 0,
+                            maxTemp: widget.midTermTemperature.taMin6 ?? 0,
                           ),
                       
                           _weatherItem(
-                            dateText: '토',
-                            dateText2: '09.12',
-                            amPercent: 10,
-                            pmPercent: 0,
-                            amIconName: 'drizzle_on',
-                            pmIconName: 'partly_cloudy',
-                            minTemp: 11,
-                            maxTemp: 25,
+                            dateText: weekList[6],
+                            dateText2: dateList[6],
+                            amPercent: widget.midTermLand.rnSt7Am ?? 0,
+                            pmPercent: widget.midTermLand.rnSt7Pm ?? 0,
+                            amIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf7Am ?? '')]}_on',
+                            pmIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf7Pm ?? '')]}_on',
+                            minTemp: widget.midTermTemperature.taMax7 ?? 0,
+                            maxTemp: widget.midTermTemperature.taMin7 ?? 0,
                           ),
                         ],
                       ),

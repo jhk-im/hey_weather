@@ -30,4 +30,12 @@ class SharedPreferencesUtil {
   bool? getBool(String key) {
     return _prefs.getBool(key);
   }
+
+  Future<void> setInt(String key, int value) async {
+    await _prefs.setInt(key, value);
+  }
+
+  int getInt(String key) {
+    return _prefs.getInt(key) ?? 0;
+  }
 }

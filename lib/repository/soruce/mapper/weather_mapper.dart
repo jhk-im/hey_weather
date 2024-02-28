@@ -1,15 +1,24 @@
 import 'package:hey_weather/repository/soruce/local/entity/address_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/observatory_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_fine_dust_entity.dart';
+import 'package:hey_weather/repository/soruce/local/entity/weather_mid_code_entity.dart';
+import 'package:hey_weather/repository/soruce/local/entity/weather_mid_term_land_entity.dart';
+import 'package:hey_weather/repository/soruce/local/entity/weather_mid_term_temperature_entity.dart';
+import 'package:hey_weather/repository/soruce/local/entity/weather_short_term_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_sun_rise_set_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/user_notification_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_ultra_short_term_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_ultraviolet_entity.dart';
+import 'package:hey_weather/repository/soruce/remote/dto/mid_code_dto.dart';
 import 'package:hey_weather/repository/soruce/remote/dto/observatory_dto.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
 import 'package:hey_weather/repository/soruce/local/model/user_notification.dart';
 import 'package:hey_weather/repository/soruce/remote/model/fine_dust.dart';
+import 'package:hey_weather/repository/soruce/remote/model/mid_code.dart';
+import 'package:hey_weather/repository/soruce/remote/model/mid_term_land.dart';
+import 'package:hey_weather/repository/soruce/remote/model/mid_term_temperature.dart';
 import 'package:hey_weather/repository/soruce/remote/model/observatory.dart';
+import 'package:hey_weather/repository/soruce/remote/model/short_term.dart';
 import 'package:hey_weather/repository/soruce/remote/model/sun_rise_set.dart';
 import 'package:hey_weather/repository/soruce/remote/model/ultra_short_term.dart';
 import 'package:hey_weather/repository/soruce/remote/model/ultraviolet.dart';
@@ -108,6 +117,195 @@ extension ToUltraShortTermEntity on UltraShortTerm {
     return entity;
   }
 }
+
+// 단기 예보
+extension ToShortTerm on WeatherShortTermEntity {
+  ShortTerm toShortTerm() {
+    var fcst = ShortTerm(
+      baseDate: baseDate,
+      baseTime: baseTime,
+      category: category,
+      fcstDate: fcstDate,
+      fcstTime: fcstTime,
+      fcstValue: fcstValue,
+      nx: nx,
+      ny: ny,
+    );
+    fcst.weatherCategory =
+        WeatherCategory(name: name, unit: unit, codeValues: codeValues);
+    return fcst;
+  }
+}
+
+extension ToShortTermEntity on ShortTerm {
+  WeatherShortTermEntity toShortTermEntity() {
+    var entity =
+    WeatherShortTermEntity(category: category ?? '', fcstValue: fcstValue ?? '');
+    entity.baseTime = baseTime;
+    entity.baseDate = baseDate;
+    entity.fcstTime = fcstTime;
+    entity.fcstDate = fcstDate;
+    entity.nx = nx;
+    entity.ny = ny;
+    entity.codeValues = weatherCategory?.codeValues ?? [];
+    entity.name = weatherCategory?.name ?? '';
+    entity.unit = weatherCategory?.unit ?? '';
+    return entity;
+  }
+}
+
+// 중기 예보
+extension ToMidCodeFromDto on MidCodeDto {
+  MidCode toMidCodeFromDto() {
+    return MidCode(
+      city: city,
+      code: code,
+    );
+  }
+}
+
+extension ToMidCode on WeatherMidCodeEntity {
+  MidCode toMidCode() {
+    return MidCode(
+      city: city,
+      code: code,
+    );
+  }
+}
+
+extension ToMidCodeEntity on MidCode {
+  WeatherMidCodeEntity toMidCodeEntity() {
+    var entity = WeatherMidCodeEntity();
+    entity.city = city;
+    entity.code = code;
+    return entity;
+  }
+}
+
+extension ToMidTermTemperature on WeatherMidTermTemperatureEntity {
+  MidTermTemperature toMidTermTemperature() {
+    MidTermTemperature midTa = MidTermTemperature(
+      regId: regId,
+      taMin3: taMin3,
+      taMax3: taMax3,
+      taMin4: taMin4,
+      taMax4: taMax4,
+      taMin5: taMin5,
+      taMax5: taMax5,
+      taMin6: taMin6,
+      taMax6: taMax6,
+      taMin7: taMin7,
+      taMax7: taMax7,
+      taMin8: taMin8,
+      taMax8: taMax8,
+      taMin9: taMin9,
+      taMax9: taMax9,
+      taMin10: taMin10,
+      taMax10: taMax10,
+    );
+    midTa.date = date;
+    return midTa;
+  }
+}
+
+extension ToMidTermTemperatureEntity on MidTermTemperature {
+  WeatherMidTermTemperatureEntity toMidTermTemperatureEntity() {
+    var entity = WeatherMidTermTemperatureEntity();
+    entity.regId = regId;
+    entity.taMin3 = taMin3;
+    entity.taMax3 = taMax3;
+    entity.taMin3 = taMin3;
+    entity.taMax3 = taMax3;
+    entity.taMin4 = taMin4;
+    entity.taMax4 = taMax4;
+    entity.taMin5 = taMin5;
+    entity.taMax5 = taMax5;
+    entity.taMin6 = taMin6;
+    entity.taMax6 = taMax6;
+    entity.taMin7 = taMin7;
+    entity.taMax7 = taMax7;
+    entity.taMin8 = taMin8;
+    entity.taMax8 = taMax8;
+    entity.taMin9 = taMin9;
+    entity.taMax9 = taMax9;
+    entity.taMin10 = taMin10;
+    entity.taMax10 = taMax10;
+    entity.date = date;
+    return entity;
+  }
+}
+
+extension ToMidTermLand on WeatherMidTermLandEntity {
+  MidTermLand toMidTermLand() {
+    MidTermLand midLandFcst = MidTermLand(
+      regId: regId,
+      rnSt3Am: rnSt3Am,
+      rnSt3Pm: rnSt3Pm,
+      rnSt4Am: rnSt4Am,
+      rnSt4Pm: rnSt4Pm,
+      rnSt5Am: rnSt5Am,
+      rnSt5Pm: rnSt5Pm,
+      rnSt6Am: rnSt6Am,
+      rnSt6Pm: rnSt6Pm,
+      rnSt7Am: rnSt7Am,
+      rnSt7Pm: rnSt7Pm,
+      rnSt8: rnSt8,
+      rnSt9: rnSt9,
+      rnSt10: rnSt10,
+      wf3Am: wf3Am,
+      wf3Pm: wf3Pm,
+      wf4Am: wf4Am,
+      wf4Pm: wf4Pm,
+      wf5Am: wf5Am,
+      wf5Pm: wf5Pm,
+      wf6Am: wf6Am,
+      wf6Pm: wf6Pm,
+      wf7Am: wf7Am,
+      wf7Pm: wf7Pm,
+      wf8: wf8,
+      wf9: wf9,
+      wf10: wf10,
+    );
+    midLandFcst.date = date;
+    return midLandFcst;
+  }
+}
+
+extension ToMidTermLandEntity on MidTermLand {
+  WeatherMidTermLandEntity toMidTermLandEntity() {
+    var entity = WeatherMidTermLandEntity();
+    entity.regId = regId;
+    entity.rnSt3Am = rnSt3Am;
+    entity.rnSt3Pm = rnSt3Pm;
+    entity.rnSt4Am = rnSt4Am;
+    entity.rnSt4Pm = rnSt4Pm;
+    entity.rnSt5Am = rnSt5Am;
+    entity.rnSt5Pm = rnSt5Pm;
+    entity.rnSt6Am = rnSt6Am;
+    entity.rnSt6Pm = rnSt6Pm;
+    entity.rnSt7Am = rnSt7Am;
+    entity.rnSt7Pm = rnSt7Pm;
+    entity.rnSt8 = rnSt8;
+    entity.rnSt9 = rnSt9;
+    entity.rnSt10 = rnSt10;
+    entity.wf3Am = wf3Am;
+    entity.wf3Pm = wf3Pm;
+    entity.wf4Am = wf4Am;
+    entity.wf4Pm = wf4Pm;
+    entity.wf5Am = wf5Am;
+    entity.wf5Pm = wf5Pm;
+    entity.wf6Am = wf6Am;
+    entity.wf6Pm = wf6Pm;
+    entity.wf7Am = wf7Am;
+    entity.wf7Pm = wf7Pm;
+    entity.wf8 = wf8;
+    entity.wf9 = wf9;
+    entity.wf10 = wf10;
+    entity.date = date;
+    return entity;
+  }
+}
+
 
 // 관측소
 extension ToObservatory on ObservatoryDto {

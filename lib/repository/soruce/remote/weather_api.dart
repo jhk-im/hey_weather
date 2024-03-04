@@ -117,7 +117,7 @@ class WeatherApi {
   }
 
   // 측정소별 실시간 대기오염 측정정보 조회
-  Future<http.Response> getFineDust(String sName) async {
+  /*Future<http.Response> getFineDust(String sName) async {
     var url = Uri.https(weatherUrl, '/B552584/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty', {
       'returnType': 'JSON',
       'serviceKey': serviceKey ?? '',
@@ -125,6 +125,20 @@ class WeatherApi {
       'pageNo': '1',
       'dataTerm': 'DAILY',
       'stationName': sName,
+      'ver': '1.1',
+    });
+    return await http.get(url);
+  }*/
+
+  // 도시별 실시간 대기오염 측정정보 조회
+  // 전국, 서울, 부산, 대구, 인천, 광주, 대전, 울산, 경기, 강원, 충북, 충남, 전북, 전남, 경북, 경남, 제주, 세종
+  Future<http.Response> getFineDustWithCity(String cityName) async {
+    var url = Uri.https(weatherUrl, '/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty', {
+      'returnType': 'JSON',
+      'serviceKey': serviceKey ?? '',
+      'numOfRows': '1',
+      'pageNo': '1',
+      'sidoName': cityName,
       'ver': '1.1',
     });
     return await http.get(url);

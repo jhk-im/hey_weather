@@ -41,6 +41,9 @@ class AddressController extends GetxController with WidgetsBindingObserver {
   final RxString _searchAddressText = ''.obs;
   String get searchAddressText => _searchAddressText.value;
 
+  final RxString _updateAddressText = ''.obs;
+  String get updateAddressText => _updateAddressText.value;
+
   // input field
   TextEditingController textFieldController = TextEditingController();
   final _deBouncer = BehaviorSubject<String>();
@@ -140,7 +143,7 @@ class AddressController extends GetxController with WidgetsBindingObserver {
   /// Data
   Future _getUpdateAddressWithCoordinate() async {
     logger.i('AddressController getUpdateAddressWithCoordinate()');
-    var getUpdateAddressWithCoordinate = await _repository.getUpdateAddressWithCoordinate();
+    var getUpdateAddressWithCoordinate = await _repository.getUpdateAddressWithCoordinate(currentAddress?.id ?? kCurrentLocationId);
     getUpdateAddressWithCoordinate.when(success: (address) async {
       _currentAddress(address);
       _isUpdated(true);
@@ -161,6 +164,9 @@ class AddressController extends GetxController with WidgetsBindingObserver {
       }
       final sortList = addressList.where((e) => e.id != kCurrentLocationId).toList();
       final recent = addressList.where((e) => e.id != kCurrentLocationId).toList();
+
+      recent.forEach((element) {print(element.createDateTime);});
+
       recent.sort((a, b) => DateTime.parse(b.createDateTime ?? '').compareTo(DateTime.parse(a.createDateTime ?? '')));
 
       // 편집 주소 리스트
@@ -168,8 +174,10 @@ class AddressController extends GetxController with WidgetsBindingObserver {
       getUserAddressEditIdList.when(
         success: (idList) {
           sortList.sort((a, b) => idList.indexOf(a.id!).compareTo(idList.indexOf(b.id!)));
-          sortList[sortList.indexOf(recent.first)].isRecent = true;
-          _addressList(sortList);
+          if (sortList.isNotEmpty) {
+            sortList[sortList.indexOf(recent.first)].isRecent = true;
+            _addressList(sortList);
+          }
         },
         error: (Exception e) {
           logger.e(e);
@@ -209,6 +217,8 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     await _repository.insertUserAddressRecentIdList(uuid);
 
     _isUpdated(true);
+
+    _updateAddressText(searchText);
 
     Future.delayed(const Duration(milliseconds: 500), () {
       if (Get.context != null) {

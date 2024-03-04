@@ -29,251 +29,258 @@ class HomePage extends GetView<HomeController> {
     double statusBarHeight = MediaQuery.of(context).padding.top;
     double emptyHeight = (MediaQuery.of(context).size.height) - 72;
     return Scaffold(
-      body: Obx(() => Stack(
-        children: [
-          Column(
-            children: [
-              // StatusBar
-              SizedBox(height: statusBarHeight),
+      body: Obx(() => RefreshIndicator(
+        color: Colors.white,
+        backgroundColor: kPrimaryDarkerColor,
+        onRefresh: () async {
+          await controller.getData();
+        },
+        child: Stack(
+          children: [
+            Column(
+              children: [
+                // StatusBar
+                SizedBox(height: statusBarHeight),
 
-              // Header
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-                child: Row(
-                  children: [
-                    InkWell(
-                      splashColor: kBaseColor,
-                      highlightColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      onTap: () {
-                        /*HeyBottomSheet.showSelectAddressBottomSheet(
-                          context,
-                          addressList: controller.recentAddressList,
-                          currentAddress: controller.currentAddress,
-                          onSelectedAddress: (addressId) {
-                            controller.logger.d('onSelectedAddress: (addressId) -> $addressId / currentAddress -> ${controller.currentAddress}');
-                            if (addressId != controller.currentAddress) {
-                              controller.resetData(addressId);
-                            }
-                          },
-                          onMoveToAddress: controller.moveToAddress,
-                        );*/
-                        controller.moveToAddress();
-                      },
-                      child: Row(
-                        children: [
-                          SvgUtils.icon(
-                            context,
-                            controller.currentAddress == kCurrentLocationId ? 'location_target' : 'location',
-                          ),
-                          const SizedBox(width: 6),
-                          HeyText.body(controller.addressText, color: kTextSecondaryColor),
-                        ],
-                      ),
-                    ),
-                    const Spacer(),
-                    /*InkWell(
-                      splashColor: kBaseColor,
-                      highlightColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      onTap: controller.moveToAddress,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: SvgUtils.icon(context, 'map'),
-                      ),
-                    ),*/
-                    InkWell(
-                      splashColor: kBaseColor,
-                      highlightColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      onTap: () {
-                        Get.toNamed(Routes.routeSetting);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: SvgUtils.icon(context, 'setting'),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // MY, ALL, 편집
-              _tab(context, controller.scrollY > 395),
-
-              // Content
-              Expanded(
-                child: SingleChildScrollView(
-                  controller: controller.scrollController,
-                  physics: const ClampingScrollPhysics(),
-                  child: Column(
+                // Header
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+                  child: Row(
                     children: [
-                      // Location Permission
-                      if (!controller.isLocationPermission) ... {
-                        Container(
-                          margin: const EdgeInsets.only(top: 12, left: 20, right: 20),
-                          child: InkWell(
-                            splashColor: kBaseColor,
-                            highlightColor: Colors.transparent,
-                            hoverColor: Colors.transparent,
-                            onTap: openAppSettings,
-                            child: Container(
-                              padding: const EdgeInsets.only(left: 20, top: 12, bottom: 12, right: 12),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: kBaseColor,
-                              ),
-                              width: double.maxFinite,
-                              child: Row(
-                                children: [
-                                  HeyText.footnote('location_permission_message'.tr),
-                                  const Spacer(),
-                                  SvgUtils.icon(context, 'arrow_right'),
-                                ],
-                              ),
+                      InkWell(
+                        splashColor: kBaseColor,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        onTap: () {
+                          /*HeyBottomSheet.showSelectAddressBottomSheet(
+                            context,
+                            addressList: controller.recentAddressList,
+                            currentAddress: controller.currentAddress,
+                            onSelectedAddress: (addressId) {
+                              controller.logger.d('onSelectedAddress: (addressId) -> $addressId / currentAddress -> ${controller.currentAddress}');
+                              if (addressId != controller.currentAddress) {
+                                controller.resetData(addressId);
+                              }
+                            },
+                            onMoveToAddress: controller.moveToAddress,
+                          );*/
+                          controller.moveToAddress();
+                        },
+                        child: Row(
+                          children: [
+                            SvgUtils.icon(
+                              context,
+                              controller.currentAddressId == kCurrentLocationId ? 'location_target' : 'location',
                             ),
-                          ),
-                        ),
-                      },
-
-                      // Today Card
-                      Container(
-                        margin: const EdgeInsets.only(top: 12, left: 20, right: 20),
-                        child: HeyWeatherHomeCard(
-                          weatherStatus: '구름 조금',
-                          temperature: controller.ultraShortTemperature.toString(),
-                          iconName: controller.homeWeatherIconName,
-                          message1: '어제보다 1℃ 낮아요',
-                          message2: '저녁 6시에 비 올 확률이 80%예요',
-                          message3: '미세먼지가 없고 하늘이 깨끗해요',
+                            const SizedBox(width: 6),
+                            HeyText.body(controller.addressText, color: kTextSecondaryColor),
+                          ],
                         ),
                       ),
-
-                      // Contents
-                      Container(
-                        margin: const EdgeInsets.only(top: 25),
-                        color: kHomeBottomColor,
-                        child: Column(
-                          children: [
-                            // MY, ALL, 편집
-                            _tab(context, controller.scrollY < 395),
-                            if (!controller.isAllTab) ... {
-                              if (controller.myWeatherList.isEmpty) ... {
-                                // Empty
-                                Container(
-                                  width: double.maxFinite,
-                                  height: emptyHeight,
-                                  color: kHomeBottomColor,
-                                  child: Center(
-                                    child: Column(
-                                      children: [
-                                        const SizedBox(height: 50),
-                                        HeyElevatedButton.secondaryIcon2(
-                                          context,
-                                          width: 58,
-                                          onPressed: controller.showAddWeather,
-                                        ),
-                                        const SizedBox(height: 20),
-                                        HeyText.subHeadline(
-                                          'home_add_desc'.tr,
-                                          color: kTextDisabledColor,
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              } else ... {
-                                // My
-                                HeyReorderWrap(
-                                  spacing: 15,
-                                  runSpacing: 15,
-                                  padding: const EdgeInsets.only(top: 16, bottom: 24, left: 20, right: 20),
-                                  scrollPhysics: const NeverScrollableScrollPhysics(),
-                                  scrollAnimationDuration: const Duration(milliseconds: 150),
-                                  reorderAnimationDuration: const Duration(milliseconds: 250),
-                                  enableReorder: controller.isEditMode,
-                                  buildDraggableFeedback: (context, constraints, widget) {
-                                    controller.updateScroll();
-                                    return widget;
-                                  },
-                                  onReorder: (oldIndex, newIndex) {
-                                    final item = controller.myWeatherList.removeAt(oldIndex);
-                                    if (controller.myWeatherList.length - 1 >= newIndex) {
-                                      controller.myWeatherList.insert(newIndex, item);
-                                    } else {
-                                      controller.myWeatherList.add(item);
-                                    }
-                                    controller.updateUserMyWeather(controller.myWeatherList);
-                                  },
-                                  onReorderStarted: (index) {
-                                    controller.setSelectIndex(index, controller.myWeatherList[index]);
-                                  },
-                                  onUpdateReorder: (moveIndex) {
-                                    if (moveIndex != controller.currentIndex) {
-                                      final scrollPosition = controller.scrollController.position.pixels;
-                                      var toScroll = 396.0;
-                                      if (controller.currentIndex > moveIndex) {
-                                        toScroll = scrollPosition - controller.selectHeight;
-                                      } else {
-                                        toScroll = scrollPosition + controller.selectHeight;
-                                      }
-                                      controller.setCurrentIndex(moveIndex);
-                                      if (toScroll < 396) toScroll = 396;
-                                      controller.updateScroll(isUpdate: true, toScroll: toScroll);
-                                    }
-                                  },
-                                  children: List.generate(controller.myWeatherList.length, (index) {
-                                    Map<String, String> weatherNameMap = {
-                                      kWeatherCardTime: '시간대별 날씨',
-                                      kWeatherCardWeek: '주간 날씨',
-                                      kWeatherCardDust: '대기질',
-                                      kWeatherCardRain: '강수',
-                                      kWeatherCardHumidity: '습도',
-                                      kWeatherCardFeel: '체감온도',
-                                      kWeatherCardWind: '바람',
-                                      kWeatherCardSun: '일출일몰',
-                                      kWeatherCardUltraviolet: '자외',
-                                    };
-                                    return _myWeatherWidgets(
-                                      controller.myWeatherList[index],
-                                      controller.isEditMode ? 3 : 0,
-                                      onRemove: (id) {
-                                        if (Get.context != null) {
-                                          HeyDialog.showCommonDialog(
-                                            Get.context!,
-                                            title: 'dialog_delete_weather_title'.trParams({'name' : weatherNameMap[id] ?? ''}),
-                                            subtitle: 'dialog_delete_weather_subtitle'.tr,
-                                            onOk: () {
-                                              Get.back();
-                                              controller.myWeatherList.remove(id);
-                                              controller.updateUserMyWeather(controller.myWeatherList);
-                                            },
-                                          );
-                                        }
-                                      },
-                                    );
-                                  }),
-                                ),
-                              },
-                            } else ... {
-                              // ALL
-                              _allWeatherWidgets(),
-                            },
-                          ],
+                      const Spacer(),
+                      /*InkWell(
+                        splashColor: kBaseColor,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        onTap: controller.moveToAddress,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: SvgUtils.icon(context, 'map'),
+                        ),
+                      ),*/
+                      InkWell(
+                        splashColor: kBaseColor,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        onTap: () {
+                          Get.toNamed(Routes.routeSetting);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: SvgUtils.icon(context, 'setting'),
                         ),
                       ),
                     ],
                   ),
                 ),
-              ),
-            ],
-          ),
 
-          Padding(
-            padding: EdgeInsets.only(top: statusBarHeight),
-            child: LoadingWidget(controller.isLoading),
-          ),
-        ],
+                // MY, ALL, 편집
+                _tab(context, controller.scrollY > 395),
+
+                // Content
+                Expanded(
+                  child: SingleChildScrollView(
+                    controller: controller.scrollController,
+                    physics: const ClampingScrollPhysics(),
+                    child: Column(
+                      children: [
+                        // Location Permission
+                        if (!controller.isLocationPermission) ... {
+                          Container(
+                            margin: const EdgeInsets.only(top: 12, left: 20, right: 20),
+                            child: InkWell(
+                              splashColor: kBaseColor,
+                              highlightColor: Colors.transparent,
+                              hoverColor: Colors.transparent,
+                              onTap: openAppSettings,
+                              child: Container(
+                                padding: const EdgeInsets.only(left: 20, top: 12, bottom: 12, right: 12),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: kBaseColor,
+                                ),
+                                width: double.maxFinite,
+                                child: Row(
+                                  children: [
+                                    HeyText.footnote('location_permission_message'.tr),
+                                    const Spacer(),
+                                    SvgUtils.icon(context, 'arrow_right'),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        },
+
+                        // Today Card
+                        Container(
+                          margin: const EdgeInsets.only(top: 12, left: 20, right: 20),
+                          child: HeyWeatherHomeCard(
+                            weatherStatus: '구름 조금',
+                            temperature: controller.ultraShortTemperature.toString(),
+                            iconName: controller.homeWeatherIconName,
+                            message1: '어제보다 1℃ 낮아요',
+                            message2: '저녁 6시에 비 올 확률이 80%예요',
+                            message3: '미세먼지가 없고 하늘이 깨끗해요',
+                          ),
+                        ),
+
+                        // Contents
+                        Container(
+                          margin: const EdgeInsets.only(top: 25),
+                          color: kHomeBottomColor,
+                          child: Column(
+                            children: [
+                              // MY, ALL, 편집
+                              _tab(context, controller.scrollY < 395),
+                              if (!controller.isAllTab) ... {
+                                if (controller.myWeatherList.isEmpty) ... {
+                                  // Empty
+                                  Container(
+                                    width: double.maxFinite,
+                                    height: emptyHeight,
+                                    color: kHomeBottomColor,
+                                    child: Center(
+                                      child: Column(
+                                        children: [
+                                          const SizedBox(height: 50),
+                                          HeyElevatedButton.secondaryIcon2(
+                                            context,
+                                            width: 58,
+                                            onPressed: controller.showAddWeather,
+                                          ),
+                                          const SizedBox(height: 20),
+                                          HeyText.subHeadline(
+                                            'home_add_desc'.tr,
+                                            color: kTextDisabledColor,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                } else ... {
+                                  // My
+                                  HeyReorderWrap(
+                                    spacing: 15,
+                                    runSpacing: 15,
+                                    padding: const EdgeInsets.only(top: 16, bottom: 24, left: 20, right: 20),
+                                    scrollPhysics: const NeverScrollableScrollPhysics(),
+                                    scrollAnimationDuration: const Duration(milliseconds: 150),
+                                    reorderAnimationDuration: const Duration(milliseconds: 250),
+                                    enableReorder: controller.isEditMode,
+                                    buildDraggableFeedback: (context, constraints, widget) {
+                                      controller.updateScroll();
+                                      return widget;
+                                    },
+                                    onReorder: (oldIndex, newIndex) {
+                                      final item = controller.myWeatherList.removeAt(oldIndex);
+                                      if (controller.myWeatherList.length - 1 >= newIndex) {
+                                        controller.myWeatherList.insert(newIndex, item);
+                                      } else {
+                                        controller.myWeatherList.add(item);
+                                      }
+                                      controller.updateUserMyWeather(controller.myWeatherList);
+                                    },
+                                    onReorderStarted: (index) {
+                                      controller.setSelectIndex(index, controller.myWeatherList[index]);
+                                    },
+                                    onUpdateReorder: (moveIndex) {
+                                      if (moveIndex != controller.currentIndex) {
+                                        final scrollPosition = controller.scrollController.position.pixels;
+                                        var toScroll = 396.0;
+                                        if (controller.currentIndex > moveIndex) {
+                                          toScroll = scrollPosition - controller.selectHeight;
+                                        } else {
+                                          toScroll = scrollPosition + controller.selectHeight;
+                                        }
+                                        controller.setCurrentIndex(moveIndex);
+                                        if (toScroll < 396) toScroll = 396;
+                                        controller.updateScroll(isUpdate: true, toScroll: toScroll);
+                                      }
+                                    },
+                                    children: List.generate(controller.myWeatherList.length, (index) {
+                                      Map<String, String> weatherNameMap = {
+                                        kWeatherCardTime: '시간대별 날씨',
+                                        kWeatherCardWeek: '주간 날씨',
+                                        kWeatherCardDust: '대기질',
+                                        kWeatherCardRain: '강수',
+                                        kWeatherCardHumidity: '습도',
+                                        kWeatherCardFeel: '체감온도',
+                                        kWeatherCardWind: '바람',
+                                        kWeatherCardSun: '일출일몰',
+                                        kWeatherCardUltraviolet: '자외',
+                                      };
+                                      return _myWeatherWidgets(
+                                        controller.myWeatherList[index],
+                                        controller.isEditMode ? 3 : 0,
+                                        onRemove: (id) {
+                                          if (Get.context != null) {
+                                            HeyDialog.showCommonDialog(
+                                              Get.context!,
+                                              title: 'dialog_delete_weather_title'.trParams({'name' : weatherNameMap[id] ?? ''}),
+                                              subtitle: 'dialog_delete_weather_subtitle'.tr,
+                                              onOk: () {
+                                                Get.back();
+                                                controller.myWeatherList.remove(id);
+                                                controller.updateUserMyWeather(controller.myWeatherList);
+                                              },
+                                            );
+                                          }
+                                        },
+                                      );
+                                    }),
+                                  ),
+                                },
+                              } else ... {
+                                // ALL
+                                _allWeatherWidgets(),
+                              },
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            Padding(
+              padding: EdgeInsets.only(top: statusBarHeight),
+              child: LoadingWidget(controller.isLoading),
+            ),
+          ],
+        ),
       )),
     );
   }

@@ -82,20 +82,24 @@ class WeatherRepository {
   }
 
   /// KAKAO 좌표로 주소 검색
-  Future<Result<Address>> getUpdateAddressWithCoordinate() async {
-    Position position = await _getLocation();
-    logger.i('getUpdateAddressWithCoordinate() -> position -> $position');
+  Future<Result<Address>> getUpdateAddressWithCoordinate(String currentAddressId, {String? addressName}) async {
+    Position? position;
 
     // 좌표값 변경이 없는 경우 로컬 리턴
-    final current = await _dao.getUserAddressWithId(kCurrentLocationId);
-    if (current != null) {
-      final currentX = current.x!.toStringAsFixed(3);
-      final positionX = position.longitude.toStringAsFixed(3);
-      final currentY = current.y!.toStringAsFixed(3);
-      final positionY = position.latitude.toStringAsFixed(3);
-      if (currentX == positionX && currentY == positionY) {
-        logger.i('getAddressWithCoordinate() -> local return ${current.toAddress()}');
-        return Result.success(current.toAddress());
+    final current = await _dao.getUserAddressWithId(currentAddressId);
+
+    if (currentAddressId == kCurrentLocationId) {
+      position = await _getLocation();
+      logger.i('getUpdateAddressWithCoordinate() -> position -> $position');
+      if (current != null) {
+        final currentX = current.x!.toStringAsFixed(3);
+        final positionX = position.longitude.toStringAsFixed(3);
+        final currentY = current.y!.toStringAsFixed(3);
+        final positionY = position.latitude.toStringAsFixed(3);
+        if (currentX == positionX && currentY == positionY) {
+          logger.i('getAddressWithCoordinate() -> local return ${current.toAddress()}');
+          return Result.success(current.toAddress());
+        }
       }
     }
 
@@ -123,19 +127,38 @@ class WeatherRepository {
     } else {
       // 좌표로 주소 검색
       try {
-        final response = await _api.getAddressWithCoordinate(position.longitude, position.latitude);
+        double longitude = 0;
+        double latitude = 0;
+        if (position != null) {
+          longitude = position.longitude;
+          latitude = position.latitude;
+        } else {
+          longitude = current?.x ?? 0;
+          latitude = current?.y ?? 0;
+        }
+        logger.i('getUpdateAddressWithCoordinate() longitude -> $longitude, latitude -> $latitude');
+
+        final response = await _api.getAddressWithCoordinate(longitude, latitude);
         final jsonResult = jsonDecode(response.body);
         AddressList result = AddressList.fromJson(jsonResult);
         Address address = Address();
         if (result.documents != null) {
           address = result.documents![0];
-          address.addressName = '${address.region3depthName}';
-          address.x = position.longitude;
-          address.y = position.latitude;
-          address.id = kCurrentLocationId;
+          if (currentAddressId == kCurrentLocationId) {
+            address.addressName = '${addressName ?? address.region3depthName}';
+          } else {
+            if (current != null) {
+              address.addressName = current.addressName ?? '';
+              address.createDateTime = current.createDateTime ?? '';
+            }
+          }
+          address.x = longitude;
+          address.y = latitude;
+          address.id = currentAddressId;
+
 
           logger.i('getAddressWithCoordinate() -> kakao api return $address');
-          _dao.updateUserAddressWithId(kCurrentLocationId, address.toAddressEntity());
+          _dao.updateUserAddressWithId(currentAddressId, address.toAddressEntity());
           return Result.success(address);
         } else {
           logger.i('getAddressWithCoordinate() -> kakao api failed return $defaultAddress');
@@ -779,6 +802,16 @@ class WeatherRepository {
     return regId;
   }
 
+  String _getCityName(String depth1) {
+    String cityName = '전국';
+    for (String key in kCityName.keys) {
+      if (key.contains(depth1)) {
+        cityName = kCityName[key]!;
+      }
+    }
+    return cityName;
+  }
+
   // 중기 기온 예보
   Future<Result<MidTermTemperature>> getMidTermTemperature(String id, String regId) async {
     final getWeatherMidTermTemperature = await _dao.getWeatherMidTermTemperature(id);
@@ -890,8 +923,11 @@ class WeatherRepository {
   }
 
   // 미세 먼지
-  Future<Result<FineDust>> getFineDust(String id, String depth2) async {
+  Future<Result<FineDust>> getFineDustWithCity(String id, String depth1) async {
     final fineDust = await _dao.getWeatherFineDust(id);
+
+    final cityName = _getCityName(depth1);
+    logger.d('getFineDustWithCity() cityName -> $cityName');
 
     // local
     if (fineDust != null && fineDust.dataTime != null) {
@@ -916,7 +952,7 @@ class WeatherRepository {
 
     // remote
     try {
-      final response = await _api.getFineDust(depth2);
+      final response = await _api.getFineDustWithCity(cityName);
       final jsonResult = jsonDecode(response.body);
       DnstyList list = DnstyList.fromJson(jsonResult['response']['body']);
       var fineDust = FineDust();

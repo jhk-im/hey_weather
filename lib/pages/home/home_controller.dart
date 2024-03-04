@@ -35,8 +35,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   final RxString _addressText = ''.obs;
   String get addressText => _addressText.value;
 
-  final RxString _currentAddress = ''.obs;
-  String get currentAddress => _currentAddress.value;
+  final RxString _currentAddressId = ''.obs;
+  String get currentAddressId => _currentAddressId.value;
 
   final RxList<Address> _recentAddressList = <Address>[].obs;
   List<Address> get recentAddressList => _recentAddressList;
@@ -141,7 +141,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     scrollController.addListener(_scrollListener);
     WidgetsBinding.instance.addObserver(this);
     super.onInit();
-    _getData();
+    getData();
   }
 
   @override
@@ -170,7 +170,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     if (_isLocationPermission.value != status.isGranted) {
       _isLocationPermission(status.isGranted);
       SharedPreferencesUtil().setBool(kLocationPermission, status.isGranted);
-      _getData();
+      getData();
     }
   }
 
@@ -277,7 +277,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   /// Data
-  Future _getData() async {
+  Future getData() async {
     // 사용자 주소 리스트
     var getUserAddressList =  await _repository.getUserAddressList();
     getUserAddressList.when(success: (addressList) async {
@@ -288,11 +288,11 @@ class HomeController extends GetxController with WidgetsBindingObserver {
           addressList.sort((a, b) => idList.indexOf(a.id!).compareTo(idList.indexOf(b.id!)));
           // 현재 위치인 경우 업데이트
           if (addressList.first.id == kCurrentLocationId) {
-            _currentAddress(kCurrentLocationId);
+            _currentAddressId(kCurrentLocationId);
             _getUpdateAddressWithCoordinate(isAddressUpdate: true, addressList: addressList);
           } else {
             _addressText(addressList.first.addressName);
-            _currentAddress(addressList.first.id);
+            _currentAddressId(addressList.first.id);
             _getUpdateAddressWithCoordinate(addressList: addressList);
           }
         },
@@ -306,7 +306,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     }, error: (Exception e) async {
       // 최초 진입
       logger.i('HomeController.getData -> empty getUserAddressList (init first)');
-      _currentAddress(kCurrentLocationId);
+      _currentAddressId(kCurrentLocationId);
       await _repository.insertUserAddressEditIdList(kCurrentLocationId);
       await _repository.insertUserAddressRecentIdList(kCurrentLocationId);
       await _getUpdateAddressWithCoordinate();
@@ -315,7 +315,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   }
 
   Future _getUpdateAddressWithCoordinate({bool isAddressUpdate = false, List<Address>? addressList}) async {
-    var getUpdateAddressWithCoordinate = await _repository.getUpdateAddressWithCoordinate();
+    logger.d('getUpdateAddressWithCoordinate() currentAddressId -> $currentAddressId');
+    var getUpdateAddressWithCoordinate = await _repository.getUpdateAddressWithCoordinate(currentAddressId);
     getUpdateAddressWithCoordinate.when(success: (address) async {
       if (addressList != null) { // 리스트 업데이트
         final oldAddress = addressList.firstWhere((element) => element.id == kCurrentLocationId);
@@ -473,8 +474,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   _updateFineDust(Address address) async {
     String addressId = address.id ?? '';
-    String depth2 = address.region2depthName ?? '';
-    var getFineDust = await _repository.getFineDust(addressId,  depth2);
+    String depth1 = address.region1depthName ?? '';
+    var getFineDust = await _repository.getFineDustWithCity(addressId, depth1);
     getFineDust.when(success: (fineDust) async {
       logger.i('HomeController.getFineDust success');
 
@@ -544,7 +545,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     await _repository.updateUserMyWeather(idList);
     if (idList.isEmpty) editToggle(false);
     if (isUpdate) {
-      _getData();
+      getData();
     }
   }
 
@@ -560,7 +561,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
           addressList.sort((a, b) => idList.indexOf(a.id!).compareTo(idList.indexOf(b.id!)));
           _recentAddressList(addressList);
           _addressText(addressList.first.addressName);
-          _currentAddress(addressList.first.id);
+          _currentAddressId(addressList.first.id);
         },
         error: (Exception e) {
           logger.e('HomeController.updateUserAddressList $e');

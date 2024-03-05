@@ -375,7 +375,11 @@ class HomeController extends GetxController with WidgetsBindingObserver {
           case kWeatherCategoryHumidity:
             _ultraShortHumidity(value.round());
           case kWeatherCategoryRain:
-            _ultraShortRain(value.round());
+            if (value < 1 && value > 0) {
+              _ultraShortRain(1);
+            } else {
+              _ultraShortRain(value.round());
+            }
           case kWeatherCategoryRainStatus:
             _ultraShortRainStatus(item.weatherCategory?.codeValues?[value.round()]);
           case kWeatherCategoryWindSpeed:

@@ -105,4 +105,8 @@ class Utils {
     }
     return '$period $hour시';
   }
+
+  static int celsiusToFahrenheit(double celsius) {
+    return (celsius * 9 / 5 + 32).toInt();
+  }
 }

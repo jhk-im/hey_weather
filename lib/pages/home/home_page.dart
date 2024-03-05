@@ -92,8 +92,11 @@ class HomePage extends GetView<HomeController> {
                         splashColor: kBaseColor,
                         highlightColor: Colors.transparent,
                         hoverColor: Colors.transparent,
-                        onTap: () {
-                          Get.toNamed(Routes.routeSetting);
+                        onTap: () async {
+                          bool update = await Get.toNamed(Routes.routeSetting);
+                          if (update) {
+                            controller.getData();
+                          }
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(left: 8),

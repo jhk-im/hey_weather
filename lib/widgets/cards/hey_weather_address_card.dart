@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_text.dart';
+import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:hey_weather/common/svg_utils.dart';
+import 'package:hey_weather/common/utils.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
 import 'package:hey_weather/widgets/buttons/hey_custom_button.dart';
 
@@ -33,6 +35,9 @@ class HeyWeatherAddressCard extends StatefulWidget {
 class _HeyWeatherAddressCardState extends State<HeyWeatherAddressCard> {
   @override
   Widget build(BuildContext context) {
+    final isFahrenheit = false.obs;
+    isFahrenheit(SharedPreferencesUtil().getBool(kFahrenheit));
+
     return Row(
       children: [
         if (!widget.isCurrentLocation && widget.isEditMode) ... {
@@ -115,11 +120,10 @@ class _HeyWeatherAddressCardState extends State<HeyWeatherAddressCard> {
                         ),
                       ),
                       HeyText.bodySemiBold(
-                        '${widget.temperature}˚',
+                        '${isFahrenheit.value ? Utils.celsiusToFahrenheit(double.parse(widget.temperature ?? '0')) : widget.temperature}°',
                         color: kTextPointColor,
                         fontSize: kFont28,
                       ),
-
                       if (!widget.isCurrentLocation && widget.isEditMode) ... {
                         Container(
                           margin: const EdgeInsets.symmetric(horizontal: 16),

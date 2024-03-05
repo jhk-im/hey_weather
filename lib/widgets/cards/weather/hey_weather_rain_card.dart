@@ -38,7 +38,7 @@ class _HeyWeatherRainCardState extends State<HeyWeatherRainCard> {
     'rain'.tr : 'mm',
     'fine_dust'.tr : '㎍/m³',
     'ultra_fine_dust'.tr : '㎍/m³',
-    'feel_temp'.tr: '˚',
+    'feel_temp'.tr: '°',
   };*/
 
   @override

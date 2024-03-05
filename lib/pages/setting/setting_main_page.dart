@@ -37,7 +37,7 @@ class SettingMainPage extends GetView<SettingMainController> {
                           highlightColor: Colors.transparent,
                           hoverColor: Colors.transparent,
                           onTap: () {
-                            Get.back();
+                            Get.back(result: controller.isUpdate);
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(top: 24, bottom: 24, left: 16, right: 20),

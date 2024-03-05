@@ -42,6 +42,7 @@ class HeyWeatherTimeCard extends StatefulWidget {
 class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
   final id = kWeatherCardTime;
   final status = 0.obs; // 0 -> default, 1 -> edit, 2 -> select, 3 -> delete
+  final isFahrenheit = false.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +53,8 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
 
     int maxTemperatureValue = SharedPreferencesUtil().getInt(kTodayMaxTemperature);
     int minTemperatureValue = SharedPreferencesUtil().getInt(kTodayMinTemperature);
+
+    isFahrenheit(SharedPreferencesUtil().getBool(kFahrenheit));
 
     return Obx(() => Material(
       color: Colors.transparent,
@@ -208,7 +211,7 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
       child: Column(
         children: [
           HeyText.title3Bold(
-            '$temperature˚',
+            '${isFahrenheit.value ? Utils.celsiusToFahrenheit(double.parse(temperature)) : temperature}°',
             fontSize: kFont16,
             color: kTextDisabledColor,
           ),

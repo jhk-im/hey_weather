@@ -4,6 +4,7 @@ import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:hey_weather/common/svg_utils.dart';
+import 'package:hey_weather/common/utils.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_term_land.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_term_temperature.dart';
 import 'package:intl/intl.dart';
@@ -32,6 +33,7 @@ class HeyWeatherWeekCard extends StatefulWidget {
 class _HeyWeatherWeekCardState extends State<HeyWeatherWeekCard> {
   final id = kWeatherCardWeek;
   final status = 0.obs; // 0 -> default, 1 -> edit, 2 -> select, 3 -> delete
+  final isFahrenheit = false.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +89,8 @@ class _HeyWeatherWeekCardState extends State<HeyWeatherWeekCard> {
       }
       dateList.add(format[1]);
     }
+
+    isFahrenheit(SharedPreferencesUtil().getBool(kFahrenheit));
 
     return Obx(() => Material(
       color: Colors.transparent,
@@ -355,13 +359,13 @@ class _HeyWeatherWeekCardState extends State<HeyWeatherWeekCard> {
               children: [
                 const SizedBox(width: 16),
                 HeyText.bodySemiBold(
-                  '$minTemp˚',
+                  '${isFahrenheit.value ? Utils.celsiusToFahrenheit(minTemp.toDouble()) : minTemp}°',
                   fontSize: kFont16,
                   color: kTextPointColor.withOpacity(0.6),
                 ),
                 const SizedBox(width: 16),
                 HeyText.bodySemiBold(
-                  '$maxTemp˚',
+                  '${isFahrenheit.value ? Utils.celsiusToFahrenheit(maxTemp.toDouble()) : maxTemp}°',
                   fontSize: kFont16,
                   color: kTextPointColor,
                 ),

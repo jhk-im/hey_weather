@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/image_utils.dart';
+import 'package:hey_weather/common/shared_preferences_util.dart';
+import 'package:hey_weather/common/utils.dart';
 import 'package:hey_weather/widgets/buttons/hey_custom_button.dart';
 
 class HeyWeatherHomeCard extends StatelessWidget {
@@ -24,6 +27,9 @@ class HeyWeatherHomeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isFahrenheit = false.obs;
+    isFahrenheit(SharedPreferencesUtil().getBool(kFahrenheit));
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -43,14 +49,15 @@ class HeyWeatherHomeCard extends StatelessWidget {
             ),
           ),
 
-          //
-
           // Temp, Icon
           Container(
             margin: const EdgeInsets.only(top: 8),
             child: Row(
               children: [
-                HeyText.bodySemiBold('$temperature˚', fontSize: kFont73),
+                HeyText.bodySemiBold(
+                  '${isFahrenheit.value ? Utils.celsiusToFahrenheit(double.parse(temperature ?? '0')) : temperature}°',
+                  fontSize: kFont73,
+                ),
                 const Spacer(),
                 Visibility(
                   visible: iconName.isNotEmpty == true,

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_text.dart';
+import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:hey_weather/common/svg_utils.dart';
+import 'package:hey_weather/common/utils.dart';
 
 class HeyWeatherFeelCard extends StatefulWidget {
   const HeyWeatherFeelCard({
@@ -35,6 +37,9 @@ class _HeyWeatherFeelCardState extends State<HeyWeatherFeelCard> {
     double width = (MediaQuery.of(context).size.width / 2) - 28;
     status(widget.buttonStatus);
     widget.setHeight?.call(id, width);
+
+    final isFahrenheit = false.obs;
+    isFahrenheit(SharedPreferencesUtil().getBool(kFahrenheit));
 
     return Obx(() => Material(
       color: Colors.transparent,
@@ -99,7 +104,7 @@ class _HeyWeatherFeelCardState extends State<HeyWeatherFeelCard> {
                               height: 24,
                             ),
                             HeyText.largeTitleBold(
-                              '${widget.max}˚',
+                              '${isFahrenheit.value ? Utils.celsiusToFahrenheit(widget.max.toDouble()) : widget.max}°',
                               color: kTextPointColor,
                             ),
                           ],
@@ -117,7 +122,7 @@ class _HeyWeatherFeelCardState extends State<HeyWeatherFeelCard> {
                               height: 24,
                             ),
                             HeyText.largeTitleBold(
-                              '${widget.min}˚',
+                              '${isFahrenheit.value ? Utils.celsiusToFahrenheit(widget.min.toDouble()) : widget.min}°',
                               color: kTextPointColor,
                             ),
                           ],

@@ -16,6 +16,9 @@ class SettingMainController extends GetxController with WidgetsBindingObserver {
   final RxBool _isFahrenheit = false.obs;
   bool get isFahrenheit => _isFahrenheit.value;
 
+  final RxBool _isUpdate = false.obs;
+  bool get isUpdate => _isUpdate.value;
+
   var logger = Logger();
 
   @override
@@ -27,6 +30,7 @@ class SettingMainController extends GetxController with WidgetsBindingObserver {
 
   /// User Interaction
   fahrenheitToggle(bool update) {
+    _isUpdate(true);
     _isFahrenheit(update);
     SharedPreferencesUtil().setBool(kFahrenheit, update);
   }

@@ -149,7 +149,7 @@ class HomePage extends GetView<HomeController> {
                         Container(
                           margin: const EdgeInsets.only(top: 12, left: 20, right: 20),
                           child: HeyWeatherHomeCard(
-                            weatherStatus: '구름 조금',
+                            weatherStatus: controller.homeWeatherStatus,
                             temperature: controller.ultraShortTemperature,
                             yesterdayTemperature: controller.yesterdayTemperature,
                             iconName: controller.homeWeatherIconName,

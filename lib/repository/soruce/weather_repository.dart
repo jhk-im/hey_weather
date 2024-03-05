@@ -404,6 +404,65 @@ class WeatherRepository {
     }
   }
 
+
+  // 초단기 예보 (현재 시각 - 6시간)
+  Future<Result<List<ShortTerm>>> getUltraShortTermSixTime(String id, double longitude, double latitude) async {
+    final shortTermSixTime = await _dao.getWeatherShortListSixTime(id);
+
+    // 시간 기준 업데이트
+    DateTime dateTime = DateTime.now();
+    String dt = DateTime(dateTime.year, dateTime.month, dateTime.day,
+        dateTime.hour, dateTime.minute - 30)
+        .toString()
+        .replaceAll(RegExp("[^0-9\\s]"), "")
+        .replaceAll(" ", "");
+    String date = dt.substring(0, 8);
+    String checkTime = dt.substring(8, 10);
+
+    // local
+    if (shortTermSixTime != null && shortTermSixTime.items?.isNotEmpty == true) {
+      String localTime = shortTermSixTime.items![0].baseTime!.substring(0, 2);
+      String localDate = shortTermSixTime.items![0].baseDate ?? '';
+      if (date == localDate) {
+        if (checkTime == localTime) {
+          logger.i('getShortTermSixTime() -> local return');
+          var result = shortTermSixTime.items!.map((e) => e.toShortTerm()).toList();
+          return Result.success(result);
+        }
+      }
+    }
+
+    // get location
+    var gpsToData = ConvertGps.gpsToGRID(latitude, longitude);
+    int x = gpsToData['x'];
+    int y = gpsToData['y'];
+
+    // remote
+    try {
+      logger.i('getUltraShortTermSixTime(x: $x, y: $y)');
+      final response = await _api.getUltraShortTermSixTime(x, y);
+      final jsonResult = jsonDecode(response.body);
+      ShortTermList list = ShortTermList.fromJson(jsonResult['response']['body']);
+      List<ShortTerm> result = [];
+      if (list.items?.item != null) {
+        for (var item in list.items!.item!) {
+          item.weatherCategory = await getWeatherCode(item.category ?? '');
+          result.add(item);
+        }
+      }
+
+      // local update
+      if (result.isNotEmpty) {
+        _dao.updateWeatherShortListSixTime(id, result);
+      }
+
+      logger.i('getShortTermSixTime() -> api return');
+      return Result.success(result);
+    } catch (e) {
+      return Result.error(Exception('getUltraShortTermSixTime failed: ${e.toString()}'));
+    }
+  }
+
   // 단기 예보 (오늘, 내일)
   Future<Result<List<ShortTerm>>> getShortTermList(String id, double longitude, double latitude) async {
     final shortTermList = await _dao.getWeatherShortListTemperature(id);

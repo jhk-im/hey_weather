@@ -164,15 +164,15 @@ const kWeatherIconList = [
   'cloudy'
 ];
 
-const kRemoveCity = [
-  '특별시',
-  '북도',
-  '남도',
-  '특례시',
-  '특별자치도',
-  'night_cloudy_clear',
-  'cloudy'
-];
+const Map<String, String> kWeatherStatus = {
+  'drizzle': '비',
+  'blizzard': '눈',
+  'clear': '맑음',
+  'night_clear': '맑음',
+  'cloudy_clear': '구름 조금',
+  'night_cloudy_clear': '구름 조금',
+  'cloudy': '흐림',
+};
 
 const Map<String, String> kCityName = {
   '서울특별시, 서울시, 서울': '서울',

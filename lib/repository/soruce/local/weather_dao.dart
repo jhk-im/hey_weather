@@ -127,6 +127,25 @@ class WeatherDao {
     return box.get(id);
   }
 
+  static const weatherUltraShortListSixTime = 'weather_short_list_six_time';
+  Future updateWeatherShortListSixTime(String id, List<ShortTerm> shortTermList) async {
+    var entity = WeatherShortTermListEntity();
+    entity.id = id;
+    entity.items = shortTermList.map((e) => e.toShortTermEntity()).toList();
+    final box = await Hive.openBox<WeatherShortTermListEntity>(weatherUltraShortListSixTime);
+    await box.put(id, entity);
+  }
+
+  Future deleteWeatherShortListSixTime(String id) async {
+    final box = await Hive.openBox<WeatherShortTermListEntity>(weatherUltraShortListSixTime);
+    return box.delete(id);
+  }
+
+  Future<WeatherShortTermListEntity?> getWeatherShortListSixTime(String id) async {
+    final box = await Hive.openBox<WeatherShortTermListEntity>(weatherUltraShortListSixTime);
+    return box.get(id);
+  }
+
   static const weatherYesterdayShortListTemperature = 'weather_yesterday_short_list_temperature';
   Future updateWeatherYesterdayShortListTemperature(String id, List<ShortTerm> shortTermList) async {
     var entity = WeatherShortTermListEntity();

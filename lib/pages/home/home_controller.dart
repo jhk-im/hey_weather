@@ -79,6 +79,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   var logger = Logger();
 
   // Weather
+  final RxString _homeWeatherStatus = ''.obs;
+  String get homeWeatherStatus => _homeWeatherStatus.value;
   final RxString _homeWeatherIconName = ''.obs;
   String get homeWeatherIconName => _homeWeatherIconName.value;
   final RxString _homeRainTime = ''.obs;
@@ -392,61 +394,104 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     double longitude = address.x ?? 0;
     double latitude = address.y ?? 0;
     String addressId = address.id ?? '';
-    var getShortTermList = await _repository.getShortTermList(addressId, longitude, latitude);
-    getShortTermList.when(success: (shortTermList) async {
-      logger.i('HomeController.getShortTermList success');
+
+    var getUltraShortTermSixTime = await _repository.getUltraShortTermSixTime(addressId, longitude, latitude);
+    getUltraShortTermSixTime.when(success: (ultraSixTime) async {
+      logger.i('HomeController.getUltraShortTermSixTime success');
 
       // 기온
-      var temperatureList = shortTermList.where((element) => element.category == kWeatherCategoryTemperatureShort).toList();
+      var temperatureFirstList = ultraSixTime.where((element) => element.category == kWeatherCategoryTemperature).toList();
+      for (var element in temperatureFirstList) {
+        element.weatherCategory?.name = '기온(1시간)';
+        element.category = kWeatherCategoryTemperatureShort;
+        var newBaseTime = element.baseTime?.replaceAll('30', '00');
+        element.baseTime = newBaseTime;
+      }
       // 하늘상태
-      var skyList = shortTermList.where((element) => element.category == kWeatherCategorySky).toList();
+      var skyFirstList = ultraSixTime.where((element) => element.category == kWeatherCategorySky).toList();
+      for (var element in skyFirstList) {
+        var newBaseTime = element.baseTime?.replaceAll('30', '00');
+        element.baseTime = newBaseTime;
+      }
       // 강수형태
-      var rainStatusList = shortTermList.where((element) => element.category == kWeatherCategoryRainStatus).toList();
-      // 강수확률
-      var rainPercentList = shortTermList.where((element) => element.category == kWeatherCategoryRainPercent).toList();
-
-      _temperatureList(temperatureList);
-      _skyStatusList(skyList);
-      _rainStatusList(rainStatusList);
-      _rainPercentList(rainPercentList);
-      _rainPercentage(int.parse(rainPercentList[0].fcstValue ?? '0'));
-
-      var rainTempPercentList = rainPercentList.sublist(1, rainPercentList.length);
-      var maxRainValue = rainTempPercentList.reduce((value, element) => int.parse(value.fcstValue ?? '0') > int.parse(element.fcstValue ?? '0') ? value : element);
-      ShortTerm? maxFcstValueObject = rainTempPercentList.firstWhereOrNull((element) => element.fcstValue == maxRainValue.fcstValue);
-      if (maxFcstValueObject != null) {
-        _homeRainTime(Utils.convertToTimeFormat(maxFcstValueObject.fcstTime ?? '0000'));
-        _homeRainPercent(int.parse(maxFcstValueObject.fcstValue ?? '0'));
+      var rainStatusFirstList = ultraSixTime.where((element) => element.category == kWeatherCategoryRainStatus).toList();
+      for (var element in rainStatusFirstList) {
+        var newBaseTime = element.baseTime?.replaceAll('30', '00');
+        element.baseTime = newBaseTime;
       }
 
-      int min = SharedPreferencesUtil().getInt(kTodayMinFeel);
-      int max = SharedPreferencesUtil().getInt(kTodayMaxFeel);
-      _apparentTemperatureMin(min);
-      _apparentTemperatureMax(max);
+      var getShortTermList = await _repository.getShortTermList(addressId, longitude, latitude);
+      getShortTermList.when(success: (shortTermList) async {
+        logger.i('HomeController.getShortTermList success');
 
-      // 현재 날씨 상태
-      String time = temperatureList[0].fcstTime ?? '0000';
-      int currentTime = int.parse(time);
-      int rainIndex = int.parse(rainStatusList[0].fcstValue ?? '0');
-      String rainStatus = rainStatusList[0].weatherCategory?.codeValues?[rainIndex] ?? '없음';
-      int skyIndex = int.parse(skyList[0].fcstValue ?? '0');
-      String skyStatus = skyList[0].weatherCategory?.codeValues?[skyIndex] ?? '';
-      int iconIndex = Utils.getIconIndex(rainStatus: rainStatus, skyStatus: skyStatus, currentTime: currentTime, sunrise: _sunriseTime.value, sunset: _sunsetTime.value);
-      _homeWeatherIconName(kWeatherIconList[iconIndex]);
-    }, error: (e) {
-      logger.e('HomeController.getShortTermList error -> $e');
-    });
+        DateTime dateTime = DateTime.now();
+        DateTime currentDateTime = DateTime(dateTime.year, dateTime.month, dateTime.day, dateTime.hour + 5);
+        var sevenHoursLater = currentDateTime.add(const Duration(hours: 7));
 
-    var getYesterdayShortTerm = await _repository.getYesterdayShortTermList(addressId, longitude, latitude);
-    getYesterdayShortTerm.when(success: (shortTermList) async {
-      logger.i('HomeController.getYesterdayShortTerm success');
-      var currentTime = Utils.getCurrentTimeInHHFormat();
-      var yesterday = shortTermList.firstWhereOrNull((element) => element.category == kWeatherCategoryTemperatureShort && element.fcstTime == currentTime);
-      if (yesterday != null) {
-        _yesterdayTemperature(int.parse(yesterday.fcstValue ?? '0'));
-      }
+        var shortTermListSixTime = shortTermList.where((item) {
+          var forecastDateTime = DateTime.parse("${item.fcstDate} ${item.fcstTime.toString().padLeft(4, '0')}");
+          return forecastDateTime.isAfter(currentDateTime) && forecastDateTime.isBefore(sevenHoursLater);
+        }).toList();
+
+        // 기온
+        var temperatureNextList = shortTermListSixTime.where((element) => element.category == kWeatherCategoryTemperatureShort).toList();
+        var temperatureList = temperatureFirstList + temperatureNextList;
+        // 하늘상태
+        var skyNextList = shortTermListSixTime.where((element) => element.category == kWeatherCategorySky).toList();
+        var skyList = skyFirstList + skyNextList;
+        // 강수형태
+        var rainStatusNextList = shortTermListSixTime.where((element) => element.category == kWeatherCategoryRainStatus).toList();
+        var rainStatusList = rainStatusFirstList + rainStatusNextList;
+        // 강수확률
+        var rainPercentList = shortTermList.where((element) => element.category == kWeatherCategoryRainPercent).toList();
+
+        _temperatureList(temperatureList);
+        _skyStatusList(skyList);
+        _rainStatusList(rainStatusList);
+        _rainPercentList(rainPercentList);
+        _rainPercentage(int.parse(rainPercentList[0].fcstValue ?? '0'));
+
+        var rainTempPercentList = rainPercentList.sublist(1, rainPercentList.length);
+        var maxRainValue = rainTempPercentList.reduce((value, element) => int.parse(value.fcstValue ?? '0') > int.parse(element.fcstValue ?? '0') ? value : element);
+        ShortTerm? maxFcstValueObject = rainTempPercentList.firstWhereOrNull((element) => element.fcstValue == maxRainValue.fcstValue);
+        if (maxFcstValueObject != null) {
+          _homeRainTime(Utils.convertToTimeFormat(maxFcstValueObject.fcstTime ?? '0000'));
+          _homeRainPercent(int.parse(maxFcstValueObject.fcstValue ?? '0'));
+        }
+
+        int min = SharedPreferencesUtil().getInt(kTodayMinFeel);
+        int max = SharedPreferencesUtil().getInt(kTodayMaxFeel);
+        _apparentTemperatureMin(min);
+        _apparentTemperatureMax(max);
+
+        // 현재 날씨 상태
+        String time = temperatureList[0].fcstTime ?? '0000';
+        int currentTime = int.parse(time);
+        int rainIndex = int.parse(rainStatusList[0].fcstValue ?? '0');
+        String rainStatus = rainStatusList[0].weatherCategory?.codeValues?[rainIndex] ?? '없음';
+        int skyIndex = int.parse(skyList[0].fcstValue ?? '0');
+        String skyStatus = skyList[0].weatherCategory?.codeValues?[skyIndex] ?? '';
+        int iconIndex = Utils.getIconIndex(rainStatus: rainStatus, skyStatus: skyStatus, currentTime: currentTime, sunrise: _sunriseTime.value, sunset: _sunsetTime.value);
+        _homeWeatherIconName(kWeatherIconList[iconIndex]);
+        _homeWeatherStatus(kWeatherStatus[_homeWeatherIconName.value]);
+      }, error: (e) {
+        logger.e('HomeController.getShortTermList error -> $e');
+      });
+
+      var getYesterdayShortTerm = await _repository.getYesterdayShortTermList(addressId, longitude, latitude);
+      getYesterdayShortTerm.when(success: (shortTermList) async {
+        logger.i('HomeController.getYesterdayShortTerm success');
+        var currentTime = Utils.getCurrentTimeInHHFormat();
+        var yesterday = shortTermList.firstWhereOrNull((element) => element.category == kWeatherCategoryTemperatureShort && element.fcstTime == currentTime);
+        if (yesterday != null) {
+          _yesterdayTemperature(int.parse(yesterday.fcstValue ?? '0'));
+        }
+      }, error: (e) {
+        logger.e('HomeController.getYesterdayShortTerm error -> $e');
+      });
+
     }, error: (e) {
-      logger.e('HomeController.getYesterdayShortTerm error -> $e');
+      logger.e('HomeController.getUltraShortTermSixTime error -> $e');
     });
   }
 

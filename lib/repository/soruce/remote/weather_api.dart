@@ -1,5 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:intl/intl.dart';
 
 class WeatherApi {
   static const kakaoUrl = "dapi.kakao.com";
@@ -41,6 +42,28 @@ class WeatherApi {
       'pageNo': '1',
       'base_date': date,
       'base_time': time,
+      'nx': '$x',
+      'ny': '$y',
+    });
+    return await http.get(url);
+  }
+
+  // 초단기 예보
+  Future<http.Response> getUltraShortTermSixTime(int x, int y) async {
+
+    DateTime now = DateTime.now();
+    DateTime oneHourBefore = now.subtract(const Duration(hours: 1));
+    String formattedDate = DateFormat('yyyyMMdd HHmm').format(oneHourBefore);
+    List<String> formatted = formattedDate.split(' ');
+
+    var url =
+    Uri.https(weatherUrl, '/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst', {
+      'dataType': 'JSON',
+      'serviceKey': serviceKey ?? '',
+      'numOfRows': '60',
+      'pageNo': '1',
+      'base_date': formatted[0],
+      'base_time': formatted[1],
       'nx': '$x',
       'ny': '$y',
     });

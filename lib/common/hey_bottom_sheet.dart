@@ -567,7 +567,7 @@ class HeyBottomSheet {
     required SearchAddress address,
     required String searchText,
     String? weatherStatus,
-    String? temperature,
+    int temperature = 0,
     String? message1,
     String? message2,
     String? message3,
@@ -631,9 +631,6 @@ class HeyBottomSheet {
                 HeyWeatherHomeCard(
                   weatherStatus: weatherStatus,
                   temperature: temperature,
-                  message1: message1,
-                  message2: message2,
-                  message3: message3,
                 ),
                 const SizedBox(height: 32),
                 // Add Button

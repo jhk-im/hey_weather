@@ -12,18 +12,26 @@ class HeyWeatherHomeCard extends StatelessWidget {
     super.key,
     this.iconName = '',
     this.weatherStatus,
-    this.temperature,
-    this.message1,
-    this.message2,
-    this.message3,
+    this.temperature = 0,
+    this.yesterdayTemperature = 0,
+    this.rain = 0,
+    this.rainPercent = 0,
+    this.rainTime = '',
+    this.rainStatus = '',
+    this.fineDust = 0,
+    this.ultraFineDust = 0,
   });
 
   final String iconName;
   final String? weatherStatus;
-  final String? temperature;
-  final String? message1;
-  final String? message2;
-  final String? message3;
+  final int temperature;
+  final int yesterdayTemperature;
+  final int rain;
+  final int rainPercent;
+  final String rainTime;
+  final String rainStatus;
+  final int fineDust;
+  final int ultraFineDust;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +63,7 @@ class HeyWeatherHomeCard extends StatelessWidget {
             child: Row(
               children: [
                 HeyText.bodySemiBold(
-                  '${isFahrenheit.value ? Utils.celsiusToFahrenheit(double.parse(temperature ?? '0')) : temperature}°',
+                  '${isFahrenheit.value ? Utils.celsiusToFahrenheit(temperature.toDouble()) : temperature}°',
                   fontSize: kFont73,
                 ),
                 const Spacer(),
@@ -77,19 +85,46 @@ class HeyWeatherHomeCard extends StatelessWidget {
               HeyCustomButton.tagWithIcon(
                 context,
                 iconName: 'card_temperature',
-                text: message1 ?? '',
+                text: temperature == yesterdayTemperature
+                    ? 'home_card_message_3'.tr
+                    : temperature > yesterdayTemperature
+                    ? 'home_card_message_2'.trParams({'count': '${temperature - yesterdayTemperature}'})
+                    : 'home_card_message_1'.trParams({'count': '${yesterdayTemperature - temperature}'}),
               ),
               const SizedBox(height: 16),
               HeyCustomButton.tagWithIcon(
                 context,
                 iconName: 'card_rain',
-                text: message2 ?? '',
+                text: rain == 0 && rainTime.isNotEmpty
+                    ? 'home_card_message_4'.trParams({'time':rainTime, 'percent':'$rainPercent'})
+                    : rain == 0 && rainTime.isEmpty
+                    ? 'home_card_message_5'.tr
+                    : rain < 3
+                    ? 'home_card_message_6'.trParams({'status': rainStatus})
+                    : rain >= 3 && rain < 8
+                    ? 'home_card_message_7'.trParams({'status': rainStatus})
+                    : rain >= 8 && rain < 12
+                    ? 'home_card_message_8'.trParams({'status': rainStatus})
+                    : rain >= 12 && rain < 20
+                    ? 'home_card_message_9'.trParams({'status': rainStatus})
+                    : 'home_card_message_10'.trParams({'status': rainStatus}),
               ),
+              //ultraFineDust > 50 && ultraFineDust <= 100 ? ultraFineDust > 100
               const SizedBox(height: 16),
               HeyCustomButton.tagWithIcon(
                 context,
                 iconName: 'card_cloudy',
-                text: message3 ?? '',
+                text: fineDust < 30
+                    ? 'home_card_message_11'.tr
+                    : fineDust > 30 && fineDust <= 80
+                    ? 'home_card_message_12'.tr
+                    : ultraFineDust > 50 && ultraFineDust <= 100
+                    ? 'home_card_message_15'.tr
+                    : ultraFineDust > 100
+                    ? 'home_card_message_16'.tr
+                    : fineDust > 80 && fineDust <= 150
+                    ? 'home_card_message_13'.tr
+                    : 'home_card_message_14'.tr,
               ),
             ],
           ),

@@ -222,7 +222,7 @@ class AddressPage extends GetView<AddressController> {
                               address: controller.searchAddressList[index],
                               searchText: controller.searchAddressText,
                               weatherStatus: '구름 조금',
-                              temperature: '19',
+                              temperature: 19,
                               message1: '어제보다 1℃ 낮아요',
                               message2: '저녁 6시에 비 올 확률이 80%예요',
                               message3: '미세먼지가 없고 하늘이 깨끗해요',

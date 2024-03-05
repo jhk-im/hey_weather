@@ -109,4 +109,10 @@ class Utils {
   static int celsiusToFahrenheit(double celsius) {
     return (celsius * 9 / 5 + 32).toInt();
   }
+
+  static String getCurrentTimeInHHFormat() {
+    DateTime now = DateTime.now();
+    String formattedTime = DateFormat('HH').format(now);
+    return '${formattedTime}00';
+  }
 }

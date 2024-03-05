@@ -492,8 +492,8 @@ class WeatherRepository {
     String date = dt.substring(0, 8);
 
     // filter
-    DateTime currentDateTime = DateTime(dateTime.year, dateTime.month, dateTime.day, dateTime.hour - 1);
-    var twelveHoursLater = currentDateTime.add(const Duration(hours: 13));
+    // DateTime currentDateTime = DateTime(dateTime.year, dateTime.month, dateTime.day, dateTime.hour - 1);
+    // var twelveHoursLater = currentDateTime.add(const Duration(hours: 13));
 
     // local
     if (shortTermList != null
@@ -503,16 +503,9 @@ class WeatherRepository {
       String localDate = shortTermList.items![0].baseDate ?? '';
       if (date == localDate) {
         logger.i('getYesterdayShortTermList() -> local return');
-
         var result = shortTermList.items!.map((e) => e.toShortTerm()).toList();
-
         _updateOthers(result, isYesterday: true);
-
-        var filterList = result.where((item) {
-          var forecastDateTime = DateTime.parse("${item.fcstDate} ${item.fcstTime.toString().padLeft(4, '0')}");
-          return forecastDateTime.isAfter(currentDateTime) && forecastDateTime.isBefore(twelveHoursLater);
-        }).toList();
-
+        var filterList = result.sublist(0, 288);
         return Result.success(filterList);
       }
     }
@@ -545,10 +538,7 @@ class WeatherRepository {
       _updateOthers(result, isYesterday: true);
 
       logger.i('getYesterdayShortTermList() -> api return');
-      var filterList = result.where((item) {
-        var forecastDateTime = DateTime.parse("${item.fcstDate} ${item.fcstTime.toString().padLeft(4, '0')}");
-        return forecastDateTime.isAfter(currentDateTime) && forecastDateTime.isBefore(twelveHoursLater);
-      }).toList();
+      var filterList = result.sublist(0, 288);
 
       return Result.success(filterList);
     } catch (e) {

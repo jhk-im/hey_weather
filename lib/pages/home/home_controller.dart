@@ -81,9 +81,15 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   // Weather
   final RxString _homeWeatherIconName = ''.obs;
   String get homeWeatherIconName => _homeWeatherIconName.value;
+  final RxString _homeRainTime = ''.obs;
+  String get homeRainTime => _homeRainTime.value;
+  final RxInt _homeRainPercent = 0.obs;
+  int get homeRainPercent => _homeRainPercent.value;
 
   final RxInt _ultraShortTemperature = 0.obs;
   int get ultraShortTemperature => _ultraShortTemperature.value;
+  final RxInt _yesterdayTemperature = 0.obs;
+  int get yesterdayTemperature => _yesterdayTemperature.value;
   final RxInt _ultraShortHumidity = 0.obs;
   int get ultraShortHumidity => _ultraShortHumidity.value;
   final RxInt _ultraShortRain = 0.obs;
@@ -405,6 +411,14 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       _rainPercentList(rainPercentList);
       _rainPercentage(int.parse(rainPercentList[0].fcstValue ?? '0'));
 
+      var rainTempPercentList = rainPercentList.sublist(1, rainPercentList.length);
+      var maxRainValue = rainTempPercentList.reduce((value, element) => int.parse(value.fcstValue ?? '0') > int.parse(element.fcstValue ?? '0') ? value : element);
+      ShortTerm? maxFcstValueObject = rainTempPercentList.firstWhereOrNull((element) => element.fcstValue == maxRainValue.fcstValue);
+      if (maxFcstValueObject != null) {
+        _homeRainTime(Utils.convertToTimeFormat(maxFcstValueObject.fcstTime ?? '0000'));
+        _homeRainPercent(int.parse(maxFcstValueObject.fcstValue ?? '0'));
+      }
+
       int min = SharedPreferencesUtil().getInt(kTodayMinFeel);
       int max = SharedPreferencesUtil().getInt(kTodayMaxFeel);
       _apparentTemperatureMin(min);
@@ -426,6 +440,11 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     var getYesterdayShortTerm = await _repository.getYesterdayShortTermList(addressId, longitude, latitude);
     getYesterdayShortTerm.when(success: (shortTermList) async {
       logger.i('HomeController.getYesterdayShortTerm success');
+      var currentTime = Utils.getCurrentTimeInHHFormat();
+      var yesterday = shortTermList.firstWhereOrNull((element) => element.category == kWeatherCategoryTemperatureShort && element.fcstTime == currentTime);
+      if (yesterday != null) {
+        _yesterdayTemperature(int.parse(yesterday.fcstValue ?? '0'));
+      }
     }, error: (e) {
       logger.e('HomeController.getYesterdayShortTerm error -> $e');
     });

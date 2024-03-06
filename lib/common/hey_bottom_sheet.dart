@@ -629,7 +629,7 @@ class HeyBottomSheet {
                 const SizedBox(height: 32),
                 // Card
                 HeyWeatherHomeCard(
-                  weatherStatus: weatherStatus,
+                  weatherStatus: weatherStatus ?? '',
                   temperature: temperature,
                 ),
                 const SizedBox(height: 32),

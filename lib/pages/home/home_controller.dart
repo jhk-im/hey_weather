@@ -420,6 +420,10 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       // 강수형태
       var rainStatusFirstList = ultraSixTime.where((element) => element.category == kWeatherCategoryRainStatus).toList();
       for (var element in rainStatusFirstList) {
+        if (rainStatusFirstList.indexOf(element) == 0) {
+          var fcstValue = element.weatherCategory?.codeValues?.indexOf(ultraShortRainStatus).toString();
+          element.fcstValue = fcstValue;
+        }
         var newBaseTime = element.baseTime?.replaceAll('30', '00');
         element.baseTime = newBaseTime;
       }
@@ -471,11 +475,11 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         // 현재 날씨 상태
         String time = temperatureList[0].fcstTime ?? '0000';
         int currentTime = int.parse(time);
-        int rainIndex = int.parse(rainStatusList[0].fcstValue ?? '0');
-        String rainStatus = rainStatusList[0].weatherCategory?.codeValues?[rainIndex] ?? '없음';
+        // int rainIndex = int.parse(rainStatusList[0].fcstValue ?? '0');
+        // String rainStatus = rainStatusList[0].weatherCategory?.codeValues?[rainIndex] ?? '없음';
         int skyIndex = int.parse(skyList[0].fcstValue ?? '0');
         String skyStatus = skyList[0].weatherCategory?.codeValues?[skyIndex] ?? '';
-        int iconIndex = Utils.getIconIndex(rainStatus: rainStatus, skyStatus: skyStatus, currentTime: currentTime, sunrise: _sunriseTime.value, sunset: _sunsetTime.value);
+        int iconIndex = Utils.getIconIndex(rainStatus: _ultraShortRainStatus.value, skyStatus: skyStatus, currentTime: currentTime, sunrise: _sunriseTime.value, sunset: _sunsetTime.value);
         _homeWeatherIconName(kWeatherIconList[iconIndex]);
         _homeWeatherStatus(kWeatherStatus[_homeWeatherIconName.value]);
       }, error: (e) {

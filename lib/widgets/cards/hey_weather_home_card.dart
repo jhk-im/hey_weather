@@ -11,25 +11,23 @@ class HeyWeatherHomeCard extends StatelessWidget {
   const HeyWeatherHomeCard({
     super.key,
     this.iconName = '',
-    this.weatherStatus,
+    this.weatherStatus = '',
     this.temperature = 0,
     this.yesterdayTemperature = 0,
     this.rain = 0,
     this.rainPercent = 0,
     this.rainTime = '',
-    this.rainStatus = '',
     this.fineDust = 0,
     this.ultraFineDust = 0,
   });
 
   final String iconName;
-  final String? weatherStatus;
+  final String weatherStatus;
   final int temperature;
   final int yesterdayTemperature;
   final int rain;
   final int rainPercent;
   final String rainTime;
-  final String rainStatus;
   final int fineDust;
   final int ultraFineDust;
 
@@ -52,7 +50,7 @@ class HeyWeatherHomeCard extends StatelessWidget {
           // Tag
           HeyCustomButton.outlineTag(
             text: HeyText.footnoteSemiBold(
-              weatherStatus ?? '',
+              weatherStatus,
               color: kTextSecondaryColor,
             ),
           ),
@@ -100,14 +98,14 @@ class HeyWeatherHomeCard extends StatelessWidget {
                     : rain == 0 && rainTime.isEmpty
                     ? 'home_card_message_5'.tr
                     : rain < 3
-                    ? 'home_card_message_6'.trParams({'status': rainStatus})
+                    ? 'home_card_message_6'.trParams({'status': weatherStatus})
                     : rain >= 3 && rain < 8
-                    ? 'home_card_message_7'.trParams({'status': rainStatus})
+                    ? 'home_card_message_7'.trParams({'status': weatherStatus})
                     : rain >= 8 && rain < 12
-                    ? 'home_card_message_8'.trParams({'status': rainStatus})
+                    ? 'home_card_message_8'.trParams({'status': weatherStatus})
                     : rain >= 12 && rain < 20
-                    ? 'home_card_message_9'.trParams({'status': rainStatus})
-                    : 'home_card_message_10'.trParams({'status': rainStatus}),
+                    ? 'home_card_message_9'.trParams({'status': weatherStatus})
+                    : 'home_card_message_10'.trParams({'status': weatherStatus}),
               ),
               //ultraFineDust > 50 && ultraFineDust <= 100 ? ultraFineDust > 100
               const SizedBox(height: 16),

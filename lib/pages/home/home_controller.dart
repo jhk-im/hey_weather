@@ -78,69 +78,79 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   var logger = Logger();
 
-  // Weather
-  final RxString _homeWeatherStatus = ''.obs;
-  String get homeWeatherStatus => _homeWeatherStatus.value;
+  // Home Card
+  final RxString _homeWeatherStatusText = ''.obs;
+  String get homeWeatherStatusText => _homeWeatherStatusText.value;
   final RxString _homeWeatherIconName = ''.obs;
   String get homeWeatherIconName => _homeWeatherIconName.value;
-  final RxString _homeRainTime = ''.obs;
-  String get homeRainTime => _homeRainTime.value;
+  final RxInt _homeTemperature = 0.obs;
+  int get homeTemperature => _homeTemperature.value;
+  final RxInt _homeYesterdayTemperature = 0.obs;
+  int get homeYesterdayTemperature => _homeYesterdayTemperature.value;
+  final RxInt _homeRain = 0.obs;
+  int get homeRain => _homeRain.value;
   final RxInt _homeRainPercent = 0.obs;
   int get homeRainPercent => _homeRainPercent.value;
+  final RxString _homeRainTime = ''.obs;
+  String get homeRainTime => _homeRainTime.value;
 
-  final RxInt _ultraShortTemperature = 0.obs;
-  int get ultraShortTemperature => _ultraShortTemperature.value;
-  final RxInt _yesterdayTemperature = 0.obs;
-  int get yesterdayTemperature => _yesterdayTemperature.value;
-  final RxInt _ultraShortHumidity = 0.obs;
-  int get ultraShortHumidity => _ultraShortHumidity.value;
-  final RxInt _ultraShortRain = 0.obs;
-  int get ultraShortRain => _ultraShortRain.value;
-  final RxString _ultraShortRainStatus = '없음'.obs;
-  String get ultraShortRainStatus => _ultraShortRainStatus.value;
-  final RxDouble _ultraShortWindSpeed = 0.0.obs;
-  double get ultraShortWindSpeed => _ultraShortWindSpeed.value;
-  final RxInt _ultraShortWindDirection = 0.obs;
-  int get ultraShortWindDirection => _ultraShortWindDirection.value;
+  // 시간대 Card
+  final RxList<ShortTerm> _timeTemperatureList = <ShortTerm>[].obs;
+  List<ShortTerm> get timeTemperatureList => _timeTemperatureList;
+  final RxList<ShortTerm> _timeSkyStatusList = <ShortTerm>[].obs;
+  List<ShortTerm> get timeSkyStatusList => _timeSkyStatusList;
+  final RxList<ShortTerm> _timeRainStatusList = <ShortTerm>[].obs;
+  List<ShortTerm> get timeRainStatusList => _timeRainStatusList;
+  final RxList<ShortTerm> _timeRainPercentList = <ShortTerm>[].obs;
+  List<ShortTerm> get timeRainPercentList => _timeRainPercentList;
+  final RxInt _timeSunrise = 0.obs;
+  int get timeSunrise => _timeSunrise.value;
+  final RxInt _timeSunset = 0.obs;
+  int get timeSunset => _timeSunset.value;
 
-  final RxList<ShortTerm> _skyStatusList = <ShortTerm>[].obs;
-  List<ShortTerm> get skyStatusList => _skyStatusList;
-  final RxList<ShortTerm> _temperatureList = <ShortTerm>[].obs;
-  List<ShortTerm> get temperatureList => _temperatureList;
-  final RxList<ShortTerm> _rainStatusList = <ShortTerm>[].obs;
-  List<ShortTerm> get rainStatusList => _rainStatusList;
-  final RxList<ShortTerm> _rainPercentList = <ShortTerm>[].obs;
-  List<ShortTerm> get rainPercentList => _rainPercentList;
+  // 주간 Card
+  final Rx<MidTermTemperature> _weekMidTermTemperature = MidTermTemperature().obs;
+  MidTermTemperature get weekMidTermTemperature => _weekMidTermTemperature.value;
+  final Rx<MidTermLand> _weekMidTermLand = MidTermLand().obs;
+  MidTermLand get weekMidTermLand => _weekMidTermLand.value;
 
-  final RxInt _apparentTemperatureMin = 0.obs;
-  int get apparentTemperatureMin => _apparentTemperatureMin.value;
-  final RxInt _apparentTemperatureMax = 0.obs;
-  int get apparentTemperatureMax => _apparentTemperatureMax.value;
-
-  final RxInt _rainPercentage = 0.obs;
-  int get rainPercentage => _rainPercentage.value;
-
-  final RxString _sunrise = ''.obs;
-  String get sunrise => _sunrise.value;
-  final RxString _sunset = ''.obs;
-  String get sunset => _sunset.value;
-  final RxInt _sunriseTime = 0.obs;
-  int get sunriseTime => _sunriseTime.value;
-  final RxInt _sunsetTime = 0.obs;
-  int get sunsetTime => _sunsetTime.value;
-
-  final RxInt _ultraviolet = 0.obs;
-  int get ultraviolet => _ultraviolet.value;
-
+  // 대기질 Card
   final RxInt _fineDust = 0.obs;
   int get fineDust => _fineDust.value;
   final RxInt _ultraFineDust = 0.obs;
   int get ultraFineDust => _ultraFineDust.value;
 
-  final Rx<MidTermTemperature> _midTermTemperature = MidTermTemperature().obs;
-  MidTermTemperature get midTermTemperature => _midTermTemperature.value;
-  final Rx<MidTermLand> _midTermLand = MidTermLand().obs;
-  MidTermLand get midTermLand => _midTermLand.value;
+  // 강수 Card
+  final RxString _rainStatusText = '없음'.obs;
+  String get rainStatusText => _rainStatusText.value;
+  final RxInt _rainPercentage = 0.obs;
+  int get rainPercentage => _rainPercentage.value;
+
+  // 습도 Card
+  final RxInt _homeHumidity = 0.obs;
+  int get homeHumidity => _homeHumidity.value;
+
+  // 체감 Card
+  final RxInt _feelTemperatureMax = 0.obs;
+  int get feelTemperatureMax => _feelTemperatureMax.value;
+  final RxInt _feelTemperatureMin = 0.obs;
+  int get feelTemperatureMin => _feelTemperatureMin.value;
+
+  // 바람 Card
+  final RxDouble _windSpeed = 0.0.obs;
+  double get windSpeed => _windSpeed.value;
+  final RxInt _windDirection = 0.obs;
+  int get windDirection => _windDirection.value;
+
+  // 일출 일몰 Card
+  final RxString _sunrise = ''.obs;
+  String get sunrise => _sunrise.value;
+  final RxString _sunset = ''.obs;
+  String get sunset => _sunset.value;
+
+  // 자외선 Card
+  final RxInt _ultraviolet = 0.obs;
+  int get ultraviolet => _ultraviolet.value;
 
   @override
   void onInit() {
@@ -255,31 +265,35 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   showAddWeather() async {
     if (Get.context != null) {
       HeyBottomSheet.showAddWeatherBottomSheet(
-          Get.context!,
-          _myWeatherList,
-          windSpeed: _ultraShortWindSpeed.value,
-          windDirection: _ultraShortWindDirection.value,
-          todayHumidity: _ultraShortHumidity.value,
-          rain: _ultraShortRain.value,
-          feelMax: _apparentTemperatureMax.value,
-          feelMin: _apparentTemperatureMin.value,
-          temperatureList: _temperatureList,
-          skyStatusList: _skyStatusList,
-          rainStatusList: _rainStatusList,
-          rainPercentList: _rainPercentList,
-          rainStatus: _ultraShortRainStatus.value,
-          rainPercentage: _rainPercentage.value,
-          ultraviolet: _ultraviolet.value,
-          sunrise: _sunrise.value,
-          sunset: _sunset.value,
-          fineDust: _fineDust.value,
-          ultraFineDust: _ultraFineDust.value,
-          currentTemperature: _ultraShortTemperature.value,
-          onConfirm: (idList) {
-            List<String> updateList = List<String>.from(_myWeatherList);
-            updateList.addAll(idList);
-            updateUserMyWeather(updateList, isUpdate: true);
-          }
+        Get.context!,
+        _myWeatherList,
+        timeTemperatureList: _timeTemperatureList,
+        timeSkyStatusList: _timeSkyStatusList,
+        timeRainStatusList: _timeRainStatusList,
+        timeRainPercentList: _timeRainPercentList,
+        timeSunrise: _sunrise.value,
+        timeSunset: _sunset.value,
+        timeCurrentTemperature: _homeTemperature.value,
+        weekMidTermLand: _weekMidTermLand.value,
+        weekMidTermTemperature: _weekMidTermTemperature.value,
+        dustFine: _fineDust.value,
+        dustUltraFine: _ultraFineDust.value,
+        rain: _homeRain.value,
+        rainStatus: _rainStatusText.value,
+        rainPercentage: _rainPercentage.value,
+        humidity: _homeHumidity.value,
+        feelMax: _feelTemperatureMax.value,
+        feelMin: _feelTemperatureMin.value,
+        windSpeed: _windSpeed.value,
+        windDirection: _windDirection.value,
+        sunriseTime: _timeSunrise.value,
+        sunsetTime: _timeSunset.value,
+        ultraviolet: _ultraviolet.value,
+        onConfirm: (idList) {
+          List<String> updateList = List<String>.from(_myWeatherList);
+          updateList.addAll(idList);
+          updateUserMyWeather(updateList, isUpdate: true);
+        },
       );
     }
   }
@@ -371,21 +385,21 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         double value = double.parse(item.obsrValue ?? '0');
         switch (category) {
           case kWeatherCategoryTemperature:
-            _ultraShortTemperature(value.round());
+            _homeTemperature(value.round());
           case kWeatherCategoryHumidity:
-            _ultraShortHumidity(value.round());
+            _homeHumidity(value.round());
           case kWeatherCategoryRain:
             if (value < 1 && value > 0) {
-              _ultraShortRain(1);
+              _homeRain(1);
             } else {
-              _ultraShortRain(value.round());
+              _homeRain(value.round());
             }
           case kWeatherCategoryRainStatus:
-            _ultraShortRainStatus(item.weatherCategory?.codeValues?[value.round()]);
+            _rainStatusText(item.weatherCategory?.codeValues?[value.round()]);
           case kWeatherCategoryWindSpeed:
-            _ultraShortWindSpeed(value);
+            _windSpeed(value);
           case kWeatherCategoryWindDirection:
-            _ultraShortWindDirection(value.round());
+            _windDirection(value.round());
         }
       }
 
@@ -411,17 +425,17 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         var newBaseTime = element.baseTime?.replaceAll('30', '00');
         element.baseTime = newBaseTime;
       }
-      // 하늘상태
+      // 하늘 상태
       var skyFirstList = ultraSixTime.where((element) => element.category == kWeatherCategorySky).toList();
       for (var element in skyFirstList) {
         var newBaseTime = element.baseTime?.replaceAll('30', '00');
         element.baseTime = newBaseTime;
       }
-      // 강수형태
+      // 강수 형태
       var rainStatusFirstList = ultraSixTime.where((element) => element.category == kWeatherCategoryRainStatus).toList();
       for (var element in rainStatusFirstList) {
         if (rainStatusFirstList.indexOf(element) == 0) {
-          var fcstValue = element.weatherCategory?.codeValues?.indexOf(ultraShortRainStatus).toString();
+          var fcstValue = element.weatherCategory?.codeValues?.indexOf(rainStatusText).toString();
           element.fcstValue = fcstValue;
         }
         var newBaseTime = element.baseTime?.replaceAll('30', '00');
@@ -444,19 +458,19 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         // 기온
         var temperatureNextList = shortTermListSixTime.where((element) => element.category == kWeatherCategoryTemperatureShort).toList();
         var temperatureList = temperatureFirstList + temperatureNextList;
-        // 하늘상태
+        // 하늘
         var skyNextList = shortTermListSixTime.where((element) => element.category == kWeatherCategorySky).toList();
         var skyList = skyFirstList + skyNextList;
-        // 강수형태
+        // 강수 형태
         var rainStatusNextList = shortTermListSixTime.where((element) => element.category == kWeatherCategoryRainStatus).toList();
         var rainStatusList = rainStatusFirstList + rainStatusNextList;
-        // 강수확률
+        // 강수 확률
         var rainPercentList = shortTermList.where((element) => element.category == kWeatherCategoryRainPercent).toList();
 
-        _temperatureList(temperatureList);
-        _skyStatusList(skyList);
-        _rainStatusList(rainStatusList);
-        _rainPercentList(rainPercentList);
+        _timeTemperatureList(temperatureList);
+        _timeSkyStatusList(skyList);
+        _timeRainStatusList(rainStatusList);
+        _timeRainPercentList(rainPercentList);
         _rainPercentage(int.parse(rainPercentList[0].fcstValue ?? '0'));
 
         var rainTempPercentList = rainPercentList.sublist(1, rainPercentList.length);
@@ -469,8 +483,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
         int min = SharedPreferencesUtil().getInt(kTodayMinFeel);
         int max = SharedPreferencesUtil().getInt(kTodayMaxFeel);
-        _apparentTemperatureMin(min);
-        _apparentTemperatureMax(max);
+        _feelTemperatureMin(min);
+        _feelTemperatureMax(max);
 
         // 현재 날씨 상태
         String time = temperatureList[0].fcstTime ?? '0000';
@@ -479,9 +493,9 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         // String rainStatus = rainStatusList[0].weatherCategory?.codeValues?[rainIndex] ?? '없음';
         int skyIndex = int.parse(skyList[0].fcstValue ?? '0');
         String skyStatus = skyList[0].weatherCategory?.codeValues?[skyIndex] ?? '';
-        int iconIndex = Utils.getIconIndex(rainStatus: _ultraShortRainStatus.value, skyStatus: skyStatus, currentTime: currentTime, sunrise: _sunriseTime.value, sunset: _sunsetTime.value);
+        int iconIndex = Utils.getIconIndex(rainStatus: _rainStatusText.value, skyStatus: skyStatus, currentTime: currentTime, sunrise: _timeSunrise.value, sunset: _timeSunset.value);
         _homeWeatherIconName(kWeatherIconList[iconIndex]);
-        _homeWeatherStatus(kWeatherStatus[_homeWeatherIconName.value]);
+        _homeWeatherStatusText(kWeatherStatus[_homeWeatherIconName.value]);
       }, error: (e) {
         logger.e('HomeController.getShortTermList error -> $e');
       });
@@ -492,7 +506,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         var currentTime = Utils.getCurrentTimeInHHFormat();
         var yesterday = shortTermList.firstWhereOrNull((element) => element.category == kWeatherCategoryTemperatureShort && element.fcstTime == currentTime);
         if (yesterday != null) {
-          _yesterdayTemperature(int.parse(yesterday.fcstValue ?? '0'));
+          _homeYesterdayTemperature(int.parse(yesterday.fcstValue ?? '0'));
         }
       }, error: (e) {
         logger.e('HomeController.getYesterdayShortTerm error -> $e');
@@ -537,8 +551,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       var sunset = sunRiseSet.sunset ?? '1900';
       _sunrise(Utils.convertToTime(sunrise));
       _sunset(Utils.convertToTime(sunset));
-      _sunriseTime(int.parse(sunrise));
-      _sunsetTime(int.parse(sunset));
+      _timeSunrise(int.parse(sunrise));
+      _timeSunset(int.parse(sunset));
     }, error: (e) {
       logger.e('HomeController.getSunRiseSetWithCoordinate error -> $e');
     });
@@ -582,7 +596,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       var getMidTermTemperature = await _repository.getMidTermTemperature(addressId, regId);
       getMidTermTemperature.when(success: (midTermTemperature) {
         logger.i('HomeController.getMidTermTemperature success -> $midTermTemperature');
-        _midTermTemperature(midTermTemperature);
+        _weekMidTermTemperature(midTermTemperature);
       }, error: (e) {
         logger.e('HomeController.midTermTemperature error -> $e');
       });
@@ -591,7 +605,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       var getMidTermLand = await _repository.getMidTermLand(addressId, depth1, depth2);
       getMidTermLand.when(success: (midTermLand) {
         logger.i('HomeController.getMidTermLand success -> $midTermLand');
-        _midTermLand(midTermLand);
+        _weekMidTermLand(midTermLand);
       }, error: (e) {
         logger.e('HomeController.getMidTermLand error -> $e');
       });

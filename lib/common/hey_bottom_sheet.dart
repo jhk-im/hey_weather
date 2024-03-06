@@ -215,28 +215,28 @@ class HeyBottomSheet {
 
   static void showAddWeatherBottomSheet(BuildContext context, List<String> idList, {
     Function? onConfirm,
-    double windSpeed = 0.0,
-    int windDirection = 0,
-    int todayHumidity = 0,
+    List<ShortTerm>? timeTemperatureList,
+    List<ShortTerm>? timeSkyStatusList,
+    List<ShortTerm>? timeRainStatusList,
+    List<ShortTerm>? timeRainPercentList,
+    String timeSunrise = '',
+    String timeSunset = '',
+    int timeCurrentTemperature = 0,
+    MidTermLand? weekMidTermLand,
+    MidTermTemperature? weekMidTermTemperature,
+    int dustFine = 0,
+    int dustUltraFine = 0,
     int rain = 0,
-    int feelMax = 0,
-    int feelMin = 0,
-    List<ShortTerm>? skyStatusList,
-    List<ShortTerm>? temperatureList,
-    List<ShortTerm>? rainStatusList,
-    List<ShortTerm>? rainPercentList,
     String rainStatus = '',
     int rainPercentage = 0,
-    int ultraviolet = 0,
-    int fineDust = 0,
-    int ultraFineDust = 0,
-    String sunrise = '',
-    String sunset = '',
+    int humidity = 0,
+    int feelMax = 0,
+    int feelMin = 0,
+    double windSpeed = 0.0,
+    int windDirection = 0,
     int sunriseTime = 0,
     int sunsetTime = 0,
-    int currentTemperature = 0,
-    MidTermLand? midTermLand,
-    MidTermTemperature? midTermTemperature,
+    int ultraviolet = 0,
   }) {
     double height = (MediaQuery.of(context).size.height) - 97;
 
@@ -327,13 +327,13 @@ class HeyBottomSheet {
                             Visibility(
                               visible: weatherInitMap[kWeatherCardTime] ?? true,
                               child: HeyWeatherTimeCard(
-                                temperatureList: temperatureList ?? [],
-                                skyStatusList: skyStatusList ?? [],
-                                rainStatusList: rainStatusList ?? [],
-                                rainPercentList: rainPercentList ?? [],
+                                temperatureList: timeTemperatureList ?? [],
+                                skyStatusList: timeSkyStatusList ?? [],
+                                rainStatusList: timeRainStatusList ?? [],
+                                rainPercentList: timeRainPercentList ?? [],
                                 sunset: sunsetTime,
                                 sunrise: sunriseTime,
-                                currentTemperature: currentTemperature,
+                                currentTemperature: timeCurrentTemperature,
                                 buttonStatus: 1,
                                 onSelect: (id, selected) {
                                   weatherSelectMap[id] = selected;
@@ -344,8 +344,8 @@ class HeyBottomSheet {
                             Visibility(
                               visible: weatherInitMap[kWeatherCardWeek] ?? true,
                               child: HeyWeatherWeekCard(
-                                midTermLand: midTermLand ?? MidTermLand(),
-                                midTermTemperature: midTermTemperature ?? MidTermTemperature(),
+                                midTermLand: weekMidTermLand ?? MidTermLand(),
+                                midTermTemperature: weekMidTermTemperature ?? MidTermTemperature(),
                                 buttonStatus: 1,
                                 onSelect: (id, selected) {
                                   weatherSelectMap[id] = selected;
@@ -356,8 +356,8 @@ class HeyBottomSheet {
                             Visibility(
                               visible: weatherInitMap[kWeatherCardDust] ?? true,
                               child: HeyWeatherDustCard(
-                                fine: fineDust,
-                                ultra: ultraFineDust,
+                                fine: dustFine,
+                                ultra: dustUltraFine,
                                 buttonStatus: 1,
                                 onSelect: (id, selected) {
                                   weatherSelectMap[id] = selected;
@@ -381,7 +381,7 @@ class HeyBottomSheet {
                             Visibility(
                               visible: weatherInitMap[kWeatherCardHumidity] ?? true,
                               child: HeyWeatherHumidityCard(
-                                today: todayHumidity,
+                                today: humidity,
                                 buttonStatus: 1,
                                 onSelect: (id, selected) {
                                   weatherSelectMap[id] = selected;
@@ -416,8 +416,8 @@ class HeyBottomSheet {
                             Visibility(
                               visible: weatherInitMap[kWeatherCardSun] ?? true,
                               child: HeyWeatherSunCard(
-                                sunrise: sunrise,
-                                sunset: sunset,
+                                sunrise: timeSunrise,
+                                sunset: timeSunset,
                                 buttonStatus: 1,
                                 onSelect: (id, selected) {
                                   weatherSelectMap[id] = selected;
@@ -629,8 +629,8 @@ class HeyBottomSheet {
                 const SizedBox(height: 32),
                 // Card
                 HeyWeatherHomeCard(
-                  weatherStatus: weatherStatus ?? '',
-                  temperature: temperature,
+                  homeWeatherStatusText: weatherStatus ?? '',
+                  homeTemperature: temperature,
                 ),
                 const SizedBox(height: 32),
                 // Add Button

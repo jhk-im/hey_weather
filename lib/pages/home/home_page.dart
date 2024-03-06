@@ -149,15 +149,15 @@ class HomePage extends GetView<HomeController> {
                         Container(
                           margin: const EdgeInsets.only(top: 12, left: 20, right: 20),
                           child: HeyWeatherHomeCard(
-                            weatherStatus: controller.homeWeatherStatus,
-                            temperature: controller.ultraShortTemperature,
-                            yesterdayTemperature: controller.yesterdayTemperature,
-                            iconName: controller.homeWeatherIconName,
-                            rain: controller.ultraShortRain,
-                            rainTime: controller.homeRainTime,
-                            rainPercent: controller.homeRainPercent,
-                            fineDust: controller.fineDust,
-                            ultraFineDust: controller.ultraFineDust,
+                            homeWeatherStatusText: controller.homeWeatherStatusText,
+                            homeWeatherIconName: controller.homeWeatherIconName,
+                            homeTemperature: controller.homeTemperature,
+                            homeYesterdayTemperature: controller.homeYesterdayTemperature,
+                            homeRain: controller.homeRain,
+                            homeRainTime: controller.homeRainTime,
+                            homeRainPercent: controller.homeRainPercent,
+                            homeFineDust: controller.fineDust,
+                            homeUltraFineDust: controller.ultraFineDust,
                           ),
                         ),
 
@@ -378,13 +378,13 @@ class HomePage extends GetView<HomeController> {
     switch (id) {
       case kWeatherCardTime:
         return HeyWeatherTimeCard(
-          temperatureList: controller.temperatureList,
-          skyStatusList: controller.skyStatusList,
-          rainStatusList: controller.rainStatusList,
-          rainPercentList: controller.rainPercentList,
-          sunset: controller.sunsetTime,
-          sunrise: controller.sunriseTime,
-          currentTemperature: controller.ultraShortTemperature,
+          temperatureList: controller.timeTemperatureList,
+          skyStatusList: controller.timeSkyStatusList,
+          rainStatusList: controller.timeRainStatusList,
+          rainPercentList: controller.timeRainPercentList,
+          sunset: controller.timeSunset,
+          sunrise: controller.timeSunrise,
+          currentTemperature: controller.homeTemperature,
           buttonStatus: buttonStatus,
           setHeight: (id, height) {
             controller.weatherHeightMap[id] = height;
@@ -395,8 +395,8 @@ class HomePage extends GetView<HomeController> {
         );
       case kWeatherCardWeek:
         return HeyWeatherWeekCard(
-          midTermLand: controller.midTermLand,
-          midTermTemperature: controller.midTermTemperature,
+          midTermLand: controller.weekMidTermLand,
+          midTermTemperature: controller.weekMidTermTemperature,
           buttonStatus: buttonStatus,
           setHeight: (id, height) {
             controller.weatherHeightMap[id] = height;
@@ -419,8 +419,8 @@ class HomePage extends GetView<HomeController> {
         );
       case kWeatherCardRain:
         return HeyWeatherRainCard(
-          rain: controller.ultraShortRain,
-          rainStatus: controller.ultraShortRainStatus,
+          rain: controller.homeRain,
+          rainStatus: controller.rainStatusText,
           percentage: controller.rainPercentage,
           buttonStatus: buttonStatus,
           setHeight: (id, height) {
@@ -432,7 +432,7 @@ class HomePage extends GetView<HomeController> {
         );
       case kWeatherCardHumidity:
         return HeyWeatherHumidityCard(
-          today: controller.ultraShortHumidity,
+          today: controller.homeHumidity,
           setHeight: (id, height) {
             controller.weatherHeightMap[id] = height;
           },
@@ -443,8 +443,8 @@ class HomePage extends GetView<HomeController> {
         );
       case kWeatherCardFeel:
         return HeyWeatherFeelCard(
-          max: controller.apparentTemperatureMax,
-          min: controller.apparentTemperatureMin,
+          max: controller.feelTemperatureMax,
+          min: controller.feelTemperatureMin,
           buttonStatus: buttonStatus,
           setHeight: (id, height) {
             controller.weatherHeightMap[id] = height;
@@ -455,8 +455,8 @@ class HomePage extends GetView<HomeController> {
         );
       case kWeatherCardWind:
         return HeyWeatherWindCard(
-          speed: controller.ultraShortWindSpeed,
-          direction: controller.ultraShortWindDirection,
+          speed: controller.windSpeed,
+          direction: controller.windDirection,
           buttonStatus: buttonStatus,
           setHeight: (id, height) {
             controller.weatherHeightMap[id] = height;
@@ -502,18 +502,18 @@ class HomePage extends GetView<HomeController> {
           children: [
             // 시간대별 날씨
             HeyWeatherTimeCard(
-              temperatureList: controller.temperatureList,
-              skyStatusList: controller.skyStatusList,
-              rainStatusList: controller.rainStatusList,
-              rainPercentList: controller.rainPercentList,
-              sunset: controller.sunsetTime,
-              sunrise: controller.sunriseTime,
-              currentTemperature: controller.ultraShortTemperature,
+              temperatureList: controller.timeTemperatureList,
+              skyStatusList: controller.timeSkyStatusList,
+              rainStatusList: controller.timeRainStatusList,
+              rainPercentList: controller.timeRainPercentList,
+              sunset: controller.timeSunset,
+              sunrise: controller.timeSunrise,
+              currentTemperature: controller.homeTemperature,
             ),
             // 주간 날씨
             HeyWeatherWeekCard(
-              midTermLand: controller.midTermLand,
-              midTermTemperature: controller.midTermTemperature,
+              midTermLand: controller.weekMidTermLand,
+              midTermTemperature: controller.weekMidTermTemperature,
             ),
             // 대기질
             HeyWeatherDustCard(
@@ -522,23 +522,23 @@ class HomePage extends GetView<HomeController> {
             ),
             // 강수
             HeyWeatherRainCard(
-              rain: controller.ultraShortRain,
-              rainStatus: controller.ultraShortRainStatus,
+              rain: controller.homeRain,
+              rainStatus: controller.rainStatusText,
               percentage: controller.rainPercentage,
             ),
             // 습도
             HeyWeatherHumidityCard(
-              today: controller.ultraShortHumidity,
+              today: controller.homeHumidity,
             ),
             // 체감온도
             HeyWeatherFeelCard(
-              max: controller.apparentTemperatureMax,
-              min: controller.apparentTemperatureMin,
+              max: controller.feelTemperatureMax,
+              min: controller.feelTemperatureMin,
             ),
             // 바람
             HeyWeatherWindCard(
-              speed: controller.ultraShortWindSpeed,
-              direction: controller.ultraShortWindDirection,
+              speed: controller.windSpeed,
+              direction: controller.windDirection,
             ),
             // 일출 일몰
             HeyWeatherSunCard(

@@ -165,8 +165,6 @@ class AddressController extends GetxController with WidgetsBindingObserver {
       final sortList = addressList.where((e) => e.id != kCurrentLocationId).toList();
       final recent = addressList.where((e) => e.id != kCurrentLocationId).toList();
 
-      recent.forEach((element) {print(element.createDateTime);});
-
       recent.sort((a, b) => DateTime.parse(b.createDateTime ?? '').compareTo(DateTime.parse(a.createDateTime ?? '')));
 
       // 편집 주소 리스트

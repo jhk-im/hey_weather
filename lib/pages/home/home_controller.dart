@@ -91,8 +91,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   int get homeRain => _homeRain.value;
   final RxInt _homeRainPercent = 0.obs;
   int get homeRainPercent => _homeRainPercent.value;
-  final RxString _homeRainTime = ''.obs;
-  String get homeRainTime => _homeRainTime.value;
+  final RxString _homeRainTimeText = ''.obs;
+  String get homeRainTimeText => _homeRainTimeText.value;
 
   // 시간대 Card
   final RxList<ShortTerm> _timeTemperatureList = <ShortTerm>[].obs;
@@ -372,6 +372,70 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     _isLoading(false);
   }
 
+  _updateSunRiseSet(Address address) async {
+    String addressId = address.id ?? '';
+    double longitude = address.x ?? 0;
+    double latitude = address.y ?? 0;
+    // 일출 일몰
+    var getSunRiseSet = await _repository.getSunRiseSetWithCoordinate(addressId, longitude, latitude);
+    getSunRiseSet.when(success: (sunRiseSet) {
+      logger.i('HomeController.getSunRiseSetWithCoordinate success');
+      var sunrise = sunRiseSet.sunrise ?? '0500';
+      var sunset = sunRiseSet.sunset ?? '1900';
+      _sunrise(Utils.convertToTime(sunrise));
+      _sunset(Utils.convertToTime(sunset));
+      _timeSunrise(int.parse(sunrise));
+      _timeSunset(int.parse(sunset));
+    }, error: (e) {
+      logger.e('HomeController.getSunRiseSetWithCoordinate error -> $e');
+    });
+  }
+
+  _updateObservatory(Address address) async {
+    // 관측소
+    String depth1 = address.region1depthName ?? '';
+    String depth2 = address.region2depthName ?? '';
+    String addressId = address.id ?? '';
+    var getObservatory = await _repository.getObservatoryWithAddress(depth1, depth2);
+    getObservatory.when(success: (observatory) async {
+      logger.i('HomeController.getObservatoryWithAddress success');
+
+      // 자외선
+      var getUltraviolet = await _repository.getUltraviolet(addressId, observatory.code.toString());
+      getUltraviolet.when(success: (ultraviolet) {
+        logger.i('HomeController.getUltraviolet success');
+        _ultraviolet(int.parse(ultraviolet.h0 ?? '0'));
+      }, error: (e) {
+        logger.e('HomeController.getUltraviolet error -> $e');
+      });
+    }, error: (e) {
+      logger.e('HomeController.getObservatoryWithAddress error -> $e');
+    });
+  }
+
+  _updateFineDust(Address address) async {
+    String addressId = address.id ?? '';
+    String depth1 = address.region1depthName ?? '';
+    var getFineDust = await _repository.getFineDustWithCity(addressId, depth1);
+    getFineDust.when(success: (fineDust) async {
+      logger.i('HomeController.getFineDust success');
+
+      try {
+        _fineDust(int.parse((fineDust.pm10Value ?? '0')));
+      } catch (e) {
+        _fineDust(0);
+      }
+
+      try {
+        _ultraFineDust(int.parse((fineDust.pm25Value ?? '0')));
+      } catch (e) {
+        _ultraFineDust(0);
+      }
+    }, error: (e) {
+      logger.e('HomeController.getFineDust error -> $e');
+    });
+  }
+
   _updateUltraShortTerm(Address address) async {
     double longitude = address.x ?? 0;
     double latitude = address.y ?? 0;
@@ -477,7 +541,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         var maxRainValue = rainTempPercentList.reduce((value, element) => int.parse(value.fcstValue ?? '0') > int.parse(element.fcstValue ?? '0') ? value : element);
         ShortTerm? maxFcstValueObject = rainTempPercentList.firstWhereOrNull((element) => element.fcstValue == maxRainValue.fcstValue);
         if (maxFcstValueObject != null) {
-          _homeRainTime(Utils.convertToTimeFormat(maxFcstValueObject.fcstTime ?? '0000'));
+          _homeRainTimeText(Utils.convertToTimeFormat(maxFcstValueObject.fcstTime ?? '0000'));
           _homeRainPercent(int.parse(maxFcstValueObject.fcstValue ?? '0'));
         }
 
@@ -511,73 +575,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       }, error: (e) {
         logger.e('HomeController.getYesterdayShortTerm error -> $e');
       });
-
     }, error: (e) {
       logger.e('HomeController.getUltraShortTermSixTime error -> $e');
-    });
-  }
-
-  _updateObservatory(Address address) async {
-    // 관측소
-    String depth1 = address.region1depthName ?? '';
-    String depth2 = address.region2depthName ?? '';
-    String addressId = address.id ?? '';
-    var getObservatory = await _repository.getObservatoryWithAddress(depth1, depth2);
-    getObservatory.when(success: (observatory) async {
-      logger.i('HomeController.getObservatoryWithAddress success');
-
-      // 자외선
-      var getUltraviolet = await _repository.getUltraviolet(addressId, observatory.code.toString());
-      getUltraviolet.when(success: (ultraviolet) {
-        logger.i('HomeController.getUltraviolet success');
-        _ultraviolet(int.parse(ultraviolet.h0 ?? '0'));
-      }, error: (e) {
-        logger.e('HomeController.getUltraviolet error -> $e');
-      });
-    }, error: (e) {
-      logger.e('HomeController.getObservatoryWithAddress error -> $e');
-    });
-  }
-
-  _updateSunRiseSet(Address address) async {
-    String addressId = address.id ?? '';
-    double longitude = address.x ?? 0;
-    double latitude = address.y ?? 0;
-    // 일출 일몰
-    var getSunRiseSet = await _repository.getSunRiseSetWithCoordinate(addressId, longitude, latitude);
-    getSunRiseSet.when(success: (sunRiseSet) {
-      logger.i('HomeController.getSunRiseSetWithCoordinate success');
-      var sunrise = sunRiseSet.sunrise ?? '0500';
-      var sunset = sunRiseSet.sunset ?? '1900';
-      _sunrise(Utils.convertToTime(sunrise));
-      _sunset(Utils.convertToTime(sunset));
-      _timeSunrise(int.parse(sunrise));
-      _timeSunset(int.parse(sunset));
-    }, error: (e) {
-      logger.e('HomeController.getSunRiseSetWithCoordinate error -> $e');
-    });
-  }
-
-  _updateFineDust(Address address) async {
-    String addressId = address.id ?? '';
-    String depth1 = address.region1depthName ?? '';
-    var getFineDust = await _repository.getFineDustWithCity(addressId, depth1);
-    getFineDust.when(success: (fineDust) async {
-      logger.i('HomeController.getFineDust success');
-
-      try {
-        _fineDust(int.parse((fineDust.pm10Value ?? '0')));
-      } catch (e) {
-        _fineDust(0);
-      }
-
-      try {
-        _ultraFineDust(int.parse((fineDust.pm25Value ?? '0')));
-      } catch (e) {
-        _ultraFineDust(0);
-      }
-    }, error: (e) {
-      logger.e('HomeController.getFineDust error -> $e');
     });
   }
 

@@ -173,6 +173,97 @@ class WeatherRepository {
     }
   }
 
+  Future<Result<Address>> createAddressWithCoordinate(String currentAddressId, {String? addressName}) async {
+    Position? position;
+
+    // 좌표값 변경이 없는 경우 로컬 리턴
+    final current = await _dao.getUserAddressWithId(currentAddressId);
+
+    if (currentAddressId == kCurrentLocationId) {
+      position = await _getLocation();
+      logger.i('getUpdateAddressWithCoordinate() -> position -> $position');
+      if (current != null) {
+        final currentX = current.x!.toStringAsFixed(3);
+        final positionX = position.longitude.toStringAsFixed(3);
+        final currentY = current.y!.toStringAsFixed(3);
+        final positionY = position.latitude.toStringAsFixed(3);
+        if (currentX == positionX && currentY == positionY) {
+          logger.i('getAddressWithCoordinate() -> local return ${current.toAddress()}');
+          return Result.success(current.toAddress());
+        }
+      }
+    }
+
+    // 통신 오류용 기본 주소 정보
+    Address defaultAddress = Address();
+    defaultAddress.addressName = '태평로1가';
+    defaultAddress.region1depthName = '서울특별시';
+    defaultAddress.region2depthName = '중구';
+    defaultAddress.region3depthName = '태평로1가';
+    defaultAddress.x = 126.97723484374212;
+    defaultAddress.y = 37.56770871576262;
+    defaultAddress.id = kCurrentLocationId;
+
+    // 인터넷 연결 끊김
+    var connect =  await Utils.checkInternetConnection();
+    if (!connect) {
+      if (current != null) {
+        logger.i('getAddressWithCoordinate() -> network not connected local return ${current.toAddress()}');
+        return Result.success(current.toAddress());
+      } else {
+        logger.i('getAddressWithCoordinate() -> network not connected return $defaultAddress');
+        _dao.updateUserAddressWithId(kCurrentLocationId, defaultAddress.toAddressEntity());
+        return Result.success(defaultAddress);
+      }
+    } else {
+      // 좌표로 주소 검색
+      try {
+        double longitude = 0;
+        double latitude = 0;
+        if (position != null) {
+          longitude = position.longitude;
+          latitude = position.latitude;
+        } else {
+          longitude = current?.x ?? 0;
+          latitude = current?.y ?? 0;
+        }
+        logger.i('getUpdateAddressWithCoordinate() longitude -> $longitude, latitude -> $latitude');
+
+        final response = await _api.getAddressWithCoordinate(longitude, latitude);
+        final jsonResult = jsonDecode(response.body);
+        AddressList result = AddressList.fromJson(jsonResult);
+        Address address = Address();
+        if (result.documents != null) {
+          address = result.documents![0];
+          if (currentAddressId == kCurrentLocationId) {
+            address.addressName = '${addressName ?? address.region3depthName}';
+          } else {
+            if (current != null) {
+              address.addressName = current.addressName ?? '';
+              address.createDateTime = current.createDateTime ?? '';
+            }
+          }
+          address.x = longitude;
+          address.y = latitude;
+          address.id = currentAddressId;
+
+
+          logger.i('getAddressWithCoordinate() -> kakao api return $address');
+          _dao.updateUserAddressWithId(currentAddressId, address.toAddressEntity());
+          return Result.success(address);
+        } else {
+          logger.i('getAddressWithCoordinate() -> kakao api failed return $defaultAddress');
+          _dao.updateUserAddressWithId(kCurrentLocationId, defaultAddress.toAddressEntity());
+          return Result.success(defaultAddress);
+        }
+      } catch (e) {
+        logger.i('getAddressWithCoordinate() -> kakao api failed return $defaultAddress');
+        _dao.updateUserAddressWithId(kCurrentLocationId, defaultAddress.toAddressEntity());
+        return Result.success(defaultAddress);
+      }
+    }
+  }
+
   // 주소 검색
   Future<Result<List<SearchAddress>>> getSearchAddress(String query) async {
     // 카카오 주소 검색
@@ -381,19 +472,21 @@ class WeatherRepository {
           result.add(item);
 
           // local update
-          switch (category) {
-            case kWeatherCategoryTemperature:
-              await _dao.updateWeatherUltraShortTemperature(id, item.toWeatherUltraShortTermEntity());
-            case kWeatherCategoryHumidity:
-              await _dao.updateWeatherUltraShortHumidity(id, item.toWeatherUltraShortTermEntity());
-            case kWeatherCategoryRain:
-              await _dao.updateWeatherUltraShortRain(id, item.toWeatherUltraShortTermEntity());
-            case kWeatherCategoryRainStatus:
-              await _dao.updateWeatherUltraShortRainStatus(id, item.toWeatherUltraShortTermEntity());
-            case kWeatherCategoryWindSpeed:
-              await _dao.updateWeatherUltraShortWindSpeed(id, item.toWeatherUltraShortTermEntity());
-            case kWeatherCategoryWindDirection:
-              await _dao.updateWeatherUltraShortWindDirection(id, item.toWeatherUltraShortTermEntity());
+          if (id != kCreateWidgetId) {
+            switch (category) {
+              case kWeatherCategoryTemperature:
+                await _dao.updateWeatherUltraShortTemperature(id, item.toWeatherUltraShortTermEntity());
+              case kWeatherCategoryHumidity:
+                await _dao.updateWeatherUltraShortHumidity(id, item.toWeatherUltraShortTermEntity());
+              case kWeatherCategoryRain:
+                await _dao.updateWeatherUltraShortRain(id, item.toWeatherUltraShortTermEntity());
+              case kWeatherCategoryRainStatus:
+                await _dao.updateWeatherUltraShortRainStatus(id, item.toWeatherUltraShortTermEntity());
+              case kWeatherCategoryWindSpeed:
+                await _dao.updateWeatherUltraShortWindSpeed(id, item.toWeatherUltraShortTermEntity());
+              case kWeatherCategoryWindDirection:
+                await _dao.updateWeatherUltraShortWindDirection(id, item.toWeatherUltraShortTermEntity());
+            }
           }
         }
       }
@@ -452,7 +545,7 @@ class WeatherRepository {
       }
 
       // local update
-      if (result.isNotEmpty) {
+      if (result.isNotEmpty && id != kCreateWidgetId) {
         _dao.updateWeatherShortListSixTime(id, result);
       }
 
@@ -522,7 +615,7 @@ class WeatherRepository {
       }
 
       // local update
-      if (result.isNotEmpty) {
+      if (result.isNotEmpty && id != kCreateWidgetId) {
         _dao.updateWeatherShortListTemperature(id, result);
       }
 
@@ -590,7 +683,7 @@ class WeatherRepository {
       }
 
       // local update
-      if (result.isNotEmpty) {
+      if (result.isNotEmpty && id != kCreateWidgetId) {
         _dao.updateWeatherYesterdayShortListTemperature(id, result);
       }
 
@@ -886,7 +979,9 @@ class WeatherRepository {
         }
       }
 
-      _dao.updateWeatherMidTermTemperature(id, result.toMidTermTemperatureEntity());
+      if (id != kCreateWidgetId) {
+        _dao.updateWeatherMidTermTemperature(id, result.toMidTermTemperatureEntity());
+      }
       logger.i('getMidTermTemperature() -> api return');
       return Result.success(result);
     } catch (e) {
@@ -921,7 +1016,9 @@ class WeatherRepository {
         }
       }
       // local update
-      _dao.updateWeatherMidTermLand(id, result.toMidTermLandEntity());
+      if (id != kCreateWidgetId) {
+        _dao.updateWeatherMidTermLand(id, result.toMidTermLandEntity());
+      }
       logger.i('getMidTermLand() -> api return');
       return Result.success(result);
     } catch (e) {
@@ -960,7 +1057,7 @@ class WeatherRepository {
       SunRiseSet result = SunRiseSet.fromJson(json['item']);
 
       // 로컬 업데이트
-      if (result.locdate != null) {
+      if (result.locdate != null && id != kCreateWidgetId) {
         _dao.updateWeatherSunRiseSet(id, result.toSunRiseSetEntity());
       }
       logger.i('getRiseSetWithCoordinate() -> api return');
@@ -986,14 +1083,12 @@ class WeatherRepository {
           .toString()
           .replaceAll(RegExp("[^0-9\\s]"), "")
           .replaceAll(" ", "");
-      String currentDate = dt.substring(0, 8);
-      String dataTime = fineDust.dataTime!;
-      String prevDate = dataTime.substring(0, 10).replaceAll("-", "");
-      String currentTime = dt.substring(8, 10);
-      String prevTime =
-      dataTime.substring(dataTime.length - 5, dataTime.length - 3);
-
-      if (currentDate == prevDate && currentTime == prevTime) {
+      String currentDate = dt.substring(0, 10);
+      String dataTime = fineDust.dataTime!.replaceAll(' ', '');
+      String prevDate = dataTime.substring(0, 12).replaceAll("-", "");
+      DateTime dateTime1 = Utils.parseDateString(currentDate);
+      DateTime dateTime2 = Utils.parseDateString(prevDate);
+      if (dateTime1.isAtSameMomentAs(dateTime2)) {
         logger.i('getFineDust() -> local return');
         return Result.success(fineDust.toFineDust());
       }
@@ -1011,7 +1106,7 @@ class WeatherRepository {
         fineDust = list.items![0];
       }
       // local update
-      if (isUpdate) {
+      if (isUpdate && id != kCreateWidgetId) {
         _dao.updateWeatherFineDust(id, fineDust.toWeatherFineDustEntity());
       }
       logger.i('getFineDust() -> api return');
@@ -1091,7 +1186,7 @@ class WeatherRepository {
           result = list.items!.item![0];
           logger.i('getUltraviolet() api result = $result');
           // 로컬 업데이트
-          if (result.code != null) {
+          if (result.code != null && id != kCreateWidgetId) {
             for (Ultraviolet uv in list.items!.item!) {
               uv.date = currentDateTime;
             }

@@ -12,8 +12,6 @@ class HeyWeatherAddressCard extends StatefulWidget {
   const HeyWeatherAddressCard({
     super.key,
     this.address,
-    this.weatherStatus,
-    this.temperature,
     this.isEditMode = false,
     this.isCurrentLocation = false,
     required this.onSelectAddress,
@@ -21,8 +19,6 @@ class HeyWeatherAddressCard extends StatefulWidget {
   });
 
   final Address? address;
-  final String? weatherStatus;
-  final String? temperature;
   final Function onSelectAddress;
   final Function? onRemoveAddress;
   final bool isCurrentLocation;
@@ -78,7 +74,7 @@ class _HeyWeatherAddressCardState extends State<HeyWeatherAddressCard> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           HeyText.footnote(
-                            widget.weatherStatus ?? '',
+                            widget.address?.weatherStatusText ?? '흐림',
                             color: kTextDisabledColor,
                           ),
                           if (widget.address?.isRecent == true || widget.address?.id == kCurrentLocationId) ... {
@@ -114,13 +110,14 @@ class _HeyWeatherAddressCardState extends State<HeyWeatherAddressCard> {
                         margin: const EdgeInsets.symmetric(horizontal: 15),
                         child: SvgUtils.weatherIcon(
                           context,
-                          'cloudy_on',
+                          widget.address?.weatherIconName != null ?
+                          '${widget.address?.weatherIconName}_on' : 'cloudy_on',
                           width: 40,
                           height: 40,
                         ),
                       ),
                       HeyText.bodySemiBold(
-                        '${isFahrenheit.value ? Utils.celsiusToFahrenheit(double.parse(widget.temperature ?? '0')) : widget.temperature}°',
+                        '${isFahrenheit.value ? Utils.celsiusToFahrenheit(double.parse(widget.address?.temperature.toString() ?? '0')) : widget.address?.temperature ?? '0'}°',
                         color: kTextPointColor,
                         fontSize: kFont28,
                       ),

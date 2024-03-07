@@ -2,7 +2,6 @@ import 'package:easy_rich_text/easy_rich_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hey_weather/common/constants.dart';
-import 'package:hey_weather/common/hey_bottom_sheet.dart';
 import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/svg_utils.dart';
 import 'package:hey_weather/pages/address/address_controller.dart';
@@ -149,8 +148,6 @@ class AddressPage extends GetView<AddressController> {
                           children: [
                             HeyWeatherAddressCard(
                               address: controller.currentAddress,
-                              weatherStatus: '구름 조금',
-                              temperature: '19',
                               isEditMode: controller.isEditMode,
                               isCurrentLocation: true,
                               onSelectAddress: controller.selectAddress,
@@ -185,8 +182,6 @@ class AddressPage extends GetView<AddressController> {
                               margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
                               child: HeyWeatherAddressCard(
                                 address: controller.addressList[index],
-                                weatherStatus: '구름 조금',
-                                temperature: '19',
                                 isEditMode: controller.isEditMode,
                                 onSelectAddress: controller.selectAddress,
                                 onRemoveAddress: controller.removeAddress,
@@ -217,20 +212,7 @@ class AddressPage extends GetView<AddressController> {
                           hoverColor: Colors.transparent,
                           onTap: () {
                             controller.focusNode.unfocus();
-                            HeyBottomSheet.showCreateAddressBottomSheet(
-                              context,
-                              address: controller.searchAddressList[index],
-                              searchText: controller.searchAddressText,
-                              weatherStatus: '구름 조금',
-                              temperature: 19,
-                              message1: '어제보다 1℃ 낮아요',
-                              message2: '저녁 6시에 비 올 확률이 80%예요',
-                              message3: '미세먼지가 없고 하늘이 깨끗해요',
-                              onCreateAddress: (address, searchText) {
-                                Get.back();
-                                controller.createSearchAddress(address, searchText);
-                              },
-                            );
+                            controller.showCreateAddressBottomSheet(context, controller.searchAddressList[index]);
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(20),

@@ -13,6 +13,19 @@ class Address {
   bool? isRecent;
   String? createDateTime;
 
+  String? weatherStatusText;
+  String? weatherIconName;
+  int? timeSunrise;
+  int? timeSunset;
+  int? temperature;
+  int? yesterdayTemperature;
+  int? rain;
+  String? rainTimeText;
+  String? rainStatusText;
+  int? rainPercent;
+  int? fineDust;
+  int? ultraFineDust;
+
   Address({
     this.id,
     this.regionType,

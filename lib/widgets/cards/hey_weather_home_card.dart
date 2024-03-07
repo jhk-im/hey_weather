@@ -16,7 +16,7 @@ class HeyWeatherHomeCard extends StatelessWidget {
     this.homeYesterdayTemperature = 0,
     this.homeRain = 0,
     this.homeRainPercent = 0,
-    this.homeRainTime = '',
+    this.homeRainTimeText = '',
     this.homeFineDust = 0,
     this.homeUltraFineDust = 0,
   });
@@ -29,7 +29,7 @@ class HeyWeatherHomeCard extends StatelessWidget {
 
   final int homeRain;
   final int homeRainPercent;
-  final String homeRainTime;
+  final String homeRainTimeText;
 
   final int homeFineDust;
   final int homeUltraFineDust;
@@ -96,9 +96,9 @@ class HeyWeatherHomeCard extends StatelessWidget {
               HeyCustomButton.tagWithIcon(
                 context,
                 iconName: 'card_rain',
-                text: homeRain == 0 && homeRainTime.isNotEmpty
-                    ? 'home_card_message_4'.trParams({'time':homeRainTime, 'percent':'$homeRainPercent'})
-                    : homeRain == 0 && homeRainTime.isEmpty
+                text: homeRain == 0 && homeRainTimeText.isNotEmpty
+                    ? 'home_card_message_4'.trParams({'time':homeRainTimeText, 'percent':'$homeRainPercent'})
+                    : homeRain == 0 && homeRainTimeText.isEmpty
                     ? 'home_card_message_5'.tr
                     : homeRain < 3
                     ? 'home_card_message_6'.trParams({'status': homeWeatherStatusText})

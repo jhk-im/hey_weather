@@ -4,7 +4,6 @@ import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/utils.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
-import 'package:hey_weather/repository/soruce/local/model/search_address.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_term_land.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_term_temperature.dart';
 import 'package:hey_weather/repository/soruce/remote/model/short_term.dart';
@@ -564,13 +563,8 @@ class HeyBottomSheet {
   }
 
   static void showCreateAddressBottomSheet(BuildContext context, {
-    required SearchAddress address,
+    required Address address,
     required String searchText,
-    String? weatherStatus,
-    int temperature = 0,
-    String? message1,
-    String? message2,
-    String? message3,
     required Function onCreateAddress,
   }) {
     showModalBottomSheet(
@@ -629,8 +623,15 @@ class HeyBottomSheet {
                 const SizedBox(height: 32),
                 // Card
                 HeyWeatherHomeCard(
-                  homeWeatherStatusText: weatherStatus ?? '',
-                  homeTemperature: temperature,
+                  homeWeatherStatusText: address.weatherStatusText ?? '',
+                  homeWeatherIconName: address.weatherIconName ?? '',
+                  homeTemperature: address.temperature ?? 0,
+                  homeYesterdayTemperature: address.yesterdayTemperature ?? 0,
+                  homeRain: address.rain ?? 0,
+                  homeRainTimeText: address.rainTimeText ?? '',
+                  homeRainPercent: address.rainPercent ?? 0,
+                  homeFineDust: address.fineDust ?? 0,
+                  homeUltraFineDust: address.ultraFineDust ?? 0,
                 ),
                 const SizedBox(height: 32),
                 // Add Button

@@ -48,6 +48,7 @@ const kHomeBottomColor = Color(0xFF0E0E0E);
 
 // AddressCard
 const kCurrentLocationId = 'current_location_id'; // 현재위치 주소 id
+const kCreateWidgetId = 'create_widget_id'; // 생성하려는 경우 로컬에 추가하지 않ㅇ므
 
 // SharedPreferences key
 const kLocationPermission = 'location_permission'; // 위치 권한 toggle

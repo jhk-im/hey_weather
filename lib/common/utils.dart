@@ -115,4 +115,19 @@ class Utils {
     String formattedTime = DateFormat('HH').format(now);
     return '${formattedTime}00';
   }
+
+  static DateTime parseDateString(String dateString) {
+    int year = int.parse(dateString.substring(0, 4));
+    int month = int.parse(dateString.substring(4, 6));
+    int day = int.parse(dateString.substring(6, 8));
+    int hour = int.parse(dateString.substring(8, 10));
+
+    if (hour == 24) {
+      DateTime date = DateTime(year, month, day, 0, 0, 0);
+      date = date.add(const Duration(days: 1));
+      return date;
+    } else {
+      return DateTime(year, month, day, hour, 0, 0);
+    }
+  }
 }

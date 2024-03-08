@@ -1063,25 +1063,25 @@ class WeatherRepository {
     final fineDust = await _dao.getWeatherFineDust(id);
 
     final cityName = _getCityName(depth1);
-    logger.d('getFineDustWithCity() cityName -> $cityName');
+    logger.d('getFineDustWithCity() -> cityName = $cityName');
 
     // local
     if (fineDust != null && fineDust.dataTime != null) {
       DateTime dateTime = DateTime.now();
-      String dt = /*DateTime(dateTime.year, dateTime.month, dateTime.day,
-          dateTime.hour, dateTime.minute - 30)*/
-          dateTime
-          .toString()
+      String dt = dateTime.toString()
           .replaceAll(RegExp("[^0-9\\s]"), "")
           .replaceAll(" ", "");
       String currentDate = dt.substring(0, 10);
       String dataTime = fineDust.dataTime!.replaceAll(' ', '');
       String prevDate = dataTime.substring(0, 12).replaceAll("-", "");
-      DateTime dateTime1 = Utils.parseDateString(currentDate);
-      DateTime dateTime2 = Utils.parseDateString(prevDate);
+      DateTime currentDateTime = Utils.parseDateString(currentDate);
+      DateTime localDateTime = Utils.parseDateString(prevDate);
 
-      logger.d('getFineDustWithCity() local return check -> currentDate = $dateTime1, localDate = $dateTime2');
-      if (dateTime1.isAtSameMomentAs(dateTime2)) {
+      // 현재 시간과 로컬 시간 사이의 차이 계산
+      Duration timeDifference = currentDateTime.difference(localDateTime);
+
+      logger.d('getFineDustWithCity() local return check -> currentDateTime = $currentDateTime, localDateTime = $localDateTime, timeDifference = $timeDifference');
+      if (timeDifference.inHours.abs() <= 3) {
         return Result.success(fineDust.toFineDust());
       }
     }

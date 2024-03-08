@@ -139,7 +139,7 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     _searchAddressList.clear();
   }
 
-  createSearchAddress(Address address, String searchText) {
+  _createSearchAddress(Address address, String searchText) {
     resetTextField();
     _updateAddressCard(address, searchText);
   }
@@ -175,9 +175,14 @@ class AddressController extends GetxController with WidgetsBindingObserver {
   }
 
   showCreateAddressBottomSheet(BuildContext context, SearchAddress address) async {
+
     Address newAddress = Address();
     newAddress.id = kCreateWidgetId;
     newAddress.addressName = address.addressName;
+
+    var names = address.addressName?.split(' ');
+    newAddress.region1depthName = names != null && names.isNotEmpty ? names[0] : '서울';
+
     newAddress.x = double.parse(address.x ?? '0');
     newAddress.y = double.parse(address.y ?? '0');
 
@@ -192,7 +197,7 @@ class AddressController extends GetxController with WidgetsBindingObserver {
       searchText: _searchAddressText.value,
       onCreateAddress: (address, searchText) {
         Get.back();
-        createSearchAddress(address, searchText);
+        _createSearchAddress(address, searchText);
       },
     );
   }
@@ -282,7 +287,7 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     // 일출 일몰
     var getSunRiseSet = await _repository.getSunRiseSetWithCoordinate(addressId, longitude, latitude);
     getSunRiseSet.when(success: (sunRiseSet) {
-      logger.i('HomeController.getSunRiseSetWithCoordinate success');
+      // logger.i('HomeController.getSunRiseSetWithCoordinate success');
       var sunrise = sunRiseSet.sunrise ?? '0500';
       var sunset = sunRiseSet.sunset ?? '1900';
       address.timeSunrise = int.parse(sunrise);
@@ -446,7 +451,12 @@ class AddressController extends GetxController with WidgetsBindingObserver {
           isCheckIcon: true,
         );
 
-        _getData();
+        // _getData();
+        for (var element in addressList) {
+          element.isRecent = false;
+        }
+        address.isRecent = true;
+        addressList.insert(0, address);
       }
     });
   }

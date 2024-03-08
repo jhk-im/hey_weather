@@ -379,7 +379,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     // 일출 일몰
     var getSunRiseSet = await _repository.getSunRiseSetWithCoordinate(addressId, longitude, latitude);
     getSunRiseSet.when(success: (sunRiseSet) {
-      logger.i('HomeController.getSunRiseSetWithCoordinate success');
+      // logger.i('HomeController.getSunRiseSetWithCoordinate success');
       var sunrise = sunRiseSet.sunrise ?? '0500';
       var sunset = sunRiseSet.sunset ?? '1900';
       _sunrise(Utils.convertToTime(sunrise));
@@ -398,12 +398,12 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     String addressId = address.id ?? '';
     var getObservatory = await _repository.getObservatoryWithAddress(depth1, depth2);
     getObservatory.when(success: (observatory) async {
-      logger.i('HomeController.getObservatoryWithAddress success');
+      // logger.i('HomeController.getObservatoryWithAddress success');
 
       // 자외선
       var getUltraviolet = await _repository.getUltraviolet(addressId, observatory.code.toString());
       getUltraviolet.when(success: (ultraviolet) {
-        logger.i('HomeController.getUltraviolet success');
+        // logger.i('HomeController.getUltraviolet success');
         _ultraviolet(int.parse(ultraviolet.h0 ?? '0'));
       }, error: (e) {
         logger.e('HomeController.getUltraviolet error -> $e');
@@ -418,7 +418,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     String depth1 = address.region1depthName ?? '';
     var getFineDust = await _repository.getFineDustWithCity(addressId, depth1);
     getFineDust.when(success: (fineDust) async {
-      logger.i('HomeController.getFineDust success');
+      // logger.i('HomeController.getFineDust success');
 
       try {
         _fineDust(int.parse((fineDust.pm10Value ?? '0')));
@@ -442,7 +442,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     String addressId = address.id ?? '';
     var getUltraShortTerm = await _repository.getUltraShortTermList(addressId, longitude, latitude);
     getUltraShortTerm.when(success: (ultraShortTermList) async {
-      logger.i('HomeController.getUltraShortTermList success');
+      // logger.i('HomeController.getUltraShortTermList success');
 
       for (var item in ultraShortTermList) {
         String category = item.category ?? '';
@@ -479,7 +479,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
     var getUltraShortTermSixTime = await _repository.getUltraShortTermSixTime(addressId, longitude, latitude);
     getUltraShortTermSixTime.when(success: (ultraSixTime) async {
-      logger.i('HomeController.getUltraShortTermSixTime success');
+      // logger.i('HomeController.getUltraShortTermSixTime success');
 
       // 기온
       var temperatureFirstList = ultraSixTime.where((element) => element.category == kWeatherCategoryTemperature).toList();
@@ -508,7 +508,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
       var getShortTermList = await _repository.getShortTermList(addressId, longitude, latitude);
       getShortTermList.when(success: (shortTermList) async {
-        logger.i('HomeController.getShortTermList success');
+        // logger.i('HomeController.getShortTermList success');
 
         DateTime dateTime = DateTime.now();
         DateTime currentDateTime = DateTime(dateTime.year, dateTime.month, dateTime.day, dateTime.hour + 5);
@@ -566,7 +566,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
       var getYesterdayShortTerm = await _repository.getYesterdayShortTermList(addressId, longitude, latitude);
       getYesterdayShortTerm.when(success: (shortTermList) async {
-        logger.i('HomeController.getYesterdayShortTerm success');
+        // logger.i('HomeController.getYesterdayShortTerm success');
         var currentTime = Utils.getCurrentTimeInHHFormat();
         var yesterday = shortTermList.firstWhereOrNull((element) => element.category == kWeatherCategoryTemperatureShort && element.fcstTime == currentTime);
         if (yesterday != null) {
@@ -589,12 +589,12 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     // 중기 예보 지점 코드
     var getMidCode = await _repository.getMidCode(depth1, depth2);
     getMidCode.when(success: (midCode) async {
-      logger.i('HomeController.getMidCode success -> $midCode');
+      // logger.i('HomeController.getMidCode success -> $midCode');
       String regId = midCode.code ?? '';
 
       var getMidTermTemperature = await _repository.getMidTermTemperature(addressId, regId);
       getMidTermTemperature.when(success: (midTermTemperature) {
-        logger.i('HomeController.getMidTermTemperature success -> $midTermTemperature');
+        // logger.i('HomeController.getMidTermTemperature success -> $midTermTemperature');
         _weekMidTermTemperature(midTermTemperature);
       }, error: (e) {
         logger.e('HomeController.midTermTemperature error -> $e');
@@ -603,7 +603,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       // 중기 육상 예보
       var getMidTermLand = await _repository.getMidTermLand(addressId, depth1, depth2);
       getMidTermLand.when(success: (midTermLand) {
-        logger.i('HomeController.getMidTermLand success -> $midTermLand');
+        // logger.i('HomeController.getMidTermLand success -> $midTermLand');
         _weekMidTermLand(midTermLand);
       }, error: (e) {
         logger.e('HomeController.getMidTermLand error -> $e');

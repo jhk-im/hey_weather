@@ -115,17 +115,17 @@ class HeyWeatherHomeCard extends StatelessWidget {
               HeyCustomButton.tagWithIcon(
                 context,
                 iconName: 'card_cloudy',
-                text: homeFineDust < 30
+                text: homeFineDust <= 30
                     ? 'home_card_message_11'.tr
                     : homeFineDust > 30 && homeFineDust <= 80
                     ? 'home_card_message_12'.tr
+                    : homeFineDust > 80 && homeFineDust <= 150 && homeUltraFineDust <= 50
+                    ? 'home_card_message_13'.tr
+                    : homeFineDust > 150 && homeUltraFineDust <= 50
+                    ? 'home_card_message_14'.tr
                     : homeUltraFineDust > 50 && homeUltraFineDust <= 100
                     ? 'home_card_message_15'.tr
-                    : homeUltraFineDust > 100
-                    ? 'home_card_message_16'.tr
-                    : homeFineDust > 80 && homeFineDust <= 150
-                    ? 'home_card_message_13'.tr
-                    : 'home_card_message_14'.tr,
+                    : 'home_card_message_16'.tr
               ),
             ],
           ),

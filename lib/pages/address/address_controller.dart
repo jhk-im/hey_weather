@@ -139,7 +139,7 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     _searchAddressList.clear();
   }
 
-  createSearchAddress(SearchAddress address, String searchText) {
+  createSearchAddress(Address address, String searchText) {
     resetTextField();
     _updateAddressCard(address, searchText);
   }
@@ -199,7 +199,7 @@ class AddressController extends GetxController with WidgetsBindingObserver {
 
   /// Data
   Future _getUpdateAddressWithCoordinate() async {
-    logger.i('AddressController getUpdateAddressWithCoordinate()');
+    //logger.i('AddressController getUpdateAddressWithCoordinate()');
     var getUpdateAddressWithCoordinate = await _repository.getUpdateAddressWithCoordinate(currentAddress?.id ?? kCurrentLocationId);
     getUpdateAddressWithCoordinate.when(success: (address) async {
       _isUpdated(true);
@@ -298,7 +298,7 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     String depth1 = address.region1depthName ?? '';
     var getFineDust = await _repository.getFineDustWithCity(addressId, depth1);
     getFineDust.when(success: (fineDust) async {
-      logger.i('AddressController.getFineDust success');
+      //logger.i('AddressController.getFineDust success');
 
       try {
         address.fineDust = int.parse((fineDust.pm10Value ?? '0'));
@@ -324,7 +324,7 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     String addressId = address.id ?? '';
     var getUltraShortTerm = await _repository.getUltraShortTermList(addressId, longitude, latitude);
     getUltraShortTerm.when(success: (ultraShortTermList) async {
-      logger.i('AddressController.getUltraShortTermList success');
+      //logger.i('AddressController.getUltraShortTermList success');
 
       for (var item in ultraShortTermList) {
         String category = item.category ?? '';
@@ -355,7 +355,7 @@ class AddressController extends GetxController with WidgetsBindingObserver {
 
     var getUltraShortTermSixTime = await _repository.getUltraShortTermSixTime(addressId, longitude, latitude);
     getUltraShortTermSixTime.when(success: (ultraSixTime) async {
-      logger.i('AddressController.getUltraShortTermSixTime success');
+      //logger.i('AddressController.getUltraShortTermSixTime success');
 
       // 기온
       var temperatureList = ultraSixTime.where((element) => element.category == kWeatherCategoryTemperature).toList();
@@ -394,7 +394,7 @@ class AddressController extends GetxController with WidgetsBindingObserver {
 
     var getYesterdayShortTerm = await _repository.getYesterdayShortTermList(addressId, longitude, latitude);
     getYesterdayShortTerm.when(success: (shortTermList) async {
-      logger.i('AddressController.getYesterdayShortTerm success');
+      //logger.i('AddressController.getYesterdayShortTerm success');
       var currentTime = Utils.getCurrentTimeInHHFormat();
       var yesterday = shortTermList.firstWhereOrNull((element) => element.category == kWeatherCategoryTemperatureShort && element.fcstTime == currentTime);
       if (yesterday != null) {
@@ -416,17 +416,21 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     });
   }
 
-  Future _updateAddressCard(SearchAddress address, String searchText) async {
+  Future _updateAddressCard(Address address, String searchText) async {
     String uuid =  const Uuid().v4();
 
-    final newAddress = Address();
-    newAddress.addressName = Utils().containsSearchText(address.addressName, searchText);
-    newAddress.x = double.parse(address.x!);
-    newAddress.y = double.parse(address.y!);
-    newAddress.id = uuid;
-    newAddress.createDateTime = DateTime.now().toLocal().toString();
+    // final newAddress = Address();
+    // newAddress.addressName = Utils().containsSearchText(address.addressName, searchText);
+    // newAddress.x = double.parse(address.x!);
+    // newAddress.y = double.parse(address.y!);
+    // newAddress.id = uuid;
+    // newAddress.createDateTime = DateTime.now().toLocal().toString();
+    // await _repository.updateUserAddressWithId(newAddress);
 
-    await _repository.updateUserAddressWithId(newAddress);
+    address.addressName = Utils().containsSearchText(address.addressName, searchText);
+    address.id = uuid;
+    address.createDateTime = DateTime.now().toLocal().toString();
+    await _repository.updateUserAddressWithId(address);
     await _repository.insertUserAddressEditIdList(uuid);
     await _repository.insertUserAddressRecentIdList(uuid);
 

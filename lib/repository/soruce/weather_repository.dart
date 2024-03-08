@@ -90,14 +90,14 @@ class WeatherRepository {
 
     if (currentAddressId == kCurrentLocationId) {
       position = await _getLocation();
-      logger.i('getUpdateAddressWithCoordinate() -> position -> $position');
+      // logger.i('getUpdateAddressWithCoordinate() -> position -> $position');
       if (current != null) {
         final currentX = current.x!.toStringAsFixed(3);
         final positionX = position.longitude.toStringAsFixed(3);
         final currentY = current.y!.toStringAsFixed(3);
         final positionY = position.latitude.toStringAsFixed(3);
         if (currentX == positionX && currentY == positionY) {
-          logger.i('getAddressWithCoordinate() -> local return ${current.toAddress()}');
+          logger.d('getAddressWithCoordinate() local return -> ${current.toAddress()}');
           return Result.success(current.toAddress());
         }
       }
@@ -117,10 +117,10 @@ class WeatherRepository {
     var connect =  await Utils.checkInternetConnection();
     if (!connect) {
       if (current != null) {
-        logger.i('getAddressWithCoordinate() -> network not connected local return ${current.toAddress()}');
+        logger.d('getAddressWithCoordinate() network not connected local return -> ${current.toAddress()}');
         return Result.success(current.toAddress());
       } else {
-        logger.i('getAddressWithCoordinate() -> network not connected return $defaultAddress');
+        logger.d('getAddressWithCoordinate() network not connected default return -> $defaultAddress');
         _dao.updateUserAddressWithId(kCurrentLocationId, defaultAddress.toAddressEntity());
         return Result.success(defaultAddress);
       }
@@ -136,7 +136,7 @@ class WeatherRepository {
           longitude = current?.x ?? 0;
           latitude = current?.y ?? 0;
         }
-        logger.i('getUpdateAddressWithCoordinate() longitude -> $longitude, latitude -> $latitude');
+        // logger.i('getUpdateAddressWithCoordinate() longitude -> $longitude, latitude -> $latitude');
 
         final response = await _api.getAddressWithCoordinate(longitude, latitude);
         final jsonResult = jsonDecode(response.body);
@@ -157,16 +157,16 @@ class WeatherRepository {
           address.id = currentAddressId;
 
 
-          logger.i('getAddressWithCoordinate() -> kakao api return $address');
+          logger.d('getAddressWithCoordinate() kakao api return -> $address');
           _dao.updateUserAddressWithId(currentAddressId, address.toAddressEntity());
           return Result.success(address);
         } else {
-          logger.i('getAddressWithCoordinate() -> kakao api failed return $defaultAddress');
+          logger.d('getAddressWithCoordinate() kakao api failed default return -> $defaultAddress');
           _dao.updateUserAddressWithId(kCurrentLocationId, defaultAddress.toAddressEntity());
           return Result.success(defaultAddress);
         }
       } catch (e) {
-        logger.i('getAddressWithCoordinate() -> kakao api failed return $defaultAddress');
+        logger.d('getAddressWithCoordinate() kakao api failed default return -> $defaultAddress');
         _dao.updateUserAddressWithId(kCurrentLocationId, defaultAddress.toAddressEntity());
         return Result.success(defaultAddress);
       }
@@ -181,14 +181,14 @@ class WeatherRepository {
 
     if (currentAddressId == kCurrentLocationId) {
       position = await _getLocation();
-      logger.i('getUpdateAddressWithCoordinate() -> position -> $position');
+      // logger.i('getUpdateAddressWithCoordinate() -> position -> $position');
       if (current != null) {
         final currentX = current.x!.toStringAsFixed(3);
         final positionX = position.longitude.toStringAsFixed(3);
         final currentY = current.y!.toStringAsFixed(3);
         final positionY = position.latitude.toStringAsFixed(3);
         if (currentX == positionX && currentY == positionY) {
-          logger.i('getAddressWithCoordinate() -> local return ${current.toAddress()}');
+          logger.d('createAddressWithCoordinate() local return -> ${current.toAddress()}');
           return Result.success(current.toAddress());
         }
       }
@@ -208,10 +208,10 @@ class WeatherRepository {
     var connect =  await Utils.checkInternetConnection();
     if (!connect) {
       if (current != null) {
-        logger.i('getAddressWithCoordinate() -> network not connected local return ${current.toAddress()}');
+        logger.d('createAddressWithCoordinate() network not connected local return -> ${current.toAddress()}');
         return Result.success(current.toAddress());
       } else {
-        logger.i('getAddressWithCoordinate() -> network not connected return $defaultAddress');
+        logger.d('createAddressWithCoordinate() network not connected default return -> $defaultAddress');
         _dao.updateUserAddressWithId(kCurrentLocationId, defaultAddress.toAddressEntity());
         return Result.success(defaultAddress);
       }
@@ -227,7 +227,7 @@ class WeatherRepository {
           longitude = current?.x ?? 0;
           latitude = current?.y ?? 0;
         }
-        logger.i('getUpdateAddressWithCoordinate() longitude -> $longitude, latitude -> $latitude');
+        // logger.i('getUpdateAddressWithCoordinate() longitude -> $longitude, latitude -> $latitude');
 
         final response = await _api.getAddressWithCoordinate(longitude, latitude);
         final jsonResult = jsonDecode(response.body);
@@ -248,16 +248,16 @@ class WeatherRepository {
           address.id = currentAddressId;
 
 
-          logger.i('getAddressWithCoordinate() -> kakao api return $address');
+          logger.d('getAddressWithCoordinate() kakao api return -> $address');
           _dao.updateUserAddressWithId(currentAddressId, address.toAddressEntity());
           return Result.success(address);
         } else {
-          logger.i('getAddressWithCoordinate() -> kakao api failed return $defaultAddress');
+          logger.d('getAddressWithCoordinate() kakao api failed default return -> $defaultAddress');
           _dao.updateUserAddressWithId(kCurrentLocationId, defaultAddress.toAddressEntity());
           return Result.success(defaultAddress);
         }
       } catch (e) {
-        logger.i('getAddressWithCoordinate() -> kakao api failed return $defaultAddress');
+        logger.d('getAddressWithCoordinate() -> kakao api failed default return $defaultAddress');
         _dao.updateUserAddressWithId(kCurrentLocationId, defaultAddress.toAddressEntity());
         return Result.success(defaultAddress);
       }
@@ -293,7 +293,7 @@ class WeatherRepository {
 
   // id로 주소 추가
   Future updateUserAddressWithId(Address address) async {
-    logger.i('updateUserAddressWithId() -> $address');
+    // logger.i('updateUserAddressWithId() -> $address');
     await _dao.updateUserAddressWithId(address.id!, address.toAddressEntity());
   }
 
@@ -319,7 +319,7 @@ class WeatherRepository {
 
   // 편집 주소 추가
   Future insertUserAddressEditIdList(String id) async {
-    logger.i('insertUserAddressEditIdList(id: $id)');
+    // logger.i('insertUserAddressEditIdList(id: $id)');
     final idList = await _dao.getUserAddressEditIdList();
     if (idList == null) {
       await _dao.updateUserAddressEdit([id]);
@@ -331,7 +331,7 @@ class WeatherRepository {
 
   // 편집 주소 업데이트
   Future updateUserAddressEditIdList(List<String> idList) async {
-    logger.i('updateUserAddressEditIdList(idList: $idList)');
+    // logger.i('updateUserAddressEditIdList(idList: $idList)');
     await _dao.updateUserAddressEdit(idList.toSet().toList());
   }
 
@@ -347,7 +347,7 @@ class WeatherRepository {
 
   // 최근 선택한 순서 업데이트
   Future insertUserAddressRecentIdList(String id, {bool isSelect = false}) async {
-    logger.i('insertUserAddressRecentIdList(id: $id)');
+    // logger.i('insertUserAddressRecentIdList(id: $id)');
     final idList = await _dao.getUserAddressRecentIdList();
     if (idList == null) {
       await _dao.updateUserAddressRecent([id]);
@@ -368,7 +368,7 @@ class WeatherRepository {
 
   // 최근 선택 주소 업데이트
   Future updateUserAddressRecentIdList(List<String> idList) async {
-    logger.i('updateUserAddressRecentIdList(idList: $idList)');
+    // logger.i('updateUserAddressRecentIdList(idList: $idList)');
     await _dao.updateUserAddressEdit(idList.toSet().toList());
   }
 
@@ -384,7 +384,7 @@ class WeatherRepository {
 
   // 알림 업데이트
   Future updateUserNotification(UserNotification notification) async {
-    logger.i('updateUserNotification(notification: $notification)');
+    // logger.i('updateUserNotification(notification: $notification)');
     await _dao.updateUserNotification(notification.id ?? '', notification.toUserNotificationEntity());
   }
 
@@ -403,7 +403,7 @@ class WeatherRepository {
     }
   }
   Future updateUserMyWeather(List<String> idList) async {
-    logger.i('updateUserMyWeather(idList: $idList)');
+    // logger.i('updateUserMyWeather(idList: $idList)');
     return _dao.updateUserMyWeather(idList.toSet().toList());
   }
 
@@ -432,23 +432,24 @@ class WeatherRepository {
         .toString()
         .replaceAll(RegExp("[^0-9\\s]"), "")
         .replaceAll(" ", "");
-    String date = dt.substring(0, 8);
+    String currentDate = dt.substring(0, 8);
+    String currentTime = dt.substring(8, 10);
+
     String time = dt.substring(8, 12);
-    String checkTime = dt.substring(8, 10);
 
     // local
     if (ultraShortTemperature != null && ultraShortTemperature.baseTime != null) {
       String localTime = ultraShortTemperature.baseTime!.substring(0, 2);
       String localDate = ultraShortTemperature.baseDate ?? '';
-      if (date == localDate) {
-        if (checkTime == localTime) {
+      logger.d('getShortTermList() local return check -> currentDateTime = $currentDate$currentTime, localDateTime = $localDate$localTime');
+      if (currentDate == localDate) {
+        if (currentTime == localTime) {
           result.add(ultraShortTemperature.toUltraShortTerm());
           if (ultraShortHumidity != null) result.add(ultraShortHumidity.toUltraShortTerm());
           if (ultraShortRain != null) result.add(ultraShortRain.toUltraShortTerm());
           if (ultraShortRainStatus != null) result.add(ultraShortRainStatus.toUltraShortTerm());
           if (ultraShortWindSpeed != null) result.add(ultraShortWindSpeed.toUltraShortTerm());
           if (ultraShortWindDirection != null) result.add(ultraShortWindDirection.toUltraShortTerm());
-          logger.i('getUltraShortTerm() -> local return');
           return Result.success(result);
         }
       }
@@ -461,7 +462,7 @@ class WeatherRepository {
 
     // remote
     try {
-      final response = await _api.getUltraShortTerm(date, time, x, y);
+      final response = await _api.getUltraShortTerm(currentDate, time, x, y);
       final jsonResult = jsonDecode(response.body);
       UltraShortTermList list = UltraShortTermList.fromJson(jsonResult['response']['body']);
       if (list.items?.item != null) {
@@ -490,10 +491,10 @@ class WeatherRepository {
           }
         }
       }
-      logger.i('getUltraShortTerm() api return');
+      logger.d('getUltraShortTermList() api return');
       return Result.success(result);
     } catch (e) {
-      return Result.error(Exception('getUltraShortTerm failed: ${e.toString()}'));
+      return Result.error(Exception('getUltraShortTermList failed: ${e.toString()}'));
     }
   }
 
@@ -505,20 +506,21 @@ class WeatherRepository {
     // 시간 기준 업데이트
     DateTime dateTime = DateTime.now();
     String dt = DateTime(dateTime.year, dateTime.month, dateTime.day,
-        dateTime.hour, dateTime.minute - 30)
+        dateTime.hour - 1)
         .toString()
         .replaceAll(RegExp("[^0-9\\s]"), "")
         .replaceAll(" ", "");
-    String date = dt.substring(0, 8);
-    String checkTime = dt.substring(8, 10);
+    String currentDate = dt.substring(0, 8);
+    String currentTime = dt.substring(8, 10);
 
     // local
     if (shortTermSixTime != null && shortTermSixTime.items?.isNotEmpty == true) {
       String localTime = shortTermSixTime.items![0].baseTime!.substring(0, 2);
       String localDate = shortTermSixTime.items![0].baseDate ?? '';
-      if (date == localDate) {
-        if (checkTime == localTime) {
-          logger.i('getShortTermSixTime() -> local return');
+
+      logger.d('getUltraShortTermSixTime() local return check -> currentDateTime = $currentDate$currentTime, localDateTime = $localDate$localTime');
+      if (currentDate == localDate) {
+        if (currentTime == localTime) {
           var result = shortTermSixTime.items!.map((e) => e.toShortTerm()).toList();
           return Result.success(result);
         }
@@ -532,7 +534,7 @@ class WeatherRepository {
 
     // remote
     try {
-      logger.i('getUltraShortTermSixTime(x: $x, y: $y)');
+      // logger.i('getUltraShortTermSixTime(x: $x, y: $y)');
       final response = await _api.getUltraShortTermSixTime(x, y);
       final jsonResult = jsonDecode(response.body);
       ShortTermList list = ShortTermList.fromJson(jsonResult['response']['body']);
@@ -549,7 +551,7 @@ class WeatherRepository {
         _dao.updateWeatherShortListSixTime(id, result);
       }
 
-      logger.i('getShortTermSixTime() -> api return');
+      logger.d('getUltraShortTermSixTime() api return');
       return Result.success(result);
     } catch (e) {
       return Result.error(Exception('getUltraShortTermSixTime failed: ${e.toString()}'));
@@ -565,7 +567,7 @@ class WeatherRepository {
         .toString()
         .replaceAll(RegExp("[^0-9\\s]"), "")
         .replaceAll(" ", "");
-    String date = dt.substring(0, 8);
+    String currentDate = dt.substring(0, 8);
 
     // filter
     DateTime currentDateTime = DateTime(dateTime.year, dateTime.month, dateTime.day, dateTime.hour - 1);
@@ -577,21 +579,15 @@ class WeatherRepository {
         && shortTermList.items!.isNotEmpty
         && shortTermList.items![0].baseTime != null) {
       String localDate = shortTermList.items![0].baseDate ?? '';
-      if (date == localDate) {
-        if (/*callTime == localTime*/true) {
-          logger.i('getShortTermList() -> local return');
-
-          var result = shortTermList.items!.map((e) => e.toShortTerm()).toList();
-
-          _updateOthers(result);
-
-          var filterList = result.where((item) {
-            var forecastDateTime = DateTime.parse("${item.fcstDate} ${item.fcstTime.toString().padLeft(4, '0')}");
-            return forecastDateTime.isAfter(currentDateTime) && forecastDateTime.isBefore(twelveHoursLater);
-          }).toList();
-
-          return Result.success(filterList);
-        }
+      logger.d('getShortTermList() local return check -> currentDate = $currentDate, localDate = $localDate');
+      if (currentDate == localDate) {
+        var result = shortTermList.items!.map((e) => e.toShortTerm()).toList();
+        _updateOthers(result);
+        var filterList = result.where((item) {
+          var forecastDateTime = DateTime.parse("${item.fcstDate} ${item.fcstTime.toString().padLeft(4, '0')}");
+          return forecastDateTime.isAfter(currentDateTime) && forecastDateTime.isBefore(twelveHoursLater);
+        }).toList();
+        return Result.success(filterList);
       }
     }
 
@@ -602,8 +598,8 @@ class WeatherRepository {
 
     // remote
     try {
-      logger.i('getShortTermList(date: $date, time: 2300, x: $x, y: $y)');
-      final response = await _api.getShortTerm(date, '2300', x, y);
+      // logger.i('getShortTermList(date: $currentDate, time: 2300, x: $x, y: $y)');
+      final response = await _api.getShortTerm(currentDate, '2300', x, y);
       final jsonResult = jsonDecode(response.body);
       ShortTermList list = ShortTermList.fromJson(jsonResult['response']['body']);
       List<ShortTerm> result = [];
@@ -618,21 +614,19 @@ class WeatherRepository {
       if (result.isNotEmpty && id != kCreateWidgetId) {
         _dao.updateWeatherShortListTemperature(id, result);
       }
-
       _updateOthers(result);
-
-      logger.i('getShortTermList() -> api return');
       var filterList = result.where((item) {
         var forecastDateTime = DateTime.parse("${item.fcstDate} ${item.fcstTime.toString().padLeft(4, '0')}");
         return forecastDateTime.isAfter(currentDateTime) && forecastDateTime.isBefore(twelveHoursLater);
       }).toList();
-
+      logger.d('getShortTermList() api return');
       return Result.success(filterList);
     } catch (e) {
       return Result.error(Exception('getShortTermList failed: ${e.toString()}'));
     }
   }
 
+  // 단기 예보 (어제)
   Future<Result<List<ShortTerm>>> getYesterdayShortTermList(String id, double longitude, double latitude) async {
     final shortTermList = await _dao.getWeatherYesterdayShortListTemperature(id);
 
@@ -641,7 +635,7 @@ class WeatherRepository {
         .toString()
         .replaceAll(RegExp("[^0-9\\s]"), "")
         .replaceAll(" ", "");
-    String date = dt.substring(0, 8);
+    String currentDate = dt.substring(0, 8);
 
     // filter
     // DateTime currentDateTime = DateTime(dateTime.year, dateTime.month, dateTime.day, dateTime.hour - 1);
@@ -653,8 +647,8 @@ class WeatherRepository {
         && shortTermList.items!.isNotEmpty
         && shortTermList.items![0].baseTime != null) {
       String localDate = shortTermList.items![0].baseDate ?? '';
-      if (date == localDate) {
-        logger.i('getYesterdayShortTermList() -> local return');
+      logger.d('getYesterdayShortTermList() local return check -> currentDate = $currentDate, localDate = $localDate');
+      if (currentDate == localDate) {
         var result = shortTermList.items!.map((e) => e.toShortTerm()).toList();
         _updateOthers(result, isYesterday: true);
         var filterList = result.sublist(0, 288);
@@ -669,8 +663,8 @@ class WeatherRepository {
 
     // remote
     try {
-      logger.i('getYesterdayShortTermList(date: $date, time: 0200, x: $x, y: $y, numberOfRows: 300)');
-      final response = await _api.getShortTerm(date, '0200', x, y, numberOfRows: '300');
+      // logger.i('getYesterdayShortTermList(date: $currentDate, time: 0200, x: $x, y: $y, numberOfRows: 300)');
+      final response = await _api.getShortTerm(currentDate, '0200', x, y, numberOfRows: '300');
       final jsonResult = jsonDecode(response.body);
       ShortTermList list = ShortTermList.fromJson(jsonResult['response']['body']);
 
@@ -686,12 +680,9 @@ class WeatherRepository {
       if (result.isNotEmpty && id != kCreateWidgetId) {
         _dao.updateWeatherYesterdayShortListTemperature(id, result);
       }
-
       _updateOthers(result, isYesterday: true);
-
-      logger.i('getYesterdayShortTermList() -> api return');
       var filterList = result.sublist(0, 288);
-
+      logger.d('getYesterdayShortTermList() api return');
       return Result.success(filterList);
     } catch (e) {
       return Result.error(Exception('getYesterdayShortTermList failed: ${e.toString()}'));
@@ -865,10 +856,10 @@ class WeatherRepository {
     List<MidCode> list = [];
     MidCode result = MidCode();
     if (localList.isNotEmpty) {
-      logger.i('getMidCode() local return');
+      logger.d('getMidCode() local return');
       list = localList.map((e) => e.toMidCode()).toList();
     } else {
-      logger.i('getMidCode() csv return');
+      logger.d('getMidCode() csv return');
       var csv = await rootBundle.loadString(
         "assets/data/mid_code.csv",
       );
@@ -959,8 +950,8 @@ class WeatherRepository {
     final getWeatherMidTermTemperature = await _dao.getWeatherMidTermTemperature(id);
     String tmFc = _getMidDate();
     if (getWeatherMidTermTemperature != null) {
+      logger.d('getMidTermTemperature() local return check -> currentDate = $tmFc, localDate = ${getWeatherMidTermTemperature.date}');
       if (tmFc == getWeatherMidTermTemperature.date) {
-        logger.i('getMidTermTemperature() -> local return');
         return Result.success(getWeatherMidTermTemperature.toMidTermTemperature());
       }
     }
@@ -982,7 +973,7 @@ class WeatherRepository {
       if (id != kCreateWidgetId) {
         _dao.updateWeatherMidTermTemperature(id, result.toMidTermTemperatureEntity());
       }
-      logger.i('getMidTermTemperature() -> api return');
+      logger.d('getMidTermTemperature() api return');
       return Result.success(result);
     } catch (e) {
       return Result.error(Exception('getMidTermTemperature failed: ${e.toString()}'));
@@ -991,13 +982,12 @@ class WeatherRepository {
 
   // 중기 육상 예보
   Future<Result<MidTermLand>> getMidTermLand(String id, String depth1, String depth2) async {
-
     String tmFc = _getMidDate();
     String regId = _getMidFcstRegId(depth1, depth2);
     final getWeatherMidTermLand = await _dao.getWeatherMidTermLand(id);
     if (getWeatherMidTermLand != null) {
+      logger.d('getMidTermLand() local return check -> currentDate = $tmFc, localDate = ${getWeatherMidTermLand.date}');
       if (tmFc == getWeatherMidTermLand.date) {
-        logger.i('getMidTermLand() -> local return');
         return Result.success(getWeatherMidTermLand.toMidTermLand());
       }
     }
@@ -1019,7 +1009,7 @@ class WeatherRepository {
       if (id != kCreateWidgetId) {
         _dao.updateWeatherMidTermLand(id, result.toMidTermLandEntity());
       }
-      logger.i('getMidTermLand() -> api return');
+      logger.d('getMidTermLand() api return');
       return Result.success(result);
     } catch (e) {
       return Result.error(Exception('getMidTermLand failed: ${e.toString()}'));
@@ -1037,8 +1027,8 @@ class WeatherRepository {
     String currentDate = dateTime.toString().substring(0, 8);
 
     // 로컬에 있고 날짜가 변경 되지 않은 경우
+    logger.d('getSunRiseSetWithCoordinate() local return check -> currentDate = $currentDate, localDate = ${sunRiseSet?.locdate}');
     if (sunRiseSet != null && currentDate == sunRiseSet.locdate) {
-      logger.i('getSunRiseSetWithCoordinate() -> local return');
       return Result.success(sunRiseSet.toSunRiseSet());
     }
 
@@ -1060,7 +1050,7 @@ class WeatherRepository {
       if (result.locdate != null && id != kCreateWidgetId) {
         _dao.updateWeatherSunRiseSet(id, result.toSunRiseSetEntity());
       }
-      logger.i('getRiseSetWithCoordinate() -> api return');
+      logger.d('getRiseSetWithCoordinate() api return');
       return Result.success(result);
     } catch (e) {
       return Result.error(
@@ -1078,8 +1068,9 @@ class WeatherRepository {
     // local
     if (fineDust != null && fineDust.dataTime != null) {
       DateTime dateTime = DateTime.now();
-      String dt = DateTime(dateTime.year, dateTime.month, dateTime.day,
-          dateTime.hour, dateTime.minute)
+      String dt = /*DateTime(dateTime.year, dateTime.month, dateTime.day,
+          dateTime.hour, dateTime.minute - 30)*/
+          dateTime
           .toString()
           .replaceAll(RegExp("[^0-9\\s]"), "")
           .replaceAll(" ", "");
@@ -1088,8 +1079,9 @@ class WeatherRepository {
       String prevDate = dataTime.substring(0, 12).replaceAll("-", "");
       DateTime dateTime1 = Utils.parseDateString(currentDate);
       DateTime dateTime2 = Utils.parseDateString(prevDate);
+
+      logger.d('getFineDustWithCity() local return check -> currentDate = $dateTime1, localDate = $dateTime2');
       if (dateTime1.isAtSameMomentAs(dateTime2)) {
-        logger.i('getFineDust() -> local return');
         return Result.success(fineDust.toFineDust());
       }
     }
@@ -1109,10 +1101,10 @@ class WeatherRepository {
       if (isUpdate && id != kCreateWidgetId) {
         _dao.updateWeatherFineDust(id, fineDust.toWeatherFineDustEntity());
       }
-      logger.i('getFineDust() -> api return');
+      logger.d('getFineDustWithCity() api return');
       return Result.success(fineDust);
     } catch (e) {
-      return Result.error(Exception('getFineDust failed: ${e.toString()}'));
+      return Result.error(Exception('getFineDustWithCity failed: ${e.toString()}'));
     }
   }
 
@@ -1123,7 +1115,7 @@ class WeatherRepository {
     Observatory result = Observatory();
     if (localList.isNotEmpty) {
       list = localList.map((e) => e.toObservatory()).toList();
-      logger.i('getObservatoryWithAddress local return');
+      logger.d('getObservatoryWithAddress local return');
     } else {
       var csv = await rootBundle.loadString(
         "assets/data/observatory.csv",
@@ -1133,7 +1125,7 @@ class WeatherRepository {
       _dao.clearObservatory();
       _dao.insertObservatoryList(
           list.map((e) => e.toObservatoryEntity()).toList());
-      logger.i('getObservatoryWithAddress csv return');
+      logger.d('getObservatoryWithAddress csv return');
     }
 
     var d1 = list.where((e) => e.depth1 == depth1 && e.depth2 == depth2);
@@ -1170,8 +1162,8 @@ class WeatherRepository {
         .replaceAll(" ", "");
     String currentDateTime = dt.substring(0, 10);
 
+    logger.d('getUltraviolet() local return check -> currentDate = $currentDateTime, localDate = ${ultraviolet?.date}');
     if (ultraviolet != null && ultraviolet.date == currentDateTime) {
-      logger.i('getUltraviolet() -> Local return');
       return Result.success(ultraviolet.toUltraviolet());
     }
 
@@ -1184,7 +1176,6 @@ class WeatherRepository {
       if (list.items != null) {
         if (list.items!.item != null) {
           result = list.items!.item![0];
-          logger.i('getUltraviolet() api result = $result');
           // 로컬 업데이트
           if (result.code != null && id != kCreateWidgetId) {
             for (Ultraviolet uv in list.items!.item!) {
@@ -1199,6 +1190,7 @@ class WeatherRepository {
     }
 
     if (result.code != null) {
+      logger.d('getUltraviolet() api return');
       return Result.success(result);
     } else {
       return Result.error(Exception('getUltraviolet failed: not found'));

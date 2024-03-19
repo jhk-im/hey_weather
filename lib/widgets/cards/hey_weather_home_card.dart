@@ -19,6 +19,7 @@ class HeyWeatherHomeCard extends StatelessWidget {
     this.homeRainTimeText = '',
     this.homeFineDust = 0,
     this.homeUltraFineDust = 0,
+    this.isSkeleton = false,
   });
 
   final String homeWeatherStatusText;
@@ -34,6 +35,8 @@ class HeyWeatherHomeCard extends StatelessWidget {
   final int homeFineDust;
   final int homeUltraFineDust;
 
+  final bool isSkeleton;
+
   @override
   Widget build(BuildContext context) {
     final isFahrenheit = false.obs;
@@ -46,7 +49,61 @@ class HeyWeatherHomeCard extends StatelessWidget {
         color: kBaseColor,
       ),
       width: double.maxFinite,
-      child: Column(
+      child: isSkeleton ? Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Tag
+          Container(
+            width: 68,
+            height: 30,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: kButtonColor,
+            ),
+          ),
+
+          // Temperature, Icon
+          Container(
+            margin: const EdgeInsets.only(top: 8),
+            width: double.maxFinite,
+            height: 100,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: kButtonColor,
+            ),
+          ),
+
+          // Message
+          Container(
+            margin: const EdgeInsets.only(top: 16),
+            width: double.maxFinite,
+            height: 45,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: kButtonColor,
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 16),
+            width: double.maxFinite,
+            height: 45,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: kButtonColor,
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 16),
+            width: double.maxFinite,
+            height: 45,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: kButtonColor,
+            ),
+          ),
+        ],
+      ) : Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -58,7 +115,7 @@ class HeyWeatherHomeCard extends StatelessWidget {
             ),
           ),
 
-          // Temp, Icon
+          // Temperature, Icon
           Container(
             margin: const EdgeInsets.only(top: 8),
             child: Row(

@@ -79,6 +79,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   var logger = Logger();
 
   // Home Card
+  final RxBool _isSkeleton = true.obs;
+  bool get isSkeleton => _isSkeleton.value;
   final RxString _homeWeatherStatusText = ''.obs;
   String get homeWeatherStatusText => _homeWeatherStatusText.value;
   final RxString _homeWeatherIconName = ''.obs;
@@ -560,6 +562,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         int iconIndex = Utils.getIconIndex(rainStatus: _rainStatusText.value, skyStatus: skyStatus, currentTime: currentTime, sunrise: _timeSunrise.value, sunset: _timeSunset.value);
         _homeWeatherIconName(kWeatherIconList[iconIndex]);
         _homeWeatherStatusText(kWeatherStatus[_homeWeatherIconName.value]);
+        _isSkeleton(false);
       }, error: (e) {
         logger.e('HomeController.getShortTermList error -> $e');
       });

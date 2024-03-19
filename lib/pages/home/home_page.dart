@@ -158,6 +158,7 @@ class HomePage extends GetView<HomeController> {
                             homeRainPercent: controller.homeRainPercent,
                             homeFineDust: controller.fineDust,
                             homeUltraFineDust: controller.ultraFineDust,
+                            isSkeleton: controller.isSkeleton,
                           ),
                         ),
 

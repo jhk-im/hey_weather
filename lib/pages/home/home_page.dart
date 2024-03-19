@@ -171,7 +171,7 @@ class HomePage extends GetView<HomeController> {
                               // MY, ALL, 편집
                               _tab(context, controller.scrollY < 395),
                               if (!controller.isAllTab) ... {
-                                if (controller.myWeatherList.isEmpty) ... {
+                                if (controller.myWeatherList.length == 1) ... {
                                   // Empty
                                   Container(
                                     width: double.maxFinite,
@@ -245,7 +245,7 @@ class HomePage extends GetView<HomeController> {
                                         kWeatherCardFeel: '체감온도',
                                         kWeatherCardWind: '바람',
                                         kWeatherCardSun: '일출일몰',
-                                        kWeatherCardUltraviolet: '자외',
+                                        kWeatherCardUltraviolet: '자외선',
                                       };
                                       return _myWeatherWidgets(
                                         controller.myWeatherList[index],
@@ -478,7 +478,7 @@ class HomePage extends GetView<HomeController> {
             onRemove(id);
           },
         );
-      default :
+      case kWeatherCardUltraviolet:
         return HeyWeatherUltravioletCard(
           ultraviolet: controller.ultraviolet,
           buttonStatus: buttonStatus,
@@ -489,6 +489,8 @@ class HomePage extends GetView<HomeController> {
             onRemove(id);
           },
         );
+      default :
+        return Container();
     }
   }
 

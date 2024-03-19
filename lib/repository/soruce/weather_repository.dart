@@ -408,6 +408,7 @@ class WeatherRepository {
   }
   Future updateUserMyWeather(List<String> idList) async {
     // logger.i('updateUserMyWeather(idList: $idList)');
+    idList.removeWhere((element) => element == 'empty');
     return _dao.updateUserMyWeather(idList.toSet().toList());
   }
 

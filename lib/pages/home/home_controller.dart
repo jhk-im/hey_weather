@@ -621,17 +621,25 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     var getUserMyWeatherIdList = await _repository.getUserMyWeather();
     getUserMyWeatherIdList.when(
       success: (idList) {
+        logger.i('HomeController.getData.getUserMyWeatherIdList idList -> $idList');
         _myWeatherList(idList);
+        _myWeatherList.add('empty');
       },
       error: (Exception e) {
         logger.i('HomeController.getData.getUserMyWeatherIdList $e');
+        _myWeatherList.add('empty');
       },
     );
   }
 
   Future updateUserMyWeather(List<String> idList, {bool isUpdate = false}) async {
     await _repository.updateUserMyWeather(idList);
-    if (idList.isEmpty) editToggle(false);
+
+    if (idList.isEmpty) {
+      editToggle(false);
+      _myWeatherList.add('empty');
+    }
+
     if (isUpdate) {
       getData();
     }

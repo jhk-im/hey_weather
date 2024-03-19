@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_bottom_sheet.dart';
+import 'package:hey_weather/common/hey_dialog.dart';
 import 'package:hey_weather/common/hey_snackbar.dart';
 import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:hey_weather/common/utils.dart';
@@ -154,9 +155,19 @@ class AddressController extends GetxController with WidgetsBindingObserver {
 
   removeAddress(Address address) async {
     if (address.id != null) {
-      _isUpdated(true);
-      await _repository.deleteUserAddressWithId(address.id!);
-      _addressList.remove(address);
+      if (Get.context != null) {
+        HeyDialog.showCommonDialog(
+          Get.context!,
+          title: 'dialog_delete_location'.tr,
+          subtitle: '${address.region2depthName} ${address.region3depthName}',
+          onOk: () async {
+            Get.back();
+            _isUpdated(true);
+            await _repository.deleteUserAddressWithId(address.id!);
+            _addressList.remove(address);
+          },
+        );
+      }
     }
   }
 
@@ -181,7 +192,9 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     newAddress.addressName = address.addressName;
 
     var names = address.addressName?.split(' ');
-    newAddress.region1depthName = names != null && names.isNotEmpty ? names[0] : '서울';
+    // newAddress.region1depthName = names != null && names.isNotEmpty ? names[0] : '서울';
+    newAddress.region2depthName = names?[names.length - 2];
+    newAddress.region3depthName = names?.last;
 
     newAddress.x = double.parse(address.x ?? '0');
     newAddress.y = double.parse(address.y ?? '0');
@@ -194,7 +207,7 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     HeyBottomSheet.showCreateAddressBottomSheet(
       context,
       address: address,
-      searchText: _searchAddressText.value,
+      searchText: '${address.region2depthName} ${address.region3depthName}',
       onCreateAddress: (address, searchText) {
         Get.back();
         _createSearchAddress(address, searchText);
@@ -205,7 +218,7 @@ class AddressController extends GetxController with WidgetsBindingObserver {
   /// Data
   Future _getUpdateAddressWithCoordinate() async {
     //logger.i('AddressController getUpdateAddressWithCoordinate()');
-    var getUpdateAddressWithCoordinate = await _repository.getUpdateAddressWithCoordinate(currentAddress?.id ?? kCurrentLocationId);
+    var getUpdateAddressWithCoordinate = await _repository.getUpdateAddressWithCoordinate(kCurrentLocationId);
     getUpdateAddressWithCoordinate.when(success: (address) async {
       _isUpdated(true);
       await _updateCurrentWeatherWidget(address);
@@ -431,10 +444,12 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     // newAddress.id = uuid;
     // newAddress.createDateTime = DateTime.now().toLocal().toString();
     // await _repository.updateUserAddressWithId(newAddress);
-
     address.addressName = Utils().containsSearchText(address.addressName, searchText);
     address.id = uuid;
     address.createDateTime = DateTime.now().toLocal().toString();
+
+    print('address -> $address');
+
     await _repository.updateUserAddressWithId(address);
     await _repository.insertUserAddressEditIdList(uuid);
     await _repository.insertUserAddressRecentIdList(uuid);

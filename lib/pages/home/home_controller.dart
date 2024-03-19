@@ -315,7 +315,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
             _currentAddressId(kCurrentLocationId);
             _getUpdateAddressWithCoordinate(isAddressUpdate: true, addressList: addressList);
           } else {
-            _addressText(addressList.first.addressName);
+            _addressText('${addressList.first.region2depthName} ${addressList.first.region3depthName}');
             _currentAddressId(addressList.first.id);
             _getUpdateAddressWithCoordinate(addressList: addressList);
           }
@@ -348,11 +348,11 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         addressList.remove(oldAddress);
         addressList.insert(index, address);
         if (isAddressUpdate) {
-          _addressText(address.addressName);
+          _addressText('${addressList.first.region2depthName} ${addressList.first.region3depthName}');
         }
         _recentAddressList(addressList);
       } else { // 최초 진입
-        _addressText(address.addressName);
+        _addressText('${address.region2depthName} ${address.region3depthName}');
         _recentAddressList.add(address);
       }
 

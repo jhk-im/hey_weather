@@ -85,21 +85,25 @@ class WeatherRepository {
   Future<Result<Address>> getUpdateAddressWithCoordinate(String currentAddressId, {String? addressName}) async {
     Position? position;
 
-    // 좌표값 변경이 없는 경우 로컬 리턴
-    final current = await _dao.getUserAddressWithId(currentAddressId);
 
-    if (currentAddressId == kCurrentLocationId) {
-      position = await _getLocation();
-      // logger.i('getUpdateAddressWithCoordinate() -> position -> $position');
-      if (current != null) {
+    final current = await _dao.getUserAddressWithId(currentAddressId);
+    logger.i('getUpdateAddressWithCoordinate() -> position -> $position');
+    if (current != null) {
+      if (currentAddressId == kCurrentLocationId) {
+        position = await _getLocation();
         final currentX = current.x!.toStringAsFixed(3);
         final positionX = position.longitude.toStringAsFixed(3);
         final currentY = current.y!.toStringAsFixed(3);
         final positionY = position.latitude.toStringAsFixed(3);
+        // 좌표값 변경이 없는 경우 로컬 리턴
         if (currentX == positionX && currentY == positionY) {
           logger.d('getAddressWithCoordinate() local return -> ${current.toAddress()}');
           return Result.success(current.toAddress());
         }
+      } else {
+        // 로컬에 있는 경우 로컬 리턴
+        logger.d('getAddressWithCoordinate() local return -> ${current.toAddress()}');
+        return Result.success(current.toAddress());
       }
     }
 

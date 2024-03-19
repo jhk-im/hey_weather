@@ -579,7 +579,7 @@ class HeyBottomSheet {
       backgroundColor: kButtonColor,
       builder: (BuildContext context) {
 
-        final addressName = Utils().containsSearchText(address.addressName, searchText);
+        // final addressName = Utils().containsSearchText(address.addressName, searchText);
 
         return SafeArea(
           child: Container(
@@ -596,7 +596,7 @@ class HeyBottomSheet {
                       child: Row(
                         children: [
                           HeyText.title3Bold(
-                            addressName,
+                            searchText,
                             fontSize: kFont18,
                             color: kPrimaryDarkerColor,
                           ),

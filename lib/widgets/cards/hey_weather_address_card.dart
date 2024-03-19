@@ -101,7 +101,9 @@ class _HeyWeatherAddressCardState extends State<HeyWeatherAddressCard> {
                     children: [
                       Expanded(
                         child: HeyText.callOutSemiBold(
-                          widget.address?.addressName ?? '',
+                          widget.address?.region2depthName != null
+                              ? '${widget.address?.region2depthName} ${widget.address?.region3depthName}'
+                              : widget.address?.addressName ?? '',
                           color: kTextPointColor,
                           textOverflow: TextOverflow.ellipsis,
                         ),

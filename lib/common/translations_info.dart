@@ -93,9 +93,9 @@ class TranslationsInfo extends Translations {
     'dialog_setting_title': '설정하러 이동할까요??',
     'dialog_setting_subtitle': '시스템 알림이 꺼져 있어 알림 기능을 켤 수 없어요. 설정에서 알림을 켜주세요',
     'dialog_setting_ok': '설정 바로가기',
-
     'dialog_delete_weather_title': '@name 위젯을 삭제할까요?',
     'dialog_delete_weather_subtitle': '이 위젯을 삭제해도 다시 추가할 수 있어요',
+    'dialog_delete_location': '이 지역을 삭제할까요?',
 
     // toast
     'toast_added_location': '지역이 추가되었어요',

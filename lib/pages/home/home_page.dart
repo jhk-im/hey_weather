@@ -153,7 +153,7 @@ class HomePage extends GetView<HomeController> {
                             homeWeatherIconName: controller.homeWeatherIconName,
                             homeTemperature: controller.homeTemperature,
                             homeYesterdayTemperature: controller.homeYesterdayTemperature,
-                            homeRain: controller.homeRain,
+                            homeRain: controller.homeRain.round(),
                             homeRainTimeText: controller.homeRainTimeText,
                             homeRainPercent: controller.homeRainPercent,
                             homeFineDust: controller.fineDust,

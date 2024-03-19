@@ -153,11 +153,11 @@ class HeyWeatherHomeCard extends StatelessWidget {
               HeyCustomButton.tagWithIcon(
                 context,
                 iconName: 'card_rain',
-                text: homeRain == 0 && homeRainTimeText.isNotEmpty
+                text: homeRain == 0 && homeRainTimeText.isNotEmpty && homeRainPercent > 50
                     ? 'home_card_message_4'.trParams({'time':homeRainTimeText, 'percent':'$homeRainPercent'})
-                    : homeRain == 0 && homeRainTimeText.isEmpty
+                    : homeRain == 0
                     ? 'home_card_message_5'.tr
-                    : homeRain < 3
+                    : homeRain > 0 && homeRain < 3
                     ? 'home_card_message_6'.trParams({'status': homeWeatherStatusText})
                     : homeRain >= 3 && homeRain < 8
                     ? 'home_card_message_7'.trParams({'status': homeWeatherStatusText})

@@ -89,8 +89,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   int get homeTemperature => _homeTemperature.value;
   final RxInt _homeYesterdayTemperature = 0.obs;
   int get homeYesterdayTemperature => _homeYesterdayTemperature.value;
-  final RxInt _homeRain = 0.obs;
-  int get homeRain => _homeRain.value;
+  final RxDouble _homeRain = 0.0.obs;
+  double get homeRain => _homeRain.value;
   final RxInt _homeRainPercent = 0.obs;
   int get homeRainPercent => _homeRainPercent.value;
   final RxString _homeRainTimeText = ''.obs;
@@ -455,11 +455,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
           case kWeatherCategoryHumidity:
             _homeHumidity(value.round());
           case kWeatherCategoryRain:
-            if (value < 1 && value > 0) {
-              _homeRain(1);
-            } else {
-              _homeRain(value.round());
-            }
+            _homeRain(value);
           case kWeatherCategoryRainStatus:
             _rainStatusText(item.weatherCategory?.codeValues?[value.round()]);
           case kWeatherCategoryWindSpeed:
@@ -555,13 +551,17 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         // 현재 날씨 상태
         String time = temperatureList[0].fcstTime ?? '0000';
         int currentTime = int.parse(time);
-        // int rainIndex = int.parse(rainStatusList[0].fcstValue ?? '0');
-        // String rainStatus = rainStatusList[0].weatherCategory?.codeValues?[rainIndex] ?? '없음';
+        int rainIndex = int.parse(rainStatusList[0].fcstValue ?? '0');
+        String rainStatus = rainStatusList[0].weatherCategory?.codeValues?[rainIndex] ?? '없음';
         int skyIndex = int.parse(skyList[0].fcstValue ?? '0');
         String skyStatus = skyList[0].weatherCategory?.codeValues?[skyIndex] ?? '';
         int iconIndex = Utils.getIconIndex(rainStatus: _rainStatusText.value, skyStatus: skyStatus, currentTime: currentTime, sunrise: _timeSunrise.value, sunset: _timeSunset.value);
+        if (rainStatus != '없음') {
+          _homeWeatherStatusText(rainStatus);
+        } else {
+          _homeWeatherStatusText(skyStatus);
+        }
         _homeWeatherIconName(kWeatherIconList[iconIndex]);
-        _homeWeatherStatusText(kWeatherStatus[_homeWeatherIconName.value]);
         _isSkeleton(false);
       }, error: (e) {
         logger.e('HomeController.getShortTermList error -> $e');

@@ -225,7 +225,7 @@ class HeyBottomSheet {
     MidTermTemperature? weekMidTermTemperature,
     int dustFine = 0,
     int dustUltraFine = 0,
-    int rain = 0,
+    double rain = 0.0,
     String rainStatus = '',
     int rainPercentage = 0,
     int humidity = 0,

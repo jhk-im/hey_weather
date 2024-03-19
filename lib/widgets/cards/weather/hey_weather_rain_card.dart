@@ -7,7 +7,7 @@ import 'package:hey_weather/common/svg_utils.dart';
 class HeyWeatherRainCard extends StatefulWidget {
   const HeyWeatherRainCard({
     super.key,
-    this.rain = 0,
+    this.rain = 0.0,
     this.rainStatus = '없음',
     this.percentage = 0,
     this.buttonStatus = 0,
@@ -16,7 +16,7 @@ class HeyWeatherRainCard extends StatefulWidget {
     this.onRemove,
   });
 
-  final int rain;
+  final double rain;
   final String rainStatus;
   final int percentage;
   final int buttonStatus;
@@ -125,7 +125,9 @@ class _HeyWeatherRainCardState extends State<HeyWeatherRainCard> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 HeyText.largeTitleBold(
-                                  widget.rain.toString(),
+                                  widget.rain < 1.0 && widget.rain > 0.0
+                                      ? widget.rain.toString()
+                                      : widget.rain.round().toString(),
                                   color: kTextPointColor,
                                 ),
                                 const SizedBox(width: 4),

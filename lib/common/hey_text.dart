@@ -33,6 +33,17 @@ class HeyText extends Text {
     );
   }
 
+  factory HeyText.captionMedium1(String text, {Color? color, double? fontSize}) {
+    return HeyText(
+      text,
+      style: TextStyle(
+        fontFamily: kPretendardMedium,
+        color: color ?? Colors.white,
+        fontSize: fontSize ?? kFont12,
+      ),
+    );
+  }
+
   factory HeyText.footnote(String text, {Color? color, double? fontSize}) {
     return HeyText(
       text,

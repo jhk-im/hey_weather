@@ -73,7 +73,7 @@ class HomePage extends GetView<HomeController> {
                               controller.currentAddressId == kCurrentLocationId ? 'location_target' : 'location',
                             ),
                             const SizedBox(width: 6),
-                            HeyText.body(controller.addressText, color: kTextSecondaryColor),
+                            HeyText.bodySemiBold(controller.addressText, color: kTextSecondaryColor),
                           ],
                         ),
                       ),

@@ -54,9 +54,10 @@ class _HeyWeatherFeelCardState extends State<HeyWeatherFeelCard> {
         } : null,
         child: Container(
           width: width,
-          height: width,
-          constraints: const BoxConstraints(minHeight: 162),
-          padding: const EdgeInsets.all(14),
+          height: 170,
+          //constraints: const BoxConstraints(minHeight: 162),
+          //padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
           decoration: BoxDecoration(
             color: kBaseColor,
             borderRadius: BorderRadius.circular(20),
@@ -67,70 +68,70 @@ class _HeyWeatherFeelCardState extends State<HeyWeatherFeelCard> {
           ),
           child: Stack(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(6),
-                child: Column(
-                  children: [
-                    // 체감온도
-                    Row(
-                      children: [
-                        SvgUtils.icon(
-                          context,
-                          'feel_temp',
-                          width: 20,
-                          height: 20,
-                        ),
-                        const SizedBox(width: 6),
-                        HeyText.bodySemiBold(
-                          'feel_temp'.tr,
-                          fontSize: kFont16,
-                          color: kTextDisabledColor,
-                        ),
-                      ],
-                    ),
-                    const Spacer(),
-                    Column(
-                      children: [
-                        Row(
-                          children: [
-                            HeyText.bodySemiBold(
-                              'highest'.tr,
-                              color: kTextPointColor,
-                            ),
-                            SvgUtils.icon(
-                              context,
-                              'highest',
-                              width: 24,
-                              height: 24,
-                            ),
-                            HeyText.largeTitleBold(
-                              '${isFahrenheit.value ? Utils.celsiusToFahrenheit(widget.max.toDouble()) : widget.max}°',
-                              color: kTextPointColor,
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            HeyText.bodySemiBold(
-                              'lowest'.tr,
-                              color: kTextPointColor,
-                            ),
-                            SvgUtils.icon(
-                              context,
-                              'lowest',
-                              width: 24,
-                              height: 24,
-                            ),
-                            HeyText.largeTitleBold(
-                              '${isFahrenheit.value ? Utils.celsiusToFahrenheit(widget.min.toDouble()) : widget.min}°',
-                              color: kTextPointColor,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 체감온도
+                  Row(
+                    children: [
+                      SvgUtils.icon(
+                        context,
+                        'feel_temp',
+                        width: 20,
+                        height: 20,
+                      ),
+                      const SizedBox(width: 6),
+                      HeyText.bodySemiBold(
+                        'feel_temp'.tr,
+                        fontSize: kFont16,
+                        color: kTextDisabledColor,
+                      ),
+                    ],
+                  ),
+
+                  const Spacer(),
+
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          HeyText.bodySemiBold(
+                            'highest'.tr,
+                            color: kTextPointColor,
+                          ),
+                          SvgUtils.icon(
+                            context,
+                            'highest',
+                            width: 24,
+                            height: 24,
+                          ),
+                          HeyText.largeTitleBold(
+                            '${isFahrenheit.value ? Utils.celsiusToFahrenheit(widget.max.toDouble()) : widget.max}°',
+                            color: kTextPointColor,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          HeyText.bodySemiBold(
+                            'lowest'.tr,
+                            color: kTextPointColor,
+                          ),
+                          SvgUtils.icon(
+                            context,
+                            'lowest',
+                            width: 24,
+                            height: 24,
+                          ),
+                          HeyText.largeTitleBold(
+                            '${isFahrenheit.value ? Utils.celsiusToFahrenheit(widget.min.toDouble()) : widget.min}°',
+                            color: kIconColor,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
               ),
 
               Visibility(

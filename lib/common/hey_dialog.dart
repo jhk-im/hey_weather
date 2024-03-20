@@ -37,7 +37,10 @@ class HeyDialog {
                   children: [
                     Container(
                       margin: const EdgeInsets.only(left: 8),
-                      child: HeyText.callOutSemiBold(title),
+                      child: HeyText.callOutSemiBold(
+                        title,
+                        fontSize: 18,
+                      ),
                     ),
 
                     Container(
@@ -47,13 +50,14 @@ class HeyDialog {
                           HeyText.subHeadline(
                             subtitle,
                             color:kTextDisabledColor,
+                            fontSize: 15,
                           ),
                         ],
                       ),
                     ),
 
                     Container(
-                      margin: const EdgeInsets.only(top: 28),
+                      margin: const EdgeInsets.only(top: 48),
                       child: Row(
                         children: [
                           Expanded(

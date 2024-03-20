@@ -89,9 +89,10 @@ class _HeyWeatherHumidityCardState extends State<HeyWeatherHumidityCard> {
         } : null,
         child: Container(
           width: width,
-          height: width,
-          constraints: const BoxConstraints(minHeight: 162),
-          padding: const EdgeInsets.all(14),
+          height: 170,
+          //constraints: const BoxConstraints(minHeight: 162),
+          //padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
           decoration: BoxDecoration(
             color: kBaseColor,
             borderRadius: BorderRadius.circular(20),
@@ -102,105 +103,89 @@ class _HeyWeatherHumidityCardState extends State<HeyWeatherHumidityCard> {
           ),
           child: Stack(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(6),
-                child: Column(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: SizedBox(
-                        width: double.maxFinite,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+              Column(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // icon, title
+                      Row(
+                        children: [
+                          SvgUtils.icon(
+                            context,
+                            'humidity',
+                            width: 20,
+                            height: 20,
+                          ),
+                          const SizedBox(width: 6),
+                          HeyText.bodySemiBold(
+                            'humidity'.tr,
+                            fontSize: kFont16,
+                            color: kTextDisabledColor,
+                          ),
+                        ],
+                      ),
+
+                      // status
+                      Container(
+                        margin: const EdgeInsets.only(top: 8),
+                        child: HeyText.subHeadlineSemiBold(
+                          stateList[stateIndex],
+                          color: stateColors[stateList[stateIndex]] ?? kTextPointColor,
+                        ),
+                      ),
+
+                      Container(
+                        margin: const EdgeInsets.only(top: 16),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            // icon, title
-                            Row(
-                              children: [
-                                SvgUtils.icon(
-                                  context,
-                                  'humidity',
-                                  width: 20,
-                                  height: 20,
-                                ),
-                                const SizedBox(width: 6),
-                                HeyText.bodySemiBold(
-                                  'humidity'.tr,
-                                  fontSize: kFont16,
-                                  color: kTextDisabledColor,
-                                ),
-                              ],
+                            HeyText.largeTitleBold(
+                              today.toString(),
+                              color: kTextPointColor,
                             ),
-                            const Spacer(),
-                            // status
-                            Container(
-                              padding: const EdgeInsets.symmetric(vertical: 4),
-                              child: HeyText.subHeadlineSemiBold(
-                                stateList[stateIndex],
-                                color: stateColors[stateList[stateIndex]] ?? kTextPointColor,
+                            const SizedBox(width: 4),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 4),
+                              child: HeyText.bodySemiBold(
+                                '%',
+                                color: kTextDisabledColor,
+                                fontSize: kFont20,
                               ),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: SizedBox(
-                        width: double.maxFinite,
-                        child: Column(
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                HeyText.largeTitleBold(
-                                  today.toString(),
-                                  color: kTextPointColor,
-                                ),
-                                const SizedBox(width: 4),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 4),
-                                  child: HeyText.bodySemiBold(
-                                    '%',
-                                    color: kTextDisabledColor,
-                                    fontSize: kFont20,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const Spacer(),
 
-                            Row(
-                              children: [
-                                if (today == yesterday) ... {
-                                  HeyText.footnote(
-                                    'same_yesterday'.tr,
-                                    color: kTextDisabledColor,
-                                  ),
-                                } else ... {
-                                  HeyText.footnote(
-                                    'than_yesterday'.tr,
-                                    color: kTextDisabledColor,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  SvgUtils.icon(
-                                    context,
-                                    isUp ? 'up' : 'down',
-                                    width: 10,
-                                    height: 10,
-                                  ),
-                                  HeyText.footnote(
-                                    diff.toString(),
-                                    color: kTextDisabledColor,
-                                  ),
-                                }
-                              ],
+                      Row(
+                        children: [
+                          if (today == yesterday) ... {
+                            HeyText.footnote(
+                              'same_yesterday'.tr,
+                              color: kTextDisabledColor,
                             ),
-                          ],
-                        ),
+                          } else ... {
+                            HeyText.footnote(
+                              'than_yesterday'.tr,
+                              color: kTextDisabledColor,
+                            ),
+                            const SizedBox(width: 4),
+                            SvgUtils.icon(
+                              context,
+                              isUp ? 'up' : 'down',
+                              width: 10,
+                              height: 10,
+                            ),
+                            HeyText.footnote(
+                              diff.toString(),
+                              color: kTextDisabledColor,
+                            ),
+                          }
+                        ],
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                ],
               ),
 
               Visibility(

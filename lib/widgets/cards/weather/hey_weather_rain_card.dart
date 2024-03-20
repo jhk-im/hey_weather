@@ -61,9 +61,10 @@ class _HeyWeatherRainCardState extends State<HeyWeatherRainCard> {
         } : null,
         child: Container(
           width: width,
-          height: width,
-          constraints: const BoxConstraints(minHeight: 162),
-          padding: const EdgeInsets.all(14),
+          height: 170,
+          //constraints: const BoxConstraints(minHeight: 162),
+          //padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
           decoration: BoxDecoration(
             color: kBaseColor,
             borderRadius: BorderRadius.circular(20),
@@ -74,106 +75,86 @@ class _HeyWeatherRainCardState extends State<HeyWeatherRainCard> {
           ),
           child: Stack(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(6),
-                child: Column(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: SizedBox(
-                        width: double.maxFinite,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // icon, title
-                            Row(
-                              children: [
-                                SvgUtils.icon(
-                                  context,
-                                  'rain',
-                                  width: 20,
-                                  height: 20,
-                                ),
-                                const SizedBox(width: 6),
-                                HeyText.bodySemiBold(
-                                  'rain'.tr,
-                                  fontSize: kFont16,
-                                  color: kTextDisabledColor,
-                                ),
-                              ],
-                            ),
-                            const Spacer(),
-                            // status
-                            Container(
-                              padding: const EdgeInsets.symmetric(vertical: 4),
-                              child: HeyText.subHeadlineSemiBold(
-                                widget.rainStatus,
-                                color: widget.rainStatus == '없음' ? kIconColor : kTextPointColor,
-                              ),
-                            ),
-                          ],
-                        ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // icon, title
+                  Row(
+                    children: [
+                      SvgUtils.icon(
+                        context,
+                        'rain',
+                        width: 20,
+                        height: 20,
                       ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: SizedBox(
-                        width: double.maxFinite,
-                        child: Column(
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                HeyText.largeTitleBold(
-                                  widget.rain < 1.0 && widget.rain > 0.0
-                                      ? widget.rain.toString()
-                                      : widget.rain.round().toString(),
-                                  color: kTextPointColor,
-                                ),
-                                const SizedBox(width: 4),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 4),
-                                  child: HeyText.bodySemiBold(
-                                    'mm',
-                                    color: kTextDisabledColor,
-                                    fontSize: kFont20,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const Spacer(),
+                      const SizedBox(width: 6),
+                      HeyText.bodySemiBold(
+                        'rain'.tr,
+                        fontSize: kFont16,
+                        color: kTextDisabledColor,
+                      ),
+                    ],
+                  ),
 
-                            Row(
-                              children: [
-                                HeyText.footnote(
-                                  /*widget.secondWeatherState.isNotEmpty
-                                      ? '${widget.secondWeatherState} ${'within'.tr}'
-                                      : 'no_forecast'.tr,
-                                  color: widget.secondWeatherState.isNotEmpty ? kPrimaryDarkerColor : kIconColor,*/
-                                  widget.percentage == 0
-                                      ? 'no_forecast'.tr
-                                      : '확률 ${widget.percentage}%',
-                                  color: widget.percentage == 0 ? kIconColor : kPrimaryDarkerColor,
-                                ),
-                                const SizedBox(width: 4),
-                                Visibility(
-                                  visible: widget.percentage == 0,
-                                  child: SvgUtils.icon(
-                                    context,
-                                    'direction',
-                                    width: 10,
-                                    height: 10,
-                                    color: kIconColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                  // status
+                  Container(
+                    margin: const EdgeInsets.only(top: 8),
+                    child: HeyText.subHeadlineSemiBold(
+                      widget.rainStatus,
+                      color: widget.rainStatus == '없음' ? kIconColor : kTextPointColor,
+                    ),
+                  ),
+
+                  Container(
+                    margin: const EdgeInsets.only(top: 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        HeyText.largeTitleBold(
+                          widget.rain < 1.0 && widget.rain > 0.0
+                              ? widget.rain.toString()
+                              : widget.rain.round().toString(),
+                          color: kTextPointColor,
+                        ),
+                        const SizedBox(width: 4),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: HeyText.bodySemiBold(
+                            'mm',
+                            color: kTextDisabledColor,
+                            fontSize: kFont20,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  Row(
+                    children: [
+                      HeyText.footnote(
+                        /*widget.secondWeatherState.isNotEmpty
+                                ? '${widget.secondWeatherState} ${'within'.tr}'
+                                : 'no_forecast'.tr,
+                            color: widget.secondWeatherState.isNotEmpty ? kPrimaryDarkerColor : kIconColor,*/
+                        widget.percentage == 0
+                            ? 'no_forecast'.tr
+                            : '확률 ${widget.percentage}%',
+                        color: widget.percentage == 0 ? kIconColor : kPrimaryDarkerColor,
+                      ),
+                      const SizedBox(width: 4),
+                      Visibility(
+                        visible: widget.percentage == 0,
+                        child: SvgUtils.icon(
+                          context,
+                          'direction',
+                          width: 10,
+                          height: 10,
+                          color: kIconColor,
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                ],
               ),
 
               Visibility(

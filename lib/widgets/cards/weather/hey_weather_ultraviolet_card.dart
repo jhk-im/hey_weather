@@ -81,9 +81,10 @@ class _HeyWeatherUltravioletCardState extends State<HeyWeatherUltravioletCard> {
         } : null,
         child: Container(
           width: width,
-          height: width,
-          constraints: const BoxConstraints(minHeight: 162),
-          padding: const EdgeInsets.all(14),
+          height: 170,
+          //constraints: const BoxConstraints(minHeight: 162),
+          //padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
           decoration: BoxDecoration(
             color: kBaseColor,
             borderRadius: BorderRadius.circular(20),
@@ -94,104 +95,88 @@ class _HeyWeatherUltravioletCardState extends State<HeyWeatherUltravioletCard> {
           ),
           child: Stack(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(6),
-                child: Column(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: SizedBox(
-                        width: double.maxFinite,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // icon, title
-                            Row(
-                              children: [
-                                SvgUtils.icon(
-                                  context,
-                                  'ultraviolet',
-                                  width: 20,
-                                  height: 20,
-                                ),
-                                const SizedBox(width: 6),
-                                HeyText.bodySemiBold(
-                                  'ultraviolet'.tr,
-                                  fontSize: kFont16,
-                                  color: kTextDisabledColor,
-                                ),
-                              ],
-                            ),
-                            const Spacer(),
-                            // status
-                            Container(
-                              padding: const EdgeInsets.symmetric(vertical: 4),
-                              child: HeyText.subHeadlineSemiBold(
-                                stateList[stateIndex],
-                                color: stateColors[stateList[stateIndex]] ?? kTextPointColor,
+              Column(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // icon, title
+                      Row(
+                        children: [
+                          SvgUtils.icon(
+                            context,
+                            'ultraviolet',
+                            width: 20,
+                            height: 20,
+                          ),
+                          const SizedBox(width: 6),
+                          HeyText.bodySemiBold(
+                            'ultraviolet'.tr,
+                            fontSize: kFont16,
+                            color: kTextDisabledColor,
+                          ),
+                        ],
+                      ),
+
+                      // status
+                      Container(
+                        margin: const EdgeInsets.only(top: 8),
+                        child: HeyText.subHeadlineSemiBold(
+                          stateList[stateIndex],
+                          color: stateColors[stateList[stateIndex]] ?? kTextPointColor,
+                        ),
+                      ),
+
+                      Container(
+                        margin: const EdgeInsets.only(top: 16, bottom: 8),
+                        child: HeyText.largeTitleBold(
+                          widget.ultraviolet.toString(),
+                          color: kTextPointColor,
+                        ),
+                      ),
+
+                      Stack(
+                        children: [
+                          Container(
+                            width: double.maxFinite,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              gradient: const LinearGradient(
+                                colors: [
+                                  kPrimaryDarkerColor,
+                                  kHeyGreenColor,
+                                  kSubColor,
+                                  kHeyOrangeColor,
+                                  kHeyRedColor,
+                                ],
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: SizedBox(
-                        width: double.maxFinite,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            HeyText.largeTitleBold(
-                              widget.ultraviolet.toString(),
-                              color: kTextPointColor,
-                            ),
-                            const Spacer(),
-                            Stack(
-                              children: [
-                                Container(
-                                  width: double.maxFinite,
-                                  height: 8,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    gradient: const LinearGradient(
-                                      colors: [
-                                        kPrimaryDarkerColor,
-                                        kHeyGreenColor,
-                                        kSubColor,
-                                        kHeyOrangeColor,
-                                        kHeyRedColor,
-                                      ],
-                                      begin: Alignment.centerLeft,
-                                      end: Alignment.centerRight,
-                                    ),
-                                  ),
+                          ),
+                          Positioned(
+                            left: (progress / maxProgress) * (width - 50),
+                            child: GestureDetector(
+                              // onHorizontalDragUpdate: (details) {
+                              //   // 좌우 드래그 시 프로그레스 바 업데이트
+                              //   updateProgress(details.primaryDelta! / 200.0);
+                              // },
+                              child: Container(
+                                width: 8,
+                                height: 8,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white,
                                 ),
-                                Positioned(
-                                  left: (progress / maxProgress) * (width - 50),
-                                  child: GestureDetector(
-                                    // onHorizontalDragUpdate: (details) {
-                                    //   // 좌우 드래그 시 프로그레스 바 업데이트
-                                    //   updateProgress(details.primaryDelta! / 200.0);
-                                    // },
-                                    child: Container(
-                                      width: 8,
-                                      height: 8,
-                                      decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                ],
               ),
 
               Visibility(

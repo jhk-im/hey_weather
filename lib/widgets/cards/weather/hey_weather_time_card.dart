@@ -70,7 +70,7 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
         child: Container(
           width: width,
           height: height,
-          padding: const EdgeInsets.only(left: 14, top: 14, bottom: 14),
+          padding: const EdgeInsets.only(top: 20, bottom: 20),
           decoration: BoxDecoration(
             color: kBaseColor,
             borderRadius: BorderRadius.circular(20),
@@ -82,13 +82,13 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
           child: Stack(
             alignment: AlignmentDirectional.centerEnd,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(6),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // icon, title
-                    Row(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // icon, title
+                  Container(
+                    margin: const EdgeInsets.only(left: 24),
+                    child: Row(
                       children: [
                         SvgUtils.icon(
                           context,
@@ -104,59 +104,80 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
-                    Expanded(
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: widget.skyStatusList.length,
-                        itemBuilder: (context, index) {
-                          String temperature = '';
+                  ),
+                  const SizedBox(height: 20),
+                  Expanded(
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: widget.skyStatusList.length,
+                      itemBuilder: (context, index) {
+                        String temperature = '';
 
-                          String time = widget.temperatureList[index].fcstTime ?? '0000';
-                          int currentTime = int.parse(time);
-                          String timeText = '';
-                          if (index > 0) {
-                            temperature = widget.temperatureList[index].fcstValue ?? '';
-                            timeText = Utils.convertToTimeFormat(time);
-                          } else {
-                            temperature = widget.currentTemperature.toString();
-                          }
+                        String time = widget.temperatureList[index].fcstTime ?? '0000';
+                        int currentTime = int.parse(time);
+                        String timeText = '';
+                        if (index > 0) {
+                          temperature = widget.temperatureList[index].fcstValue ?? '';
+                          timeText = Utils.convertToTimeFormat(time);
+                        } else {
+                          temperature = widget.currentTemperature.toString();
+                        }
 
-                          int rainPercent = int.parse(widget.rainPercentList[index].fcstValue ?? '0');
-                          int rainIndex = int.parse(widget.rainStatusList[index].fcstValue ?? '0');
-                          String rainStatus = widget.rainStatusList[index].weatherCategory?.codeValues?[rainIndex] ?? '없음';
-                          int skyIndex = int.parse(widget.skyStatusList[index].fcstValue ?? '0');
-                          String skyStatus = widget.skyStatusList[index].weatherCategory?.codeValues?[skyIndex] ?? '';
+                        int rainPercent = int.parse(widget.rainPercentList[index].fcstValue ?? '0');
+                        int rainIndex = int.parse(widget.rainStatusList[index].fcstValue ?? '0');
+                        String rainStatus = widget.rainStatusList[index].weatherCategory?.codeValues?[rainIndex] ?? '없음';
+                        int skyIndex = int.parse(widget.skyStatusList[index].fcstValue ?? '0');
+                        String skyStatus = widget.skyStatusList[index].weatherCategory?.codeValues?[skyIndex] ?? '';
 
-                          int iconIndex = Utils.getIconIndex(rainStatus: rainStatus, skyStatus: skyStatus, currentTime: currentTime, sunrise: widget.sunrise, sunset: widget.sunset);
+                        int iconIndex = Utils.getIconIndex(rainStatus: rainStatus, skyStatus: skyStatus, currentTime: currentTime, sunrise: widget.sunrise, sunset: widget.sunset);
 
-                          double progress = ((int.parse(temperature) - minTemperatureValue) / (maxTemperatureValue - minTemperatureValue));
+                        double progress = ((int.parse(temperature) - minTemperatureValue) / (maxTemperatureValue - minTemperatureValue));
 
-                          return _weatherItem(
-                            temperature: temperature,
-                            progress: progress,
-                            iconName: '${kWeatherIconList[iconIndex]}_on',
-                            rainPercent: rainPercent,
-                            timeText: timeText,
-                          );
-                        },
+                        return _weatherItem(
+                          temperature: temperature,
+                          progress: progress,
+                          iconName: '${kWeatherIconList[iconIndex]}_on',
+                          rainPercent: rainPercent,
+                          timeText: timeText,
+                          index: index,
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(
+                width: double.maxFinite,
+                child: Row(
+                  children: [
+                    Container(
+                      width: 50,
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.centerRight,
+                          end: Alignment.centerLeft,
+                          colors: [kWidgetGradientLeft, kWidgetGradientRight],
+                        ),
+                      ),
+                    ),
+
+                    const Spacer(),
+
+                    Container(
+                      width: 50,
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [kWidgetGradientLeft, kWidgetGradientRight],
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-      
-              Container(
-                width: 50,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [kWidgetGradientLeft, kWidgetGradientRight],
-                  ),
-                ),
-              ),
-      
+
               Visibility(
                 visible: status.value > 0,
                 child: Container(
@@ -205,9 +226,11 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
     String iconName = '',
     int rainPercent = 0,
     String timeText = '',
+    int index = 0,
   }) {
-    return SizedBox(
+    return Container(
       width: 55,
+      margin: index == 0 ? const EdgeInsets.only(left: 14) : null,
       child: Column(
         children: [
           HeyText.title3Bold(

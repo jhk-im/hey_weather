@@ -66,7 +66,7 @@ class AddressPage extends GetView<AddressController> {
                             onTap: controller.editModeToggle,
                             child: Container(
                               width: 72,
-                              padding: const EdgeInsets.only(right: 20),
+                              padding: const EdgeInsets.only(right: 24),
                               child: Row(
                                 children: [
                                   const Spacer(),
@@ -148,7 +148,7 @@ class AddressPage extends GetView<AddressController> {
                           children: [
                             HeyWeatherAddressCard(
                               address: controller.currentAddress,
-                              isEditMode: controller.isEditMode,
+                              // isEditMode: controller.isEditMode,
                               isCurrentLocation: true,
                               onSelectAddress: controller.selectAddress,
                             ),

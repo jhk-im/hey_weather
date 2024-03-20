@@ -182,6 +182,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   _scrollListener() {
     double scrollPosition = scrollController.position.pixels;
+    print('!!! -> $scrollPosition');
     _scrollY.value = scrollPosition;
   }
 

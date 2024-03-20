@@ -204,7 +204,7 @@ class SettingMainPage extends GetView<SettingMainController> {
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
-                          color: kPrimaryColor,
+                          color: kBaseColor,
                         ),
                         width: double.maxFinite,
                         child: Row(

@@ -15,7 +15,7 @@ class HeySnackBar {
           padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 12),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            color: kTextPointColor.withOpacity(0.2),
+            color: kDividerPrimaryColor,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,

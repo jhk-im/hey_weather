@@ -38,7 +38,7 @@ class _HeyWeatherWeekCardState extends State<HeyWeatherWeekCard> {
   @override
   Widget build(BuildContext context) {
     double width = (MediaQuery.of(context).size.width) - 28;
-    double height = 432;
+    double height = 390;
     status(widget.buttonStatus);
     widget.setHeight?.call(id, height);
 
@@ -290,7 +290,7 @@ class _HeyWeatherWeekCardState extends State<HeyWeatherWeekCard> {
                 dateText.isEmpty ? 'today'.tr : dateText,
                 color: dateText.isEmpty ? kTextPointColor : kTextDisabledColor,
               ),
-              HeyText.caption1(
+              HeyText.captionMedium1(
                 dateText2,
                 color: kTextPointColor.withOpacity(0.3),
               ),

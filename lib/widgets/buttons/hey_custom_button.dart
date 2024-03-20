@@ -124,7 +124,7 @@ class HeyCustomButton extends Container {
     double paddingTop = 8,
     double paddingBottom = 8,
     double paddingLeft = 10,
-    double paddingRight = 16,
+    double paddingRight = 14,
     double iconMargin = 10,
     double radius = 12,
     Color backgroundColor = kButtonColor,

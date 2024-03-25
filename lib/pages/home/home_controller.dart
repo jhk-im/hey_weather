@@ -303,6 +303,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
           List<String> updateList = List<String>.from(_myWeatherList);
           updateList.addAll(idList);
           updateUserMyWeather(updateList, isUpdate: true);
+          editToggle(false);
         },
       );
     }
@@ -631,11 +632,15 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       success: (idList) {
         logger.i('HomeController.getData.getUserMyWeatherIdList idList -> $idList');
         _myWeatherList(idList);
-        _myWeatherList.add('empty');
+        if(!_myWeatherList.contains('empty')) {
+          _myWeatherList.add('empty');
+        }
       },
       error: (Exception e) {
         logger.i('HomeController.getData.getUserMyWeatherIdList $e');
-        _myWeatherList.add('empty');
+        if(!_myWeatherList.contains('empty')) {
+          _myWeatherList.add('empty');
+        }
       },
     );
   }

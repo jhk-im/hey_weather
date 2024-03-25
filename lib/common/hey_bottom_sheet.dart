@@ -263,10 +263,115 @@ class HeyBottomSheet {
       kWeatherCardUltraviolet: false,
     };
 
+    var weatherIdList = [
+      kWeatherCardTime,
+      kWeatherCardWeek,
+      kWeatherCardDust,
+      kWeatherCardRain,
+      kWeatherCardHumidity,
+      kWeatherCardFeel,
+      kWeatherCardWind,
+      kWeatherCardSun,
+      kWeatherCardUltraviolet
+    ];
+
     if (idList.isNotEmpty) {
       for (var id in idList) {
         weatherInitMap[id] = false;
         weatherSelectMap[id] = true;
+        weatherIdList.remove(id);
+      }
+    }
+
+    Widget weatherWidgets(String id) {
+      switch (id) {
+        case kWeatherCardTime:
+          return HeyWeatherTimeCard(
+            temperatureList: timeTemperatureList ?? [],
+            skyStatusList: timeSkyStatusList ?? [],
+            rainStatusList: timeRainStatusList ?? [],
+            rainPercentList: timeRainPercentList ?? [],
+            sunset: sunsetTime,
+            sunrise: sunriseTime,
+            currentTemperature: timeCurrentTemperature,
+            buttonStatus: 1,
+            onSelect: (id, selected) {
+              weatherSelectMap[id] = selected;
+            },
+          );
+        case kWeatherCardWeek:
+          return HeyWeatherWeekCard(
+            midTermLand: weekMidTermLand ?? MidTermLand(),
+            midTermTemperature: weekMidTermTemperature ?? MidTermTemperature(),
+            buttonStatus: 1,
+            onSelect: (id, selected) {
+              weatherSelectMap[id] = selected;
+            },
+          );
+        case kWeatherCardDust:
+          return HeyWeatherDustCard(
+            fine: dustFine,
+            ultra: dustUltraFine,
+            buttonStatus: 1,
+            onSelect: (id, selected) {
+              weatherSelectMap[id] = selected;
+            },
+          );
+        case kWeatherCardRain:
+          return HeyWeatherRainCard(
+            rain: rain,
+            rainStatus: rainStatus,
+            percentage: rainPercentage,
+            buttonStatus: 1,
+            onSelect: (id, selected) {
+              weatherSelectMap[id] = selected;
+            },
+          );
+        case kWeatherCardHumidity:
+          return HeyWeatherHumidityCard(
+            today: humidity,
+            buttonStatus: 1,
+            onSelect: (id, selected) {
+              weatherSelectMap[id] = selected;
+            },
+          );
+        case kWeatherCardFeel:
+          return HeyWeatherFeelCard(
+            max: feelMax,
+            min: feelMin,
+            buttonStatus: 1,
+            onSelect: (id, selected) {
+              weatherSelectMap[id] = selected;
+            },
+          );
+        case kWeatherCardWind:
+          return HeyWeatherWindCard(
+            speed: windSpeed,
+            direction: windDirection,
+            buttonStatus: 1,
+            onSelect: (id, selected) {
+              weatherSelectMap[id] = selected;
+            },
+          );
+        case kWeatherCardSun:
+          return HeyWeatherSunCard(
+            sunrise: timeSunrise,
+            sunset: timeSunset,
+            buttonStatus: 1,
+            onSelect: (id, selected) {
+              weatherSelectMap[id] = selected;
+            },
+          );
+        case kWeatherCardUltraviolet:
+          return HeyWeatherUltravioletCard(
+            ultraviolet: ultraviolet,
+            buttonStatus: 1,
+            onSelect: (id, selected) {
+              weatherSelectMap[id] = selected;
+            },
+          );
+        default :
+          return Container();
       }
     }
 
@@ -321,120 +426,9 @@ class HeyBottomSheet {
                         child: Wrap(
                           spacing: 15,
                           runSpacing: 15,
-                          children: [
-                            // 시간대별 날씨
-                            Visibility(
-                              visible: weatherInitMap[kWeatherCardTime] ?? true,
-                              child: HeyWeatherTimeCard(
-                                temperatureList: timeTemperatureList ?? [],
-                                skyStatusList: timeSkyStatusList ?? [],
-                                rainStatusList: timeRainStatusList ?? [],
-                                rainPercentList: timeRainPercentList ?? [],
-                                sunset: sunsetTime,
-                                sunrise: sunriseTime,
-                                currentTemperature: timeCurrentTemperature,
-                                buttonStatus: 1,
-                                onSelect: (id, selected) {
-                                  weatherSelectMap[id] = selected;
-                                },
-                              ),
-                            ),
-                            // 주간 날씨
-                            Visibility(
-                              visible: weatherInitMap[kWeatherCardWeek] ?? true,
-                              child: HeyWeatherWeekCard(
-                                midTermLand: weekMidTermLand ?? MidTermLand(),
-                                midTermTemperature: weekMidTermTemperature ?? MidTermTemperature(),
-                                buttonStatus: 1,
-                                onSelect: (id, selected) {
-                                  weatherSelectMap[id] = selected;
-                                },
-                              ),
-                            ),
-                            // 대기질
-                            Visibility(
-                              visible: weatherInitMap[kWeatherCardDust] ?? true,
-                              child: HeyWeatherDustCard(
-                                fine: dustFine,
-                                ultra: dustUltraFine,
-                                buttonStatus: 1,
-                                onSelect: (id, selected) {
-                                  weatherSelectMap[id] = selected;
-                                },
-                              ),
-                            ),
-                            // 강수
-                            Visibility(
-                              visible: weatherInitMap[kWeatherCardRain] ?? true,
-                              child: HeyWeatherRainCard(
-                                rain: rain,
-                                rainStatus: rainStatus,
-                                percentage: rainPercentage,
-                                buttonStatus: 1,
-                                onSelect: (id, selected) {
-                                  weatherSelectMap[id] = selected;
-                                },
-                              ),
-                            ),
-                            // 습도
-                            Visibility(
-                              visible: weatherInitMap[kWeatherCardHumidity] ?? true,
-                              child: HeyWeatherHumidityCard(
-                                today: humidity,
-                                buttonStatus: 1,
-                                onSelect: (id, selected) {
-                                  weatherSelectMap[id] = selected;
-                                },
-                              ),
-                            ),
-                            // 체감온도
-                            Visibility(
-                              visible: weatherInitMap[kWeatherCardFeel] ?? true,
-                              child: HeyWeatherFeelCard(
-                                max: feelMax,
-                                min: feelMin,
-                                buttonStatus: 1,
-                                onSelect: (id, selected) {
-                                  weatherSelectMap[id] = selected;
-                                },
-                              ),
-                            ),
-                            // 바람
-                            Visibility(
-                              visible: weatherInitMap[kWeatherCardWind] ?? true,
-                              child: HeyWeatherWindCard(
-                                speed: windSpeed,
-                                direction: windDirection,
-                                buttonStatus: 1,
-                                onSelect: (id, selected) {
-                                  weatherSelectMap[id] = selected;
-                                },
-                              ),
-                            ),
-                            // 일출 일몰
-                            Visibility(
-                              visible: weatherInitMap[kWeatherCardSun] ?? true,
-                              child: HeyWeatherSunCard(
-                                sunrise: timeSunrise,
-                                sunset: timeSunset,
-                                buttonStatus: 1,
-                                onSelect: (id, selected) {
-                                  weatherSelectMap[id] = selected;
-                                },
-                              ),
-                            ),
-                            // 자외선
-                            Visibility(
-                              visible: weatherInitMap[kWeatherCardUltraviolet] ?? true,
-                              child: HeyWeatherUltravioletCard(
-                                ultraviolet: ultraviolet,
-                                buttonStatus: 1,
-                                onSelect: (id, selected) {
-                                  weatherSelectMap[id] = selected;
-                                },
-                              ),
-                            ),
-                          ],
+                          children: List.generate(weatherIdList.length, (index) {
+                            return weatherWidgets(weatherIdList[index]);
+                          }),
                         ),
                       ),
                     ),

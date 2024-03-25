@@ -55,9 +55,7 @@ class _HeyWeatherFeelCardState extends State<HeyWeatherFeelCard> {
         child: Container(
           width: width,
           height: 170,
-          //constraints: const BoxConstraints(minHeight: 162),
-          //padding: const EdgeInsets.all(14),
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+          padding: EdgeInsets.only(top: 20, bottom: 20, left: 24, right: status.value == 0 ? 24 : 20),
           decoration: BoxDecoration(
             color: kBaseColor,
             borderRadius: BorderRadius.circular(20),

@@ -161,7 +161,6 @@ class AddressController extends GetxController with WidgetsBindingObserver {
           title: 'dialog_delete_location'.tr,
           subtitle: '${address.region2depthName} ${address.region3depthName}',
           onOk: () async {
-            Get.back();
             _isUpdated(true);
             await _repository.deleteUserAddressWithId(address.id!);
             _addressList.remove(address);

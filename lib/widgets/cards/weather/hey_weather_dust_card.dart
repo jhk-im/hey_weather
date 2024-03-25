@@ -47,8 +47,9 @@ class _HeyWeatherDustCardState extends State<HeyWeatherDustCard> {
 
   @override
   Widget build(BuildContext context) {
+    double editWidth = (MediaQuery.of(context).size.width / 2) - 28;
     double width = (MediaQuery.of(context).size.width) - 28;
-    double height = 173;
+    double height = 170;
     status(widget.buttonStatus);
     widget.setHeight?.call(id, height);
 
@@ -82,11 +83,9 @@ class _HeyWeatherDustCardState extends State<HeyWeatherDustCard> {
           widget.onSelect?.call(id, status.value == 2);
         } : null,
         child: Container(
-          width: width,
-          height: 170,
-          // constraints: const BoxConstraints(minHeight: 173),
-          //padding: const EdgeInsets.all(14),
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+          width: status.value == 3 ? editWidth : width,
+          height: height,
+          padding: EdgeInsets.only(top: 20, bottom: 20, left: 24, right: status.value == 0 ? 24 : 20),
           decoration: BoxDecoration(
             color: kBaseColor,
             borderRadius: BorderRadius.circular(20),
@@ -118,103 +117,14 @@ class _HeyWeatherDustCardState extends State<HeyWeatherDustCard> {
                   ),
                   const SizedBox(height: 24),
                   Expanded(
-                    child: Row(
-                      children: [
-                        // 미세먼지
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Row(
-                                children: [
-                                  HeyText.bodySemiBold(
-                                    'dust_fine'.tr,
-                                    fontSize: kFont15,
-                                    color: kTextDisabledColor,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  HeyText.bodySemiBold(
-                                    fineState,
-                                    fontSize: kFont15,
-                                    color: stateColors[fineState] ?? kTextPointColor,
-                                  ),
-                                ],
-                              ),
-
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  HeyText.largeTitleBold(
-                                    widget.fine.toString(),
-                                    color: kTextPointColor,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 4),
-                                    child: HeyText.bodySemiBold(
-                                      '㎍/m³',
-                                      fontSize: kFont20,
-                                      color: kIconColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          width: 1,
-                          margin: const EdgeInsets.symmetric(vertical: 4),
-                          color: kButtonColor,
-                        ),
-                        // 초미세먼지
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 24),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Row(
-                                  children: [
-                                    HeyText.bodySemiBold(
-                                      'dust_ultra'.tr,
-                                      fontSize: kFont15,
-                                      color: kTextDisabledColor,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    HeyText.bodySemiBold(
-                                      ultraState,
-                                      fontSize: kFont15,
-                                      color: stateColors[ultraState] ?? kTextPointColor,
-                                    ),
-                                  ],
-                                ),
-
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    HeyText.largeTitleBold(
-                                      widget.ultra.toString(),
-                                      color: kTextPointColor,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Padding(
-                                      padding: const EdgeInsets.only(bottom: 4),
-                                      child: HeyText.bodySemiBold(
-                                        '㎍/m³',
-                                        fontSize: kFont20,
-                                        color: kIconColor,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
+                    child: status.value == 3 ? SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: SizedBox(
+                        width: 500,
+                        child: contents(fineState, ultraState),
+                      ),
+                    ) : contents(fineState, ultraState),
+                  ),
                 ],
               ),
 
@@ -257,5 +167,104 @@ class _HeyWeatherDustCardState extends State<HeyWeatherDustCard> {
         ),
       ),
     ));
+  }
+
+  Widget contents(String fineState, String ultraState) {
+    return Row(
+      children: [
+        // 미세먼지
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Row(
+                children: [
+                  HeyText.bodySemiBold(
+                    'dust_fine'.tr,
+                    fontSize: kFont15,
+                    color: kTextDisabledColor,
+                  ),
+                  const SizedBox(width: 8),
+                  HeyText.bodySemiBold(
+                    fineState,
+                    fontSize: kFont15,
+                    color: stateColors[fineState] ?? kTextPointColor,
+                  ),
+                ],
+              ),
+
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  HeyText.largeTitleBold(
+                    widget.fine.toString(),
+                    color: kTextPointColor,
+                  ),
+                  const SizedBox(width: 4),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: HeyText.bodySemiBold(
+                      '㎍/m³',
+                      fontSize: kFont20,
+                      color: kIconColor,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        Container(
+          width: 1,
+          margin: const EdgeInsets.symmetric(vertical: 4),
+          color: kButtonColor,
+        ),
+        // 초미세먼지
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Row(
+                  children: [
+                    HeyText.bodySemiBold(
+                      'dust_ultra'.tr,
+                      fontSize: kFont15,
+                      color: kTextDisabledColor,
+                    ),
+                    const SizedBox(width: 8),
+                    HeyText.bodySemiBold(
+                      ultraState,
+                      fontSize: kFont15,
+                      color: stateColors[ultraState] ?? kTextPointColor,
+                    ),
+                  ],
+                ),
+
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    HeyText.largeTitleBold(
+                      widget.ultra.toString(),
+                      color: kTextPointColor,
+                    ),
+                    const SizedBox(width: 4),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: HeyText.bodySemiBold(
+                        '㎍/m³',
+                        fontSize: kFont20,
+                        color: kIconColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

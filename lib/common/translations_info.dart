@@ -78,6 +78,7 @@ class TranslationsInfo extends Translations {
     'ultra_fine_dust': '초미세먼지',
     'feel_temp': '체감온도',
     'weather_by_time': '시간대별 날씨',
+    'weather_by_time_edit': '시간대별\n날씨',
     'weather_week': '주간 날씨',
     'sunrise_sunset' : '일출일몰',
 
@@ -87,7 +88,7 @@ class TranslationsInfo extends Translations {
     'bs_address_title_1': '어느 지역으로 바꿀까요?',
     'bs_address_title_2': '바꿀 지역이 없어요',
     'bs_address_btn': '다른 지역 찾아보기',
-    'bs_weather_title': '필요한 위젯을 선택하세요',
+    'bs_weather_title': '추가할 위젯을 선택하세요',
 
     // Dialog
     'dialog_setting_title': '설정하러 이동할까요??',

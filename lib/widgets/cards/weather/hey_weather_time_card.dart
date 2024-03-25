@@ -46,6 +46,8 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
 
   @override
   Widget build(BuildContext context) {
+    double editWidth = (MediaQuery.of(context).size.width / 2) - 28;
+    double editHeight = 170;
     double width = (MediaQuery.of(context).size.width) - 28;
     double height = 286;
     status(widget.buttonStatus);
@@ -68,8 +70,8 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
           widget.onSelect?.call(id, status.value == 2);
         } : null,
         child: Container(
-          width: width,
-          height: height,
+          width: status.value == 3 ? editWidth : width,
+          height: status.value == 3 ? editHeight : height,
           padding: const EdgeInsets.only(top: 20, bottom: 20),
           decoration: BoxDecoration(
             color: kBaseColor,
@@ -90,15 +92,18 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
                     margin: const EdgeInsets.only(left: 24),
                     child: Row(
                       children: [
-                        SvgUtils.icon(
-                          context,
-                          'weather_by_time',
-                          width: 20,
-                          height: 20,
+                        Padding(
+                          padding: status.value == 3 ? const EdgeInsets.only(bottom: 24) : EdgeInsets.zero,
+                          child: SvgUtils.icon(
+                            context,
+                            'weather_by_time',
+                            width: 20,
+                            height: 20,
+                          ),
                         ),
                         const SizedBox(width: 6),
                         HeyText.bodySemiBold(
-                          'weather_by_time'.tr,
+                          status.value == 3 ? 'weather_by_time_edit'.tr : 'weather_by_time'.tr,
                           fontSize: kFont16,
                           color: kTextDisabledColor,
                         ),
@@ -106,44 +111,47 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Expanded(
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: widget.skyStatusList.length,
-                      itemBuilder: (context, index) {
-                        String temperature = '';
 
-                        String time = widget.temperatureList[index].fcstTime ?? '0000';
-                        int currentTime = int.parse(time);
-                        String timeText = '';
-                        if (index > 0) {
-                          temperature = widget.temperatureList[index].fcstValue ?? '';
-                          timeText = Utils.convertToTimeFormat(time);
-                        } else {
-                          temperature = widget.currentTemperature.toString();
-                        }
+                  if (status.value != 3) ... {
+                    Expanded(
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: widget.skyStatusList.length,
+                        itemBuilder: (context, index) {
+                          String temperature = '';
 
-                        int rainPercent = int.parse(widget.rainPercentList[index].fcstValue ?? '0');
-                        int rainIndex = int.parse(widget.rainStatusList[index].fcstValue ?? '0');
-                        String rainStatus = widget.rainStatusList[index].weatherCategory?.codeValues?[rainIndex] ?? '없음';
-                        int skyIndex = int.parse(widget.skyStatusList[index].fcstValue ?? '0');
-                        String skyStatus = widget.skyStatusList[index].weatherCategory?.codeValues?[skyIndex] ?? '';
+                          String time = widget.temperatureList[index].fcstTime ?? '0000';
+                          int currentTime = int.parse(time);
+                          String timeText = '';
+                          if (index > 0) {
+                            temperature = widget.temperatureList[index].fcstValue ?? '';
+                            timeText = Utils.convertToTimeFormat(time);
+                          } else {
+                            temperature = widget.currentTemperature.toString();
+                          }
 
-                        int iconIndex = Utils.getIconIndex(rainStatus: rainStatus, skyStatus: skyStatus, currentTime: currentTime, sunrise: widget.sunrise, sunset: widget.sunset);
+                          int rainPercent = int.parse(widget.rainPercentList[index].fcstValue ?? '0');
+                          int rainIndex = int.parse(widget.rainStatusList[index].fcstValue ?? '0');
+                          String rainStatus = widget.rainStatusList[index].weatherCategory?.codeValues?[rainIndex] ?? '없음';
+                          int skyIndex = int.parse(widget.skyStatusList[index].fcstValue ?? '0');
+                          String skyStatus = widget.skyStatusList[index].weatherCategory?.codeValues?[skyIndex] ?? '';
 
-                        double progress = ((int.parse(temperature) - minTemperatureValue) / (maxTemperatureValue - minTemperatureValue));
+                          int iconIndex = Utils.getIconIndex(rainStatus: rainStatus, skyStatus: skyStatus, currentTime: currentTime, sunrise: widget.sunrise, sunset: widget.sunset);
 
-                        return _weatherItem(
-                          temperature: temperature,
-                          progress: progress,
-                          iconName: '${kWeatherIconList[iconIndex]}_on',
-                          rainPercent: rainPercent,
-                          timeText: timeText,
-                          index: index,
-                        );
-                      },
+                          double progress = ((int.parse(temperature) - minTemperatureValue) / (maxTemperatureValue - minTemperatureValue));
+
+                          return _weatherItem(
+                            temperature: temperature,
+                            progress: progress,
+                            iconName: '${kWeatherIconList[iconIndex]}_on',
+                            rainPercent: rainPercent,
+                            timeText: timeText,
+                            index: index,
+                          );
+                        },
+                      ),
                     ),
-                  ),
+                  },
                 ],
               ),
 
@@ -182,7 +190,7 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
                 visible: status.value > 0,
                 child: Container(
                   color: status.value == 1 || status.value == 3 ? Colors.transparent : kBaseColor.withOpacity(0.5),
-                  padding: const EdgeInsets.only(right: 14),
+                  padding: const EdgeInsets.only(right: 20),
                   child: Column(
                     children: [
                       InkWell(

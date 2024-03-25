@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_bottom_sheet.dart';
+import 'package:hey_weather/common/hey_dialog.dart';
 import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:hey_weather/common/utils.dart';
 import 'package:hey_weather/getx/routes.dart';
@@ -180,9 +181,13 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     }
   }
 
+  _updateScroll() {
+    double scrollPosition = scrollController.position.pixels - 0.1;
+    scrollController.jumpTo(scrollPosition);
+  }
+
   _scrollListener() {
     double scrollPosition = scrollController.position.pixels;
-    print('!!! -> $scrollPosition');
     _scrollY.value = scrollPosition;
   }
 
@@ -254,6 +259,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         );
       }
     }
+
+    _updateScroll();
   }
 
   setSelectIndex(int index, String id) {
@@ -638,11 +645,34 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
     if (idList.isEmpty) {
       editToggle(false);
-      _myWeatherList.add('empty');
     }
 
     if (isUpdate) {
       getData();
+    }
+  }
+
+  Future removeUserMyWeather(String title, String id) async {
+    if (Get.context != null) {
+      HeyDialog.showCommonDialog(
+        Get.context!,
+        title: title,
+        subtitle: 'dialog_delete_weather_subtitle'.tr,
+        onOk: () {
+          Get.back();
+          _myWeatherList.remove(id);
+          _updateScroll();
+
+          if(!_myWeatherList.contains('empty')) {
+            _myWeatherList.add('empty');
+          }
+
+          if(_myWeatherList.length < 2) {
+            editToggle(false);
+          }
+          _repository.updateUserMyWeather(List.from(_myWeatherList));
+        },
+      );
     }
   }
 

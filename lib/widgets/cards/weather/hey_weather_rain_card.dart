@@ -29,6 +29,7 @@ class HeyWeatherRainCard extends StatefulWidget {
 }
 
 class _HeyWeatherRainCardState extends State<HeyWeatherRainCard> {
+  String id = kWeatherCardRain;
   final status = 0.obs; // 0 -> default, 1 -> edit, 2 -> select, 3 -> delete
 
   // Colors
@@ -43,7 +44,6 @@ class _HeyWeatherRainCardState extends State<HeyWeatherRainCard> {
 
   @override
   Widget build(BuildContext context) {
-    String id = kWeatherCardRain;
     double width = (MediaQuery.of(context).size.width / 2) - 28;
     status(widget.buttonStatus);
     widget.setHeight?.call(id, width);
@@ -62,9 +62,7 @@ class _HeyWeatherRainCardState extends State<HeyWeatherRainCard> {
         child: Container(
           width: width,
           height: 170,
-          //constraints: const BoxConstraints(minHeight: 162),
-          //padding: const EdgeInsets.all(14),
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+          padding: EdgeInsets.only(top: 20, bottom: 20, left: 24, right: status.value == 0 ? 24 : 20),
           decoration: BoxDecoration(
             color: kBaseColor,
             borderRadius: BorderRadius.circular(20),

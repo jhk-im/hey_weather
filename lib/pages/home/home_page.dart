@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hey_weather/common/constants.dart';
-import 'package:hey_weather/common/hey_dialog.dart';
 import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/svg_utils.dart';
 import 'package:hey_weather/getx/routes.dart';
@@ -27,7 +26,7 @@ class HomePage extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     double statusBarHeight = MediaQuery.of(context).padding.top;
-    double emptyHeight = (MediaQuery.of(context).size.height) - 72;
+    double emptyHeight = (MediaQuery.of(context).size.height) - 176;
     return Scaffold(
       body: Obx(() => RefreshIndicator(
         color: Colors.white,
@@ -166,12 +165,13 @@ class HomePage extends GetView<HomeController> {
                         Container(
                           margin: const EdgeInsets.only(top: 25),
                           color: kHomeBottomColor,
+                          //height: controller.myWeatherList.length < 2 ? 395 : null,
                           child: Column(
                             children: [
                               // MY, ALL, 편집
                               _tab(context, controller.scrollY < 395),
                               if (!controller.isAllTab) ... {
-                                if (controller.myWeatherList.length == 1) ... {
+                                if (controller.myWeatherList.length < 2) ... {
                                   // Empty
                                   Container(
                                     width: double.maxFinite,
@@ -251,18 +251,10 @@ class HomePage extends GetView<HomeController> {
                                         controller.myWeatherList[index],
                                         controller.isEditMode ? 3 : 0,
                                         onRemove: (id) {
-                                          if (Get.context != null) {
-                                            HeyDialog.showCommonDialog(
-                                              Get.context!,
-                                              title: 'dialog_delete_weather_title'.trParams({'name' : weatherNameMap[id] ?? ''}),
-                                              subtitle: 'dialog_delete_weather_subtitle'.tr,
-                                              onOk: () {
-                                                Get.back();
-                                                controller.myWeatherList.remove(id);
-                                                controller.updateUserMyWeather(controller.myWeatherList);
-                                              },
-                                            );
-                                          }
+                                          controller.removeUserMyWeather(
+                                            'dialog_delete_weather_title'.trParams({'name' : weatherNameMap[id] ?? ''}),
+                                            id,
+                                          );
                                         },
                                       );
                                     }),
@@ -314,7 +306,7 @@ class HomePage extends GetView<HomeController> {
           padding: const EdgeInsets.only(left: 10, top: 24, bottom: 12, right: 20),
           child: controller.isEditMode ? Row(
             children: [
-              if (controller.myWeatherList.length < 9) ... {
+              if (controller.myWeatherList.length < 10) ... {
                 const SizedBox(width: 10),
                 HeyElevatedButton.secondaryIcon2(
                   context,
@@ -357,7 +349,7 @@ class HomePage extends GetView<HomeController> {
                 ),
               ),
 
-              if (controller.myWeatherList.isEmpty || controller.isAllTab) ... {
+              if (controller.myWeatherList.length < 2 || controller.isAllTab) ... {
                 const SizedBox(height: 48),
               } else ... {
                 const Spacer(),

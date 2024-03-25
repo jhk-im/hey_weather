@@ -37,6 +37,8 @@ class _HeyWeatherWeekCardState extends State<HeyWeatherWeekCard> {
 
   @override
   Widget build(BuildContext context) {
+    double editWidth = (MediaQuery.of(context).size.width / 2) - 28;
+    double editHeight = 170;
     double width = (MediaQuery.of(context).size.width) - 28;
     double height = 390;
     status(widget.buttonStatus);
@@ -104,8 +106,8 @@ class _HeyWeatherWeekCardState extends State<HeyWeatherWeekCard> {
           widget.onSelect?.call(id, status.value == 2);
         } : null,
         child: Container(
-          width: width,
-          height: height,
+          width: status.value == 3 ? editWidth : width,
+          height: status.value == 3 ? editHeight : height,
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: kBaseColor,
@@ -140,89 +142,92 @@ class _HeyWeatherWeekCardState extends State<HeyWeatherWeekCard> {
                       ],
                     ),
                     const SizedBox(height: 24),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _weatherItem(
-                            dateText: '',
-                            dateText2: dateList[0],
-                            amPercent: todayAmRainPercentage,
-                            pmPercent: todayPmRainPercentage,
-                            amIconName: '${kWeatherWeekIconList[todayAmStatus]}_on',
-                            pmIconName: '${kWeatherWeekIconList[todayPmStatus]}_on',
-                            minTemp: todayMaxTemperature,
-                            maxTemp: todayMinTemperature,
-                          ),
-                      
-                          _weatherItem(
-                            dateText: weekList[1],
-                            dateText2: dateList[1],
-                            amPercent: tomorrowAmRainPercentage,
-                            pmPercent: tomorrowPmRainPercentage,
-                            amIconName: '${kWeatherWeekIconList[tomorrowAmStatus]}_on',
-                            pmIconName: '${kWeatherWeekIconList[tomorrowPmStatus]}_on',
-                            minTemp: tomorrowMaxTemperature,
-                            maxTemp: tomorrowMinTemperature,
-                          ),
-                      
-                          _weatherItem(
-                            dateText: weekList[2],
-                            dateText2: dateList[2],
-                            amPercent: widget.midTermLand.rnSt3Am ?? 0,
-                            pmPercent: widget.midTermLand.rnSt3Pm ?? 0,
-                            amIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf3Am ?? '')]}_on',
-                            pmIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf3Pm ?? '')]}_on',
-                            minTemp: widget.midTermTemperature.taMax3 ?? 0,
-                            maxTemp: widget.midTermTemperature.taMin3 ?? 0,
-                          ),
-                      
-                          _weatherItem(
-                            dateText: weekList[3],
-                            dateText2: dateList[3],
-                            amPercent: widget.midTermLand.rnSt4Am ?? 0,
-                            pmPercent: widget.midTermLand.rnSt4Pm ?? 0,
-                            amIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf4Am ?? '')]}_on',
-                            pmIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf4Pm ?? '')]}_on',
-                            minTemp: widget.midTermTemperature.taMax4 ?? 0,
-                            maxTemp: widget.midTermTemperature.taMin4 ?? 0,
-                          ),
-                      
-                          _weatherItem(
-                            dateText: weekList[4],
-                            dateText2: dateList[4],
-                            amPercent: widget.midTermLand.rnSt5Am ?? 0,
-                            pmPercent: widget.midTermLand.rnSt5Pm ?? 0,
-                            amIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf5Am ?? '')]}_on',
-                            pmIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf5Pm ?? '')]}_on',
-                            minTemp: widget.midTermTemperature.taMax5 ?? 0,
-                            maxTemp: widget.midTermTemperature.taMin5 ?? 0,
-                          ),
-                      
-                          _weatherItem(
-                            dateText: weekList[5],
-                            dateText2: dateList[5],
-                            amPercent: widget.midTermLand.rnSt6Am ?? 0,
-                            pmPercent: widget.midTermLand.rnSt6Pm ?? 0,
-                            amIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf6Am ?? '')]}_on',
-                            pmIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf6Pm ?? '')]}_on',
-                            minTemp: widget.midTermTemperature.taMax6 ?? 0,
-                            maxTemp: widget.midTermTemperature.taMin6 ?? 0,
-                          ),
-                      
-                          _weatherItem(
-                            dateText: weekList[6],
-                            dateText2: dateList[6],
-                            amPercent: widget.midTermLand.rnSt7Am ?? 0,
-                            pmPercent: widget.midTermLand.rnSt7Pm ?? 0,
-                            amIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf7Am ?? '')]}_on',
-                            pmIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf7Pm ?? '')]}_on',
-                            minTemp: widget.midTermTemperature.taMax7 ?? 0,
-                            maxTemp: widget.midTermTemperature.taMin7 ?? 0,
-                          ),
-                        ],
+
+                    if (status.value != 3) ... {
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _weatherItem(
+                              dateText: '',
+                              dateText2: dateList[0],
+                              amPercent: todayAmRainPercentage,
+                              pmPercent: todayPmRainPercentage,
+                              amIconName: '${kWeatherWeekIconList[todayAmStatus]}_on',
+                              pmIconName: '${kWeatherWeekIconList[todayPmStatus]}_on',
+                              minTemp: todayMaxTemperature,
+                              maxTemp: todayMinTemperature,
+                            ),
+
+                            _weatherItem(
+                              dateText: weekList[1],
+                              dateText2: dateList[1],
+                              amPercent: tomorrowAmRainPercentage,
+                              pmPercent: tomorrowPmRainPercentage,
+                              amIconName: '${kWeatherWeekIconList[tomorrowAmStatus]}_on',
+                              pmIconName: '${kWeatherWeekIconList[tomorrowPmStatus]}_on',
+                              minTemp: tomorrowMaxTemperature,
+                              maxTemp: tomorrowMinTemperature,
+                            ),
+
+                            _weatherItem(
+                              dateText: weekList[2],
+                              dateText2: dateList[2],
+                              amPercent: widget.midTermLand.rnSt3Am ?? 0,
+                              pmPercent: widget.midTermLand.rnSt3Pm ?? 0,
+                              amIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf3Am ?? '')]}_on',
+                              pmIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf3Pm ?? '')]}_on',
+                              minTemp: widget.midTermTemperature.taMax3 ?? 0,
+                              maxTemp: widget.midTermTemperature.taMin3 ?? 0,
+                            ),
+
+                            _weatherItem(
+                              dateText: weekList[3],
+                              dateText2: dateList[3],
+                              amPercent: widget.midTermLand.rnSt4Am ?? 0,
+                              pmPercent: widget.midTermLand.rnSt4Pm ?? 0,
+                              amIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf4Am ?? '')]}_on',
+                              pmIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf4Pm ?? '')]}_on',
+                              minTemp: widget.midTermTemperature.taMax4 ?? 0,
+                              maxTemp: widget.midTermTemperature.taMin4 ?? 0,
+                            ),
+
+                            _weatherItem(
+                              dateText: weekList[4],
+                              dateText2: dateList[4],
+                              amPercent: widget.midTermLand.rnSt5Am ?? 0,
+                              pmPercent: widget.midTermLand.rnSt5Pm ?? 0,
+                              amIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf5Am ?? '')]}_on',
+                              pmIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf5Pm ?? '')]}_on',
+                              minTemp: widget.midTermTemperature.taMax5 ?? 0,
+                              maxTemp: widget.midTermTemperature.taMin5 ?? 0,
+                            ),
+
+                            _weatherItem(
+                              dateText: weekList[5],
+                              dateText2: dateList[5],
+                              amPercent: widget.midTermLand.rnSt6Am ?? 0,
+                              pmPercent: widget.midTermLand.rnSt6Pm ?? 0,
+                              amIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf6Am ?? '')]}_on',
+                              pmIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf6Pm ?? '')]}_on',
+                              minTemp: widget.midTermTemperature.taMax6 ?? 0,
+                              maxTemp: widget.midTermTemperature.taMin6 ?? 0,
+                            ),
+
+                            _weatherItem(
+                              dateText: weekList[6],
+                              dateText2: dateList[6],
+                              amPercent: widget.midTermLand.rnSt7Am ?? 0,
+                              pmPercent: widget.midTermLand.rnSt7Pm ?? 0,
+                              amIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf7Am ?? '')]}_on',
+                              pmIconName: '${kWeatherWeekIconList[getIconIndex(widget.midTermLand.wf7Pm ?? '')]}_on',
+                              minTemp: widget.midTermTemperature.taMax7 ?? 0,
+                              maxTemp: widget.midTermTemperature.taMin7 ?? 0,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
+                    },
                   ],
                 ),
               ),
@@ -243,15 +248,18 @@ class _HeyWeatherWeekCardState extends State<HeyWeatherWeekCard> {
                         child: Row(
                           children: [
                             const Spacer(),
-                            SvgUtils.icon(
-                              context,
-                              status.value == 1
-                                  ? 'circle_check'
-                                  : status.value == 2
-                                  ? 'circle_check_selected'
-                                  : 'circle_minus',
-                              width: 24,
-                              height: 24,
+                            Padding(
+                              padding: const EdgeInsets.only(top: 6, right: 6),
+                              child: SvgUtils.icon(
+                                context,
+                                status.value == 1
+                                    ? 'circle_check'
+                                    : status.value == 2
+                                    ? 'circle_check_selected'
+                                    : 'circle_minus',
+                                width: 24,
+                                height: 24,
+                              ),
                             ),
                           ],
                         ),
@@ -280,7 +288,6 @@ class _HeyWeatherWeekCardState extends State<HeyWeatherWeekCard> {
   }) {
     return SizedBox(
       width: double.maxFinite,
-
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

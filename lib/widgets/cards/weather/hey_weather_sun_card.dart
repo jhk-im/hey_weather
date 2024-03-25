@@ -32,10 +32,12 @@ class _HeyWeatherSunCardState extends State<HeyWeatherSunCard> {
 
   @override
   Widget build(BuildContext context) {
+    double editWidth = (MediaQuery.of(context).size.width / 2) - 28;
     double width = (MediaQuery.of(context).size.width) - 28;
     double height = 170;
     status(widget.buttonStatus);
     widget.setHeight?.call(id, height);
+
     return Obx(() => Material(
       color: Colors.transparent,
       child: GestureDetector(
@@ -48,10 +50,9 @@ class _HeyWeatherSunCardState extends State<HeyWeatherSunCard> {
           widget.onSelect?.call(id, status.value == 2);
         } : null,
         child: Container(
-          width: width,
+          width: status.value == 3 ? editWidth : width,
           height: height,
-          //padding: const EdgeInsets.all(14),
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+          padding: EdgeInsets.only(top: 20, bottom: 20, left: 24, right: status.value == 3 ? 20 : 24),
           decoration: BoxDecoration(
             color: kBaseColor,
             borderRadius: BorderRadius.circular(20),
@@ -86,7 +87,6 @@ class _HeyWeatherSunCardState extends State<HeyWeatherSunCard> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-
                         Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
@@ -103,14 +103,16 @@ class _HeyWeatherSunCardState extends State<HeyWeatherSunCard> {
                                   fontSize: kFont16,
                                   color: kTextDisabledColor,
                                 ),
-                                const SizedBox(width: 2),
-                                HeyText.bodySemiBold(
-                                  widget.sunrise,
-                                  fontSize: kFont16,
-                                  color: kTextPointColor,
-                                ),
+                                if (status.value != 3) ... {
+                                  const SizedBox(width: 2),
+                                  HeyText.bodySemiBold(
+                                    widget.sunrise,
+                                    fontSize: kFont16,
+                                    color: kTextPointColor,
+                                  ),
+                                },
                               ],
-                            )
+                            ),
                           ],
                         ),
 
@@ -135,17 +137,18 @@ class _HeyWeatherSunCardState extends State<HeyWeatherSunCard> {
                                   fontSize: kFont16,
                                   color: kTextDisabledColor,
                                 ),
-                                const SizedBox(width: 2),
-                                HeyText.bodySemiBold(
-                                  widget.sunset,
-                                  fontSize: kFont16,
-                                  color: kTextPointColor,
-                                ),
+                                if (status.value != 3) ... {
+                                  const SizedBox(width: 2),
+                                  HeyText.bodySemiBold(
+                                    widget.sunset,
+                                    fontSize: kFont16,
+                                    color: kTextPointColor,
+                                  ),
+                                },
                               ],
-                            )
+                            ),
                           ],
                         ),
-
                       ],
                     ),
                   )

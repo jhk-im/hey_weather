@@ -173,9 +173,7 @@ class SettingMainPage extends GetView<SettingMainController> {
                     splashColor: kBaseColor,
                     highlightColor: Colors.transparent,
                     hoverColor: Colors.transparent,
-                    onTap: () {
-
-                    },
+                    onTap: controller.sendEmail,
                     child: Container(
                       padding: const EdgeInsets.all(24),
                       child: Row(
@@ -191,7 +189,12 @@ class SettingMainPage extends GetView<SettingMainController> {
                     ),
                   ),
 
+                  // Divider
                   Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 20),
+                    child: const Divider(color: kButtonColor, height: 1),
+                  ),
+                  /*Container(
                     margin: const EdgeInsets.all(20),
                     child: InkWell(
                       splashColor: kBaseColor,
@@ -234,7 +237,7 @@ class SettingMainPage extends GetView<SettingMainController> {
                         ),
                       ),
                     ),
-                  ),
+                  ),*/
                 ],
               ),
 

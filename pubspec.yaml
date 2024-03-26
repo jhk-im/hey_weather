@@ -33,6 +33,10 @@ dependencies:
   csv: ^5.1.1
   xml2json: ^6.2.2
   xml: ^6.5.0
+  device_info: ^2.0.3
+  package_info: ^2.0.2
+  url_launcher: ^6.2.5
+  ios_utsname_ext: ^2.3.0
 
 dev_dependencies:
   flutter_test:

@@ -19,7 +19,7 @@ class AddressPage extends GetView<AddressController> {
       builder: (context) {
         return Scaffold(
           body: SafeArea(
-            child: Obx(() => Stack(
+            child: Stack(
               children: [
                 // 헤더, 검색 필드, 아이템 리스트
                 Column(
@@ -70,11 +70,11 @@ class AddressPage extends GetView<AddressController> {
                               child: Row(
                                 children: [
                                   const Spacer(),
-                                  HeyText.body(
+                                  Obx(() => HeyText.body(
                                     controller.isEditMode ? 'done'.tr : 'edit'.tr,
                                     color: kTextDisabledColor,
                                     fontSize: kFont18,
-                                  ),
+                                  )),
                                 ],
                               ),
                             ),
@@ -117,9 +117,27 @@ class AddressPage extends GetView<AddressController> {
                       ),
                     ),
 
-                    // 현재 위치
-                    if (!controller.isLocationPermission) ... {
-                      InkWell(
+                    // 현재 위치 
+                    Obx(() => Visibility(
+                      visible: controller.isLocationPermission,
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                          children: [
+                            HeyWeatherAddressCard(
+                              address: controller.currentAddress,
+                              isCurrentLocation: true,
+                              onSelectAddress: controller.selectAddress,
+                            ),
+                          ],
+                        ),
+                      ),
+                    )),
+                    
+                    // 현재 위치 - 위치 권한
+                    Obx(() => Visibility(
+                      visible: !controller.isLocationPermission,
+                      child: InkWell(
                         splashColor: kBaseColor,
                         highlightColor: Colors.transparent,
                         hoverColor: Colors.transparent,
@@ -141,21 +159,7 @@ class AddressPage extends GetView<AddressController> {
                           ),
                         ),
                       ),
-                    } else ... {
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Column(
-                          children: [
-                            HeyWeatherAddressCard(
-                              address: controller.currentAddress,
-                              // isEditMode: controller.isEditMode,
-                              isCurrentLocation: true,
-                              onSelectAddress: controller.selectAddress,
-                            ),
-                          ],
-                        ),
-                      ),
-                    },
+                    )),
 
                     // Divider
                     Container(
@@ -164,7 +168,7 @@ class AddressPage extends GetView<AddressController> {
                     ),
 
                     Expanded(
-                      child: ReorderableListView(
+                      child: Obx(() => ReorderableListView(
                         buildDefaultDragHandles: controller.isEditMode,
                         proxyDecorator: (widget, animation, proxy) {
                           return widget;
@@ -176,27 +180,32 @@ class AddressPage extends GetView<AddressController> {
                           final item = controller.addressList.removeAt(oldIndex);
                           controller.addressList.insert(newIndex, item);
                         },
+                        // onReorderStart: (index) {
+                        //   controller.changeEditStatus(1);
+                        // },
+                        // onReorderEnd: (index) {
+                        //   controller.changeEditStatus(2);
+                        // },
                         children: List.generate(controller.addressList.length, (index) {
-                            return Container(
-                              key: ValueKey(controller.addressList[index]),
-                              margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                              child: HeyWeatherAddressCard(
-                                address: controller.addressList[index],
-                                isEditMode: controller.isEditMode,
-                                onSelectAddress: controller.selectAddress,
-                                onRemoveAddress: controller.removeAddress,
-                              ),
-                            );
-                          },
+                          return Container(
+                            key: ValueKey(controller.addressList[index]),
+                            margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                            child: HeyWeatherAddressCard(
+                              address: controller.addressList[index],
+                              status: controller.editStatus,
+                              onSelectAddress: controller.selectAddress,
+                              onRemoveAddress: controller.removeAddress,
+                            ),
+                          );
+                        },
                         ),
-                      ),
+                      )),
                     ),
-
                   ],
                 ),
 
                 // 검색 리스트
-                Visibility(
+                Obx(() => Visibility(
                   visible: controller.searchAddressList.isNotEmpty,
                   child: Container(
                     width: double.maxFinite,
@@ -240,11 +249,11 @@ class AddressPage extends GetView<AddressController> {
                       },
                     ),
                   ),
-                ),
+                )),
 
-                LoadingWidget(controller.isLoading),
+                Obx(() => LoadingWidget(controller.isLoading)),
               ],
-            )),
+            ),
           ),
         );
       },

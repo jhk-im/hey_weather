@@ -644,6 +644,10 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   Future updateUserMyWeather(List<String> idList, {bool isUpdate = false}) async {
     await _repository.updateUserMyWeather(idList);
 
+    if(!_myWeatherList.contains('empty')) {
+      _myWeatherList.add('empty');
+    }
+
     if (idList.isEmpty) {
       editToggle(false);
     }

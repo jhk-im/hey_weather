@@ -272,14 +272,17 @@ class HeyBottomSheet {
       kWeatherCardFeel,
       kWeatherCardWind,
       kWeatherCardSun,
-      kWeatherCardUltraviolet
+      kWeatherCardUltraviolet,
+      'empty'
     ];
 
     if (idList.isNotEmpty) {
       for (var id in idList) {
-        weatherInitMap[id] = false;
-        weatherSelectMap[id] = true;
-        weatherIdList.remove(id);
+        if (id != 'empty') {
+          weatherInitMap[id] = false;
+          weatherSelectMap[id] = true;
+          weatherIdList.remove(id);
+        }
       }
     }
 

@@ -28,6 +28,9 @@ class AddressController extends GetxController with WidgetsBindingObserver {
   final RxBool _isEditMode = false.obs;
   bool get isEditMode => _isEditMode.value;
 
+  int get editStatus => _editStatus.value;
+  final RxInt _editStatus = 0.obs;
+
   final RxBool _isLocationPermission = false.obs;
   bool get isLocationPermission => _isLocationPermission.value;
 
@@ -130,6 +133,10 @@ class AddressController extends GetxController with WidgetsBindingObserver {
   }
 
   /// User Interaction
+  changeEditStatus(int status) {
+    _editStatus(status);
+  }
+
   textFieldListener(String text) {
     _deBouncer.add(text);
   }
@@ -174,6 +181,7 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     _isEditMode(!_isEditMode.value);
 
     if (!isEditMode) {
+      _editStatus(3);
       _isUpdated(true);
       final idList = addressList.map((element) => element.id ?? '').toList();
       await _repository.updateUserAddressEditIdList(idList);
@@ -181,6 +189,10 @@ class AddressController extends GetxController with WidgetsBindingObserver {
       final recent = addressList.where((e) => e.id != kCurrentLocationId).toList();
       recent.sort((a, b) => DateTime.parse(b.createDateTime ?? '').compareTo(DateTime.parse(a.createDateTime ?? '')));
       addressList[addressList.indexOf(recent.first)].isRecent = true;
+    } else {
+      _editStatus(1);
+      await Future.delayed(const Duration(milliseconds: 500));
+      _editStatus(2);
     }
   }
 

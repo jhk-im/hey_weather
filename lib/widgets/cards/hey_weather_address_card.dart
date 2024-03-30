@@ -12,9 +12,9 @@ class HeyWeatherAddressCard extends StatefulWidget {
   const HeyWeatherAddressCard({
     super.key,
     this.address,
-    this.isEditMode = false,
     this.isCurrentLocation = false,
     required this.onSelectAddress,
+    this.status = 0,
     this.onRemoveAddress,
   });
 
@@ -22,7 +22,8 @@ class HeyWeatherAddressCard extends StatefulWidget {
   final Function onSelectAddress;
   final Function? onRemoveAddress;
   final bool isCurrentLocation;
-  final bool isEditMode;
+  final int status;
+
 
   @override
   State<HeyWeatherAddressCard> createState() => _HeyWeatherAddressCardState();
@@ -33,20 +34,46 @@ class _HeyWeatherAddressCardState extends State<HeyWeatherAddressCard> {
   Widget build(BuildContext context) {
     final isFahrenheit = false.obs;
     isFahrenheit(SharedPreferencesUtil().getBool(kFahrenheit));
+    RxInt status = widget.status.obs; // 0 -> none, 1 -> edit start, 2 -> drag, 3 -> edit done
+
+    RxDouble rxWidth;
+    if (!widget.isCurrentLocation) {
+      switch (status.value) {
+        case 1 :
+          rxWidth = 0.0.obs;
+          Future.delayed(const Duration(milliseconds: 50), () {
+            rxWidth(40);
+          });
+        case 2 : // drag
+          rxWidth = 40.0.obs;
+        case 3 : // edit done
+          rxWidth = 40.0.obs;
+          Future.delayed(const Duration(milliseconds: 50), () {
+            status(0);
+            rxWidth(0);
+          });
+        default : // none
+          rxWidth = 0.0.obs;
+      }
+    } else {
+      rxWidth = 0.0.obs;
+    }
 
     return Row(
       children: [
-        if (!widget.isCurrentLocation && widget.isEditMode) ... {
-          GestureDetector(
+        AnimatedSize(
+          duration: const Duration(milliseconds: 250),
+          child: GestureDetector(
             onTap: () {
               widget.onRemoveAddress?.call(widget.address);
             },
-            child: Padding(
+            child: Obx(() => Container(
               padding: const EdgeInsets.only(right: 16),
+              width: rxWidth.value,
               child: SvgUtils.icon(context, 'circle_minus'),
-            ),
+            )),
           ),
-        },
+        ),
 
         Expanded(
           child: GestureDetector(
@@ -63,10 +90,10 @@ class _HeyWeatherAddressCardState extends State<HeyWeatherAddressCard> {
                   width: 1, // 외곽선 두께
                 ),
               ),
-              child: Column(
+              child: Obx(() => Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (!widget.isEditMode) ... {
+                  if (status.value == 0) ... {
                     Container(
                       height: 27,
                       margin: const EdgeInsets.only(right: 24),
@@ -123,7 +150,7 @@ class _HeyWeatherAddressCardState extends State<HeyWeatherAddressCard> {
                         color: kTextPointColor,
                         fontSize: kFont28,
                       ),
-                      if (!widget.isCurrentLocation && widget.isEditMode) ... {
+                      if (!widget.isCurrentLocation && status.value > 0) ... {
                         Container(
                           margin: const EdgeInsets.symmetric(horizontal: 16),
                           child: SvgUtils.icon(context, 'drag'),
@@ -134,7 +161,7 @@ class _HeyWeatherAddressCardState extends State<HeyWeatherAddressCard> {
                     ],
                   ),
                 ],
-              ),
+              )),
             ),
           ),
         ),

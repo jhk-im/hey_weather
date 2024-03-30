@@ -310,14 +310,15 @@ class HomePage extends GetView<HomeController> {
           padding: const EdgeInsets.only(left: 10, top: 24, bottom: 12, right: 20),
           child: controller.isEditMode ? Row(
             children: [
-              if (controller.myWeatherList.length < 10) ... {
-                const SizedBox(width: 10),
-                HeyElevatedButton.secondaryIcon2(
+              const SizedBox(width: 10),
+              Visibility(
+                visible: controller.myWeatherList.length < 10,
+                child: HeyElevatedButton.secondaryIcon2(
                   context,
                   width: 58,
                   onPressed: controller.showAddWeather,
                 ),
-              },
+              ),
               const Spacer(),
               HeyElevatedButton.secondaryText2(
                 text: 'done'.tr,

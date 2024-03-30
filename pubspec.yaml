@@ -37,6 +37,7 @@ dependencies:
   package_info: ^2.0.2
   url_launcher: ^6.2.5
   ios_utsname_ext: ^2.3.0
+  flutter_shake_animated: ^0.0.5
 
 dev_dependencies:
   flutter_test:

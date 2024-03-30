@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shake_animated/flutter_shake_animated.dart';
 import 'package:get/get.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_text.dart';
@@ -28,7 +29,6 @@ class HeyWeatherDustCard extends StatefulWidget {
 
 class _HeyWeatherDustCardState extends State<HeyWeatherDustCard> {
   final id = kWeatherCardDust;
-  final status = 0.obs; // 0 -> default, 1 -> edit, 2 -> select, 3 -> delete
 
   // Colors
   final Map<String, Color> stateColors = {
@@ -47,10 +47,11 @@ class _HeyWeatherDustCardState extends State<HeyWeatherDustCard> {
 
   @override
   Widget build(BuildContext context) {
+    RxInt status = widget.buttonStatus.obs; // 0 -> default, 1 -> edit, 2 -> select, 3 -> delete
+
     double editWidth = (MediaQuery.of(context).size.width / 2) - 28;
     double width = (MediaQuery.of(context).size.width) - 28;
     double height = 170;
-    status(widget.buttonStatus);
     widget.setHeight?.call(id, height);
 
     String fineState = stateList[0];
@@ -71,6 +72,13 @@ class _HeyWeatherDustCardState extends State<HeyWeatherDustCard> {
       ultraState = stateList[3];
     }
 
+    RxDouble rxWidth;
+    if (status.value == 3) {
+      rxWidth = editWidth.obs;
+    } else {
+      rxWidth = width.obs;
+    }
+
     return Obx(() => Material(
       color: Colors.transparent,
       child: GestureDetector(
@@ -82,87 +90,92 @@ class _HeyWeatherDustCardState extends State<HeyWeatherDustCard> {
           }
           widget.onSelect?.call(id, status.value == 2);
         } : null,
-        child: Container(
-          width: status.value == 3 ? editWidth : width,
-          height: height,
-          padding: EdgeInsets.only(top: 20, bottom: 20, left: 24, right: status.value == 0 ? 24 : 20),
-          decoration: BoxDecoration(
-            color: kBaseColor,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: status.value == 2 ? kPrimaryDarkerColor : kBaseColor,
-              width: 1, // 외곽선 두께
-            ),
-          ),
-          child: Stack(
-            children: [
-              Column(
-                children: [
-                  // icon, title
-                  Row(
-                    children: [
-                      SvgUtils.icon(
-                        context,
-                        'dust',
-                        width: 20,
-                        height: 20,
-                      ),
-                      const SizedBox(width: 6),
-                      HeyText.bodySemiBold(
-                        'dust'.tr,
-                        fontSize: kFont16,
-                        color: kTextDisabledColor,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  Expanded(
-                    child: status.value == 3 ? SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: SizedBox(
-                        width: 500,
-                        child: contents(fineState, ultraState),
-                      ),
-                    ) : contents(fineState, ultraState),
-                  ),
-                ],
+        child: ShakeWidget(
+          autoPlay: status.value == 3,
+          duration: const Duration(milliseconds: 1200),
+          shakeConstant: ShakeLittleConstant1(),
+          child: Container(
+            width: rxWidth.value,
+            height: height,
+            padding: EdgeInsets.only(top: 20, bottom: 20, left: 24, right: status.value == 0 ? 24 : 20),
+            decoration: BoxDecoration(
+              color: kBaseColor,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: status.value == 2 ? kPrimaryDarkerColor : kBaseColor,
+                width: 1, // 외곽선 두께
               ),
-
-              Visibility(
-                visible: status.value > 0,
-                child: Container(
-                  color: status.value == 1 || status.value == 3 ? Colors.transparent : kBaseColor.withOpacity(0.5),
-                  child: Column(
-                    children: [
-                      InkWell(
-                        splashColor: kBaseColor,
-                        highlightColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        onTap: status.value == 3 ? () {
-                          widget.onRemove?.call(id);
-                        } : null,
-                        child: Row(
-                          children: [
-                            const Spacer(),
-                            SvgUtils.icon(
-                              context,
-                              status.value == 1
-                                  ? 'circle_check'
-                                  : status.value == 2
-                                  ? 'circle_check_selected'
-                                  : 'circle_minus',
-                              width: 24,
-                              height: 24,
-                            ),
-                          ],
+            ),
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    // icon, title
+                    Row(
+                      children: [
+                        SvgUtils.icon(
+                          context,
+                          'dust',
+                          width: 20,
+                          height: 20,
                         ),
-                      ),
-                      const Spacer(),
-                    ],
+                        const SizedBox(width: 6),
+                        HeyText.bodySemiBold(
+                          'dust'.tr,
+                          fontSize: kFont16,
+                          color: kTextDisabledColor,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    Expanded(
+                      child: status.value == 3 ? SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: SizedBox(
+                          width: 500,
+                          child: contents(fineState, ultraState),
+                        ),
+                      ) : contents(fineState, ultraState),
+                    ),
+                  ],
+                ),
+
+                Visibility(
+                  visible: status.value > 0,
+                  child: Container(
+                    color: status.value == 1 || status.value == 3 ? Colors.transparent : kBaseColor.withOpacity(0.5),
+                    child: Column(
+                      children: [
+                        InkWell(
+                          splashColor: kBaseColor,
+                          highlightColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          onTap: status.value == 3 ? () {
+                            widget.onRemove?.call(id);
+                          } : null,
+                          child: Row(
+                            children: [
+                              const Spacer(),
+                              SvgUtils.icon(
+                                context,
+                                status.value == 1
+                                    ? 'circle_check'
+                                    : status.value == 2
+                                    ? 'circle_check_selected'
+                                    : 'circle_minus',
+                                width: 24,
+                                height: 24,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Spacer(),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

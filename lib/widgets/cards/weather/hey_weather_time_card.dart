@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shake_animated/flutter_shake_animated.dart';
 import 'package:get/get.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_text.dart';
@@ -41,22 +42,31 @@ class HeyWeatherTimeCard extends StatefulWidget {
 
 class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
   final id = kWeatherCardTime;
-  final status = 0.obs; // 0 -> default, 1 -> edit, 2 -> select, 3 -> delete
   final isFahrenheit = false.obs;
 
   @override
   Widget build(BuildContext context) {
+    RxInt status = widget.buttonStatus.obs; // 0 -> default, 1 -> edit, 2 -> select, 3 -> delete
+    int maxTemperatureValue = SharedPreferencesUtil().getInt(kTodayMaxTemperature);
+    int minTemperatureValue = SharedPreferencesUtil().getInt(kTodayMinTemperature);
+    isFahrenheit(SharedPreferencesUtil().getBool(kFahrenheit));
+
     double editWidth = (MediaQuery.of(context).size.width / 2) - 28;
     double editHeight = 170;
     double width = (MediaQuery.of(context).size.width) - 28;
     double height = 286;
-    status(widget.buttonStatus);
-    widget.setHeight?.call(id, height);
-
-    int maxTemperatureValue = SharedPreferencesUtil().getInt(kTodayMaxTemperature);
-    int minTemperatureValue = SharedPreferencesUtil().getInt(kTodayMinTemperature);
-
-    isFahrenheit(SharedPreferencesUtil().getBool(kFahrenheit));
+    RxDouble rxWidth;
+    RxDouble rxHeight;
+    RxBool isContentsVisible = false.obs;
+    if (status.value == 3) {
+      rxWidth = editWidth.obs;
+      rxHeight = editHeight.obs;
+    } else {
+      rxWidth = width.obs;
+      rxHeight = height.obs;
+      isContentsVisible(true);
+    }
+    widget.setHeight?.call(id, rxHeight.value);
 
     return Obx(() => Material(
       color: Colors.transparent,
@@ -69,159 +79,164 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
           }
           widget.onSelect?.call(id, status.value == 2);
         } : null,
-        child: Container(
-          width: status.value == 3 ? editWidth : width,
-          height: status.value == 3 ? editHeight : height,
-          padding: const EdgeInsets.only(top: 20, bottom: 20),
-          decoration: BoxDecoration(
-            color: kBaseColor,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: status.value == 2 ? kPrimaryDarkerColor : kBaseColor,
-              width: 1, // 외곽선 두께
-            ),
-          ),
-          child: Stack(
-            alignment: AlignmentDirectional.centerEnd,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // icon, title
-                  Container(
-                    margin: const EdgeInsets.only(left: 24),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: status.value == 3 ? const EdgeInsets.only(bottom: 24) : EdgeInsets.zero,
-                          child: SvgUtils.icon(
-                            context,
-                            'weather_by_time',
-                            width: 20,
-                            height: 20,
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                        HeyText.bodySemiBold(
-                          status.value == 3 ? 'weather_by_time_edit'.tr : 'weather_by_time'.tr,
-                          fontSize: kFont16,
-                          color: kTextDisabledColor,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  if (status.value != 3) ... {
-                    Expanded(
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: widget.skyStatusList.length,
-                        itemBuilder: (context, index) {
-                          String temperature = '';
-
-                          String time = widget.temperatureList[index].fcstTime ?? '0000';
-                          int currentTime = int.parse(time);
-                          String timeText = '';
-                          if (index > 0) {
-                            temperature = widget.temperatureList[index].fcstValue ?? '';
-                            timeText = Utils.convertToTimeFormat(time);
-                          } else {
-                            temperature = widget.currentTemperature.toString();
-                          }
-
-                          int rainPercent = int.parse(widget.rainPercentList[index].fcstValue ?? '0');
-                          int rainIndex = int.parse(widget.rainStatusList[index].fcstValue ?? '0');
-                          String rainStatus = widget.rainStatusList[index].weatherCategory?.codeValues?[rainIndex] ?? '없음';
-                          int skyIndex = int.parse(widget.skyStatusList[index].fcstValue ?? '0');
-                          String skyStatus = widget.skyStatusList[index].weatherCategory?.codeValues?[skyIndex] ?? '';
-
-                          int iconIndex = Utils.getIconIndex(rainStatus: rainStatus, skyStatus: skyStatus, currentTime: currentTime, sunrise: widget.sunrise, sunset: widget.sunset);
-
-                          double progress = ((int.parse(temperature) - minTemperatureValue) / (maxTemperatureValue - minTemperatureValue));
-
-                          return _weatherItem(
-                            temperature: temperature,
-                            progress: progress,
-                            iconName: '${kWeatherIconList[iconIndex]}_on',
-                            rainPercent: rainPercent,
-                            timeText: timeText,
-                            index: index,
-                          );
-                        },
-                      ),
-                    ),
-                  },
-                ],
+        child: ShakeWidget(
+          autoPlay: status.value == 3,
+          duration: const Duration(milliseconds: 1000),
+          shakeConstant: ShakeLittleConstant1(),
+          child: Container(
+            width: rxWidth.value,
+            height: rxHeight.value,
+            padding: const EdgeInsets.only(top: 20, bottom: 20),
+            decoration: BoxDecoration(
+              color: kBaseColor,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: status.value == 2 ? kPrimaryDarkerColor : kBaseColor,
+                width: 1, // 외곽선 두께
               ),
-
-              SizedBox(
-                width: double.maxFinite,
-                child: Row(
+            ),
+            child: Stack(
+              alignment: AlignmentDirectional.centerEnd,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // icon, title
                     Container(
-                      width: 50,
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.centerRight,
-                          end: Alignment.centerLeft,
-                          colors: [kWidgetGradientLeft, kWidgetGradientRight],
-                        ),
+                      margin: const EdgeInsets.only(left: 24),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: status.value == 3 ? const EdgeInsets.only(bottom: 24) : EdgeInsets.zero,
+                            child: SvgUtils.icon(
+                              context,
+                              'weather_by_time',
+                              width: 20,
+                              height: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          HeyText.bodySemiBold(
+                            status.value == 3 ? 'weather_by_time_edit'.tr : 'weather_by_time'.tr,
+                            fontSize: kFont16,
+                            color: kTextDisabledColor,
+                          ),
+                        ],
                       ),
                     ),
+                    const SizedBox(height: 20),
 
-                    const Spacer(),
+                    if (isContentsVisible.value) ... {
+                      Expanded(
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: widget.skyStatusList.length,
+                          itemBuilder: (context, index) {
+                            String temperature = '';
 
-                    Container(
-                      width: 50,
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
-                          colors: [kWidgetGradientLeft, kWidgetGradientRight],
+                            String time = widget.temperatureList[index].fcstTime ?? '0000';
+                            int currentTime = int.parse(time);
+                            String timeText = '';
+                            if (index > 0) {
+                              temperature = widget.temperatureList[index].fcstValue ?? '';
+                              timeText = Utils.convertToTimeFormat(time);
+                            } else {
+                              temperature = widget.currentTemperature.toString();
+                            }
+
+                            int rainPercent = int.parse(widget.rainPercentList[index].fcstValue ?? '0');
+                            int rainIndex = int.parse(widget.rainStatusList[index].fcstValue ?? '0');
+                            String rainStatus = widget.rainStatusList[index].weatherCategory?.codeValues?[rainIndex] ?? '없음';
+                            int skyIndex = int.parse(widget.skyStatusList[index].fcstValue ?? '0');
+                            String skyStatus = widget.skyStatusList[index].weatherCategory?.codeValues?[skyIndex] ?? '';
+
+                            int iconIndex = Utils.getIconIndex(rainStatus: rainStatus, skyStatus: skyStatus, currentTime: currentTime, sunrise: widget.sunrise, sunset: widget.sunset);
+
+                            double progress = ((int.parse(temperature) - minTemperatureValue) / (maxTemperatureValue - minTemperatureValue));
+
+                            return _weatherItem(
+                              temperature: temperature,
+                              progress: progress,
+                              iconName: '${kWeatherIconList[iconIndex]}_on',
+                              rainPercent: rainPercent,
+                              timeText: timeText,
+                              index: index,
+                            );
+                          },
                         ),
                       ),
-                    ),
+                    },
                   ],
                 ),
-              ),
 
-              Visibility(
-                visible: status.value > 0,
-                child: Container(
-                  color: status.value == 1 || status.value == 3 ? Colors.transparent : kBaseColor.withOpacity(0.5),
-                  padding: const EdgeInsets.only(right: 20),
-                  child: Column(
+                SizedBox(
+                  width: double.maxFinite,
+                  child: Row(
                     children: [
-                      InkWell(
-                        splashColor: kBaseColor,
-                        highlightColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        onTap: status.value == 3 ? () {
-                          widget.onRemove?.call(id);
-                        } : null,
-                        child: Row(
-                          children: [
-                            const Spacer(),
-                            SvgUtils.icon(
-                              context,
-                              status.value == 1
-                                  ? 'circle_check'
-                                  : status.value == 2
-                                  ? 'circle_check_selected'
-                                  : 'circle_minus',
-                              width: 24,
-                              height: 24,
-                            ),
-                          ],
+                      Container(
+                        width: 50,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.centerRight,
+                            end: Alignment.centerLeft,
+                            colors: [kWidgetGradientLeft, kWidgetGradientRight],
+                          ),
                         ),
                       ),
+
                       const Spacer(),
+
+                      Container(
+                        width: 50,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: [kWidgetGradientLeft, kWidgetGradientRight],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
-              ),
-            ],
+
+                Visibility(
+                  visible: status.value > 0,
+                  child: Container(
+                    color: status.value == 1 || status.value == 3 ? Colors.transparent : kBaseColor.withOpacity(0.5),
+                    padding: const EdgeInsets.only(right: 20),
+                    child: Column(
+                      children: [
+                        InkWell(
+                          splashColor: kBaseColor,
+                          highlightColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          onTap: status.value == 3 ? () {
+                            widget.onRemove?.call(id);
+                          } : null,
+                          child: Row(
+                            children: [
+                              const Spacer(),
+                              SvgUtils.icon(
+                                context,
+                                status.value == 1
+                                    ? 'circle_check'
+                                    : status.value == 2
+                                    ? 'circle_check_selected'
+                                    : 'circle_minus',
+                                width: 24,
+                                height: 24,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Spacer(),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

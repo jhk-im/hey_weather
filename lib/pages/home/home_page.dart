@@ -28,7 +28,7 @@ class HomePage extends GetView<HomeController> {
     double statusBarHeight = MediaQuery.of(context).padding.top;
     double emptyHeight = (MediaQuery.of(context).size.height) - 176;
     return Scaffold(
-      body: Obx(() => RefreshIndicator(
+      body: RefreshIndicator(
         color: Colors.white,
         backgroundColor: kPrimaryDarkerColor,
         onRefresh: () async {
@@ -42,7 +42,7 @@ class HomePage extends GetView<HomeController> {
                 SizedBox(height: statusBarHeight),
 
                 // Header
-                Padding(
+                Obx(() => Padding(
                   padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
                   child: Row(
                     children: [
@@ -104,10 +104,10 @@ class HomePage extends GetView<HomeController> {
                       ),
                     ],
                   ),
-                ),
+                )),
 
                 // MY, ALL, 편집
-                _tab(context, controller.scrollY > 395),
+                Obx(() => _tab(context, controller.scrollY > 395)),
 
                 // Content
                 Expanded(
@@ -117,8 +117,9 @@ class HomePage extends GetView<HomeController> {
                     child: Column(
                       children: [
                         // Location Permission
-                        if (!controller.isLocationPermission) ... {
-                          Container(
+                        Obx(() => Visibility(
+                          visible: !controller.isLocationPermission,
+                          child: Container(
                             margin: const EdgeInsets.only(top: 12, left: 20, right: 20),
                             child: InkWell(
                               splashColor: kBaseColor,
@@ -142,10 +143,10 @@ class HomePage extends GetView<HomeController> {
                               ),
                             ),
                           ),
-                        },
+                        )),
 
                         // Today Card
-                        Container(
+                        Obx(() => Container(
                           margin: const EdgeInsets.only(top: 12, left: 20, right: 20),
                           child: HeyWeatherHomeCard(
                             homeWeatherStatusText: controller.homeWeatherStatusText,
@@ -159,7 +160,7 @@ class HomePage extends GetView<HomeController> {
                             homeUltraFineDust: controller.ultraFineDust,
                             isSkeleton: controller.isSkeleton,
                           ),
-                        ),
+                        )),
 
                         // Contents
                         Container(
@@ -169,101 +170,104 @@ class HomePage extends GetView<HomeController> {
                           child: Column(
                             children: [
                               // MY, ALL, 편집
-                              _tab(context, controller.scrollY < 395),
-                              if (!controller.isAllTab) ... {
-                                if (controller.myWeatherList.length < 2) ... {
-                                  // Empty
-                                  Container(
-                                    width: double.maxFinite,
-                                    height: emptyHeight,
-                                    color: kHomeBottomColor,
-                                    child: Center(
-                                      child: Column(
-                                        children: [
-                                          const SizedBox(height: 50),
-                                          HeyElevatedButton.secondaryIcon2(
-                                            context,
-                                            width: 58,
-                                            onPressed: controller.showAddWeather,
-                                          ),
-                                          const SizedBox(height: 20),
-                                          HeyText.subHeadline(
-                                            'home_add_desc'.tr,
-                                            color: kTextDisabledColor,
-                                          )
-                                        ],
-                                      ),
+                              Obx(() => _tab(context, controller.scrollY < 395)),
+                              // Empty
+                              Obx(() => Visibility(
+                                visible: !controller.isAllTab && controller.myWeatherList.length < 2,
+                                child: Container(
+                                  width: double.maxFinite,
+                                  height: emptyHeight,
+                                  color: kHomeBottomColor,
+                                  child: Center(
+                                    child: Column(
+                                      children: [
+                                        const SizedBox(height: 50),
+                                        HeyElevatedButton.secondaryIcon2(
+                                          context,
+                                          width: 58,
+                                          onPressed: controller.showAddWeather,
+                                        ),
+                                        const SizedBox(height: 20),
+                                        HeyText.subHeadline(
+                                          'home_add_desc'.tr,
+                                          color: kTextDisabledColor,
+                                        )
+                                      ],
                                     ),
                                   ),
-                                } else ... {
-                                  // My
-                                  HeyReorderWrap(
-                                    spacing: 15,
-                                    runSpacing: 15,
-                                    padding: const EdgeInsets.only(top: 16, bottom: 24, left: 20, right: 20),
-                                    scrollPhysics: const NeverScrollableScrollPhysics(),
-                                    scrollAnimationDuration: const Duration(milliseconds: 150),
-                                    reorderAnimationDuration: const Duration(milliseconds: 250),
-                                    enableReorder: controller.isEditMode,
-                                    buildDraggableFeedback: (context, constraints, widget) {
-                                      controller.updateScroll();
-                                      return widget;
-                                    },
-                                    onReorder: (oldIndex, newIndex) {
-                                      final item = controller.myWeatherList.removeAt(oldIndex);
-                                      if (controller.myWeatherList.length - 1 >= newIndex) {
-                                        controller.myWeatherList.insert(newIndex, item);
+                                ),
+                              )),
+                              // My
+                              Obx(() => Visibility(
+                                visible: !controller.isAllTab && controller.myWeatherList.length >= 2,
+                                child: HeyReorderWrap(
+                                  spacing: 15,
+                                  runSpacing: 15,
+                                  padding: const EdgeInsets.only(top: 16, bottom: 24, left: 20, right: 20),
+                                  scrollPhysics: const NeverScrollableScrollPhysics(),
+                                  scrollAnimationDuration: const Duration(milliseconds: 100),
+                                  reorderAnimationDuration: const Duration(milliseconds: 100),
+                                  enableReorder: controller.isEditMode,
+                                  buildDraggableFeedback: (context, constraints, widget) {
+                                    controller.updateScroll();
+                                    return widget;
+                                  },
+                                  onReorder: (oldIndex, newIndex) {
+                                    final item = controller.myWeatherList.removeAt(oldIndex);
+                                    if (controller.myWeatherList.length - 1 >= newIndex) {
+                                      controller.myWeatherList.insert(newIndex, item);
+                                    } else {
+                                      controller.myWeatherList.add(item);
+                                    }
+                                    controller.updateUserMyWeather(controller.myWeatherList);
+                                  },
+                                  onReorderStarted: (index) {
+                                    controller.setSelectIndex(index, controller.myWeatherList[index]);
+                                  },
+                                  onUpdateReorder: (moveIndex) {
+                                    if (moveIndex != controller.currentIndex) {
+                                      final scrollPosition = controller.scrollController.position.pixels;
+                                      var toScroll = 396.0;
+                                      if (controller.currentIndex > moveIndex) {
+                                        toScroll = scrollPosition - controller.selectHeight;
                                       } else {
-                                        controller.myWeatherList.add(item);
+                                        toScroll = scrollPosition + controller.selectHeight;
                                       }
-                                      controller.updateUserMyWeather(controller.myWeatherList);
-                                    },
-                                    onReorderStarted: (index) {
-                                      controller.setSelectIndex(index, controller.myWeatherList[index]);
-                                    },
-                                    onUpdateReorder: (moveIndex) {
-                                      if (moveIndex != controller.currentIndex) {
-                                        final scrollPosition = controller.scrollController.position.pixels;
-                                        var toScroll = 396.0;
-                                        if (controller.currentIndex > moveIndex) {
-                                          toScroll = scrollPosition - controller.selectHeight;
-                                        } else {
-                                          toScroll = scrollPosition + controller.selectHeight;
-                                        }
-                                        controller.setCurrentIndex(moveIndex);
-                                        if (toScroll < 396) toScroll = 396;
-                                        controller.updateScroll(isUpdate: true, toScroll: toScroll);
-                                      }
-                                    },
-                                    children: List.generate(controller.myWeatherList.length, (index) {
-                                      Map<String, String> weatherNameMap = {
-                                        kWeatherCardTime: '시간대별 날씨',
-                                        kWeatherCardWeek: '주간 날씨',
-                                        kWeatherCardDust: '대기질',
-                                        kWeatherCardRain: '강수',
-                                        kWeatherCardHumidity: '습도',
-                                        kWeatherCardFeel: '체감온도',
-                                        kWeatherCardWind: '바람',
-                                        kWeatherCardSun: '일출일몰',
-                                        kWeatherCardUltraviolet: '자외선',
-                                      };
-                                      return _myWeatherWidgets(
-                                        controller.myWeatherList[index],
-                                        controller.isEditMode ? 3 : 0,
-                                        onRemove: (id) {
-                                          controller.removeUserMyWeather(
-                                            'dialog_delete_weather_title'.trParams({'name' : weatherNameMap[id] ?? ''}),
-                                            id,
-                                          );
-                                        },
-                                      );
-                                    }),
-                                  ),
-                                },
-                              } else ... {
-                                // ALL
-                                _allWeatherWidgets(),
-                              },
+                                      controller.setCurrentIndex(moveIndex);
+                                      if (toScroll < 396) toScroll = 396;
+                                      controller.updateScroll(isUpdate: true, toScroll: toScroll);
+                                    }
+                                  },
+                                  children: List.generate(controller.myWeatherList.length, (index) {
+                                    Map<String, String> weatherNameMap = {
+                                      kWeatherCardTime: '시간대별 날씨',
+                                      kWeatherCardWeek: '주간 날씨',
+                                      kWeatherCardDust: '대기질',
+                                      kWeatherCardRain: '강수',
+                                      kWeatherCardHumidity: '습도',
+                                      kWeatherCardFeel: '체감온도',
+                                      kWeatherCardWind: '바람',
+                                      kWeatherCardSun: '일출일몰',
+                                      kWeatherCardUltraviolet: '자외선',
+                                    };
+                                    return _myWeatherWidgets(
+                                      controller.myWeatherList[index],
+                                      controller.isEditMode ? 3 : 0,
+                                      onRemove: (id) {
+                                        controller.removeUserMyWeather(
+                                          'dialog_delete_weather_title'.trParams({'name' : weatherNameMap[id] ?? ''}),
+                                          id,
+                                        );
+                                      },
+                                    );
+                                  }),
+                                ),
+                              )),
+                              // All
+                              Obx(() => Visibility(
+                                visible: controller.isAllTab,
+                                child: _allWeatherWidgets(),
+                              )),
                             ],
                           ),
                         ),
@@ -274,13 +278,13 @@ class HomePage extends GetView<HomeController> {
               ],
             ),
 
-            Padding(
+            Obx(() => Padding(
               padding: EdgeInsets.only(top: statusBarHeight),
               child: LoadingWidget(controller.isLoading),
-            ),
+            )),
           ],
         ),
-      )),
+      ),
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shake_animated/flutter_shake_animated.dart';
 import 'package:get/get.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_text.dart';
@@ -79,139 +80,144 @@ class _HeyWeatherUltravioletCardState extends State<HeyWeatherUltravioletCard> {
           }
           widget.onSelect?.call(id, status.value == 2);
         } : null,
-        child: Container(
-          width: width,
-          height: 170,
-          padding: EdgeInsets.only(top: 20, bottom: 20, left: 24, right: status.value == 0 ? 24 : 20),
-          decoration: BoxDecoration(
-            color: kBaseColor,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: status.value == 2 ? kPrimaryDarkerColor : kBaseColor,
-              width: 1, // 외곽선 두께
-            ),
-          ),
-          child: Stack(
-            children: [
-              Column(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // icon, title
-                      Row(
-                        children: [
-                          SvgUtils.icon(
-                            context,
-                            'ultraviolet',
-                            width: 20,
-                            height: 20,
-                          ),
-                          const SizedBox(width: 6),
-                          HeyText.bodySemiBold(
-                            'ultraviolet'.tr,
-                            fontSize: kFont16,
-                            color: kTextDisabledColor,
-                          ),
-                        ],
-                      ),
-
-                      // status
-                      Container(
-                        margin: const EdgeInsets.only(top: 8),
-                        child: HeyText.subHeadlineSemiBold(
-                          stateList[stateIndex],
-                          color: stateColors[stateList[stateIndex]] ?? kTextPointColor,
-                        ),
-                      ),
-
-                      Container(
-                        margin: const EdgeInsets.only(top: 16, bottom: 8),
-                        child: HeyText.largeTitleBold(
-                          widget.ultraviolet.toString(),
-                          color: kTextPointColor,
-                        ),
-                      ),
-
-                      Stack(
-                        children: [
-                          Container(
-                            width: double.maxFinite,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              gradient: const LinearGradient(
-                                colors: [
-                                  kPrimaryDarkerColor,
-                                  kHeyGreenColor,
-                                  kSubColor,
-                                  kHeyOrangeColor,
-                                  kHeyRedColor,
-                                ],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            left: (progress / maxProgress) * (width - 50),
-                            child: GestureDetector(
-                              // onHorizontalDragUpdate: (details) {
-                              //   // 좌우 드래그 시 프로그레스 바 업데이트
-                              //   updateProgress(details.primaryDelta! / 200.0);
-                              // },
-                              child: Container(
-                                width: 8,
-                                height: 8,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
+        child: ShakeWidget(
+          autoPlay: status.value == 3,
+          duration: const Duration(milliseconds: 1800),
+          shakeConstant: ShakeLittleConstant1(),
+          child: Container(
+            width: width,
+            height: 170,
+            padding: EdgeInsets.only(top: 20, bottom: 20, left: 24, right: status.value == 0 ? 24 : 20),
+            decoration: BoxDecoration(
+              color: kBaseColor,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: status.value == 2 ? kPrimaryDarkerColor : kBaseColor,
+                width: 1, // 외곽선 두께
               ),
-
-              Visibility(
-                visible: status.value > 0,
-                child: Container(
-                  color: status.value == 1 || status.value == 3 ? Colors.transparent : kBaseColor.withOpacity(0.5),
-                  child: Column(
-                    children: [
-                      InkWell(
-                        splashColor: kBaseColor,
-                        highlightColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        onTap: status.value == 3 ? () {
-                          widget.onRemove?.call(id);
-                        } : null,
-                        child: Row(
+            ),
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // icon, title
+                        Row(
                           children: [
-                            const Spacer(),
                             SvgUtils.icon(
                               context,
-                              status.value == 1
-                                  ? 'circle_check'
-                                  : status.value == 2
-                                  ? 'circle_check_selected'
-                                  : 'circle_minus',
-                              width: 24,
-                              height: 24,
+                              'ultraviolet',
+                              width: 20,
+                              height: 20,
+                            ),
+                            const SizedBox(width: 6),
+                            HeyText.bodySemiBold(
+                              'ultraviolet'.tr,
+                              fontSize: kFont16,
+                              color: kTextDisabledColor,
                             ),
                           ],
                         ),
-                      ),
-                      const Spacer(),
-                    ],
+
+                        // status
+                        Container(
+                          margin: const EdgeInsets.only(top: 8),
+                          child: HeyText.subHeadlineSemiBold(
+                            stateList[stateIndex],
+                            color: stateColors[stateList[stateIndex]] ?? kTextPointColor,
+                          ),
+                        ),
+
+                        Container(
+                          margin: const EdgeInsets.only(top: 16, bottom: 8),
+                          child: HeyText.largeTitleBold(
+                            widget.ultraviolet.toString(),
+                            color: kTextPointColor,
+                          ),
+                        ),
+
+                        Stack(
+                          children: [
+                            Container(
+                              width: double.maxFinite,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    kPrimaryDarkerColor,
+                                    kHeyGreenColor,
+                                    kSubColor,
+                                    kHeyOrangeColor,
+                                    kHeyRedColor,
+                                  ],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              left: (progress / maxProgress) * (width - 50),
+                              child: GestureDetector(
+                                // onHorizontalDragUpdate: (details) {
+                                //   // 좌우 드래그 시 프로그레스 바 업데이트
+                                //   updateProgress(details.primaryDelta! / 200.0);
+                                // },
+                                child: Container(
+                                  width: 8,
+                                  height: 8,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+
+                Visibility(
+                  visible: status.value > 0,
+                  child: Container(
+                    color: status.value == 1 || status.value == 3 ? Colors.transparent : kBaseColor.withOpacity(0.5),
+                    child: Column(
+                      children: [
+                        InkWell(
+                          splashColor: kBaseColor,
+                          highlightColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          onTap: status.value == 3 ? () {
+                            widget.onRemove?.call(id);
+                          } : null,
+                          child: Row(
+                            children: [
+                              const Spacer(),
+                              SvgUtils.icon(
+                                context,
+                                status.value == 1
+                                    ? 'circle_check'
+                                    : status.value == 2
+                                    ? 'circle_check_selected'
+                                    : 'circle_minus',
+                                width: 24,
+                                height: 24,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Spacer(),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

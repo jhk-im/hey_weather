@@ -50,10 +50,6 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   final RxDouble _scrollY = 0.0.obs;
   double get scrollY => _scrollY.value;
 
-  // Drag
-  final RxBool _isDragMode = false.obs;
-  bool get isDragMode => _isDragMode.value;
-
   final RxInt _currentIndex = 0.obs;
   int get currentIndex => _currentIndex.value;
 

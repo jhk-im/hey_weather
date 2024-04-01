@@ -81,7 +81,7 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
         } : null,
         child: ShakeWidget(
           autoPlay: status.value == 3,
-          duration: const Duration(milliseconds: 1000),
+          duration: const Duration(milliseconds: 5000),
           shakeConstant: ShakeLittleConstant1(),
           child: Container(
             width: rxWidth.value,

@@ -92,7 +92,7 @@ class _HeyWeatherDustCardState extends State<HeyWeatherDustCard> {
         } : null,
         child: ShakeWidget(
           autoPlay: status.value == 3,
-          duration: const Duration(milliseconds: 1200),
+          duration: const Duration(milliseconds: 5200),
           shakeConstant: ShakeLittleConstant1(),
           child: Container(
             width: rxWidth.value,

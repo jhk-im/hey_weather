@@ -91,7 +91,6 @@ class SettingNotificationController extends GetxController with WidgetsBindingOb
   }
 
   notificationToggle(int index, UserNotification notification) async {
-    print(notification.id);
     final isOn = notification.isOn ?? false;
     notification.isOn = !isOn;
     await _repository.updateUserNotification(notification);
@@ -103,26 +102,72 @@ class SettingNotificationController extends GetxController with WidgetsBindingOb
   }
 
   removeNotification(UserNotification notification) async {
-    print(notification.id);
     await _repository.deleteUserNotification(notification.id ?? '');
     _notificationList.remove(notification);
   }
 
   createNotification(String dateTime) async {
-    String uuid = const Uuid().v4();
-    final newNotification = UserNotification();
-    newNotification.id = uuid;
-    newNotification.dateTime = dateTime;
-    newNotification.isOn = true;
-    await _repository.updateUserNotification(newNotification);
-    await _getNotificationList();
+    var checkNotification = notificationList.firstWhereOrNull((element) {
+     DateTime dateTime1 = DateTime.parse(element.dateTime ?? '');
+     DateTime dateTime2 = DateTime.parse(dateTime);
+     int hour1 = dateTime1.hour;
+     int hour2 = dateTime2.hour;
+     return hour1 == hour2;
+    });
+
+    if (checkNotification == null) {
+      String uuid = const Uuid().v4();
+      final newNotification = UserNotification();
+      newNotification.id = uuid;
+      newNotification.dateTime = dateTime;
+      newNotification.isOn = true;
+      await _repository.updateUserNotification(newNotification);
+      await _getNotificationList();
+    } else {
+      _showDialog();
+    }
   }
 
   updateNotification(int index, String updateDateTime, UserNotification notification) async {
-    notification.dateTime = updateDateTime;
-    await _repository.updateUserNotification(notification);
-    _notificationList[index] = notification;
-    _notificationList.sort((a, b) => DateTime.parse(a.dateTime ?? '').compareTo(DateTime.parse(b.dateTime ?? '')));
+    DateTime dateTime1 = DateTime.parse(notification.dateTime ?? '');
+    DateTime dateTime2 = DateTime.parse(updateDateTime);
+    int hour1 = dateTime1.hour;
+    int hour2 = dateTime2.hour;
+
+    if (hour1 == hour2) {
+      notification.dateTime = updateDateTime;
+      await _repository.updateUserNotification(notification);
+      _notificationList[index] = notification;
+      _notificationList.sort((a, b) => DateTime.parse(a.dateTime ?? '').compareTo(DateTime.parse(b.dateTime ?? '')));
+    } else {
+      var checkNotification = notificationList.firstWhereOrNull((element) {
+        DateTime dateTime1 = DateTime.parse(element.dateTime ?? '');
+        DateTime dateTime2 = DateTime.parse(updateDateTime);
+        int hour1 = dateTime1.hour;
+        int hour2 = dateTime2.hour;
+        return hour1 == hour2;
+      });
+      if (checkNotification == null) {
+        notification.dateTime = updateDateTime;
+        await _repository.updateUserNotification(notification);
+        _notificationList[index] = notification;
+        _notificationList.sort((a, b) => DateTime.parse(a.dateTime ?? '').compareTo(DateTime.parse(b.dateTime ?? '')));
+      } else {
+        _showDialog();
+      }
+    }
+  }
+
+  _showDialog() {
+    if (Get.context != null) {
+      HeyDialog.showCommonDialog(
+        Get.context!,
+        title: 'setting_notification'.tr,
+        subtitle: 'dialog_notification_subtitle'.tr,
+        cancelText: '',
+        onOk: () {},
+      );
+    }
   }
 
   /// Data
@@ -131,7 +176,6 @@ class SettingNotificationController extends GetxController with WidgetsBindingOb
     getUserNotificationList.when(
       success: (notificationList) {
         notificationList.sort((a, b) => DateTime.parse(a.dateTime ?? '').compareTo(DateTime.parse(b.dateTime ?? '')));
-        print(notificationList);
         _notificationList(notificationList);
       },
       error: (Exception e) {

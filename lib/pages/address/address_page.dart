@@ -180,12 +180,6 @@ class AddressPage extends GetView<AddressController> {
                           final item = controller.addressList.removeAt(oldIndex);
                           controller.addressList.insert(newIndex, item);
                         },
-                        // onReorderStart: (index) {
-                        //   controller.changeEditStatus(1);
-                        // },
-                        // onReorderEnd: (index) {
-                        //   controller.changeEditStatus(2);
-                        // },
                         children: List.generate(controller.addressList.length, (index) {
                           return Container(
                             key: ValueKey(controller.addressList[index]),

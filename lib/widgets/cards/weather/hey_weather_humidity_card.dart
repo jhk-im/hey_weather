@@ -90,7 +90,7 @@ class _HeyWeatherHumidityCardState extends State<HeyWeatherHumidityCard> {
         } : null,
         child: ShakeWidget(
           autoPlay: status.value == 3,
-          duration: const Duration(milliseconds: 1400),
+          duration: const Duration(milliseconds: 5400),
           shakeConstant: ShakeLittleConstant1(),
           child: Container(
             width: width,

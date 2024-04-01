@@ -20,7 +20,7 @@ class SettingNotificationPage extends GetView<SettingNotificationController> {
       builder: (context) {
         return Scaffold(
           body: SafeArea(
-            child: Obx(() => Stack(
+            child: Stack(
               children: [
                 // StatusBar
                 SizedBox(height: statusBarHeight),
@@ -53,7 +53,6 @@ class SettingNotificationPage extends GetView<SettingNotificationController> {
                               ),
                             ),
                           ),
-
                           // 타이틀
                           const Spacer(),
                           HeyText.bodySemiBold(
@@ -63,11 +62,9 @@ class SettingNotificationPage extends GetView<SettingNotificationController> {
                           const Spacer(),
 
                           // 편집
-                          if (controller.isNotificationPermission) ... {
-                            InkWell(
-                              splashColor: kBaseColor,
-                              highlightColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
+                          Obx(() => Visibility(
+                            visible: controller.isNotificationPermission && controller.notificationList.isNotEmpty,
+                            child: GestureDetector(
                               onTap: controller.editModeToggle,
                               child: Container(
                                 width: 72,
@@ -84,15 +81,19 @@ class SettingNotificationPage extends GetView<SettingNotificationController> {
                                 ),
                               ),
                             ),
-                          } else ... {
-                            const SizedBox(width: 72),
-                          },
+                          )),
+
+                          // 편집
+                          Obx(() => Visibility(
+                            visible: !controller.isNotificationPermission || controller.notificationList.isEmpty,
+                            child: const SizedBox(width: 72),
+                          )),
                         ],
                       ),
                     ),
 
                     // 알림 토글
-                    Container(
+                    Obx(() => Container(
                       margin: const EdgeInsets.only(top: 16, bottom: 20, left: 20, right: 20),
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
@@ -110,19 +111,19 @@ class SettingNotificationPage extends GetView<SettingNotificationController> {
                           ),
                         ],
                       ),
-                    ),
+                    )),
 
                     // Divider
-                    Visibility(
+                    Obx(() => Visibility(
                       visible: controller.isNotificationPermission,
                       child: Container(
                         margin: const EdgeInsets.symmetric(horizontal: 20),
                         child: const Divider(color: kButtonColor, height: 1),
                       ),
-                    ),
+                    )),
 
                     // 알림 리스트
-                    Visibility(
+                    Obx(() => Visibility(
                       visible: controller.isNotificationPermission,
                       child: Expanded(
                         child: SingleChildScrollView(
@@ -139,19 +140,22 @@ class SettingNotificationPage extends GetView<SettingNotificationController> {
                                     margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                                     child: Row(
                                       children: [
-                                        if (controller.isEditMode) ... {
-                                          GestureDetector(
+
+                                        Obx(() => AnimatedSize(
+                                          duration: const Duration(milliseconds: 250),
+                                          child: GestureDetector(
                                             onTap: () {
                                               controller.removeNotification(controller.notificationList[index]);
                                             },
-                                            child: Padding(
+                                            child: Container(
                                               padding: const EdgeInsets.only(right: 16),
+                                              width: controller.isEditMode ? 40 : 0,
                                               child: SvgUtils.icon(context, 'circle_minus'),
                                             ),
                                           ),
-                                        },
+                                        )),
 
-                                        Expanded(
+                                        Obx(() => Expanded(
                                           child: GestureDetector(
                                             onTap: controller.isEditMode ? () {
                                               final currentTime = DateTime.parse(controller.notificationList[index].dateTime ?? '');
@@ -184,27 +188,19 @@ class SettingNotificationPage extends GetView<SettingNotificationController> {
                                                   const SizedBox(width: 6),
                                                   HeyText.largeTitle(dateTime[1], color: kTextPrimaryColor),
                                                   const Spacer(),
-                                                  if (controller.isEditMode) ... {
-                                                    Container(
+
+                                                  Visibility(
+                                                    visible: controller.isEditMode,
+                                                    child: Container(
                                                       margin: const EdgeInsets.only(right: 14),
                                                       child: SvgUtils.icon(context, 'arrow_right'),
                                                     ),
-                                                  } else ... {
-                                                    Container(
-                                                      margin: const EdgeInsets.only(right: 20),
-                                                      child: HeyCustomSwitch(
-                                                        onChange: (selected) {
-                                                          controller.notificationToggle(index, controller.notificationList[index]);
-                                                        },
-                                                        isSelected: controller.notificationList[index].isOn == true,
-                                                      ),
-                                                    ),
-                                                  },
+                                                  ),
                                                 ],
                                               ),
                                             ),
                                           ),
-                                        ),
+                                        )),
                                       ],
                                     ),
                                   );
@@ -212,52 +208,55 @@ class SettingNotificationPage extends GetView<SettingNotificationController> {
                               ),
 
                               // 추가 버튼
-                              Container(
-                                margin: const EdgeInsets.all(20),
-                                child: InkWell(
-                                  splashColor: kBaseColor,
-                                  highlightColor: Colors.transparent,
-                                  hoverColor: Colors.transparent,
-                                  onTap: () {
-                                    final now = DateTime.now();
-                                    DateTime currentTime = DateTime(now.year, now.month, now.day, now.hour);
-                                    picker.DatePicker.showTime12hPicker(
-                                      context,
-                                      showTitleActions: true,
-                                      locale: LocaleType.ko,
-                                      theme: const picker.DatePickerTheme(
-                                        backgroundColor: kButtonColor,
-                                        itemStyle: TextStyle(color: kTimePickerItem, fontSize: 16, fontFamily: kPretendardRegular),
-                                        cancelStyle: TextStyle(color: kIconColor, fontSize: 16, fontFamily: kPretendardRegular),
-                                        doneStyle: TextStyle(color: kPrimaryDarkerColor, fontSize: 16, fontFamily: kPretendardRegular),
-                                      ),
-                                      onConfirm: (date) {
-                                        controller.createNotification(date.toString());
-                                      },
-                                      currentTime: currentTime,
-                                    );
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(16),
-                                      color: kBaseColor,
-                                    ),
-                                    width: double.maxFinite,
-                                    height: 56,
-                                    child: Row(
-                                      children: [
-                                        const Spacer(),
-                                        SvgUtils.icon(
-                                          context,
-                                          'plus',
-                                          width: 16,
-                                          height: 16,
-                                          color: kTextSecondaryColor,
+                              Visibility(
+                                visible: controller.notificationList.length < 2,
+                                child: Container(
+                                  margin: const EdgeInsets.all(20),
+                                  child: InkWell(
+                                    splashColor: kBaseColor,
+                                    highlightColor: Colors.transparent,
+                                    hoverColor: Colors.transparent,
+                                    onTap: () {
+                                      final now = DateTime.now();
+                                      DateTime currentTime = DateTime(now.year, now.month, now.day, now.hour);
+                                      picker.DatePicker.showTime12hPicker(
+                                        context,
+                                        showTitleActions: true,
+                                        locale: LocaleType.ko,
+                                        theme: const picker.DatePickerTheme(
+                                          backgroundColor: kButtonColor,
+                                          itemStyle: TextStyle(color: kTimePickerItem, fontSize: 16, fontFamily: kPretendardRegular),
+                                          cancelStyle: TextStyle(color: kIconColor, fontSize: 16, fontFamily: kPretendardRegular),
+                                          doneStyle: TextStyle(color: kPrimaryDarkerColor, fontSize: 16, fontFamily: kPretendardRegular),
                                         ),
-                                        const SizedBox(width: 4),
-                                        HeyText.subHeadline('add'.tr, color: kTextSecondaryColor),
-                                        const Spacer(),
-                                      ],
+                                        onConfirm: (date) {
+                                          controller.createNotification(date.toString());
+                                        },
+                                        currentTime: currentTime,
+                                      );
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(16),
+                                        color: kBaseColor,
+                                      ),
+                                      width: double.maxFinite,
+                                      height: 56,
+                                      child: Row(
+                                        children: [
+                                          const Spacer(),
+                                          SvgUtils.icon(
+                                            context,
+                                            'plus',
+                                            width: 16,
+                                            height: 16,
+                                            color: kTextSecondaryColor,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          HeyText.subHeadline('add'.tr, color: kTextSecondaryColor),
+                                          const Spacer(),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -266,16 +265,16 @@ class SettingNotificationPage extends GetView<SettingNotificationController> {
                           ),
                         ),
                       ),
-                    ),
+                    )),
                   ],
                 ),
 
-                Padding(
+                Obx(() => Padding(
                   padding: EdgeInsets.only(top: statusBarHeight),
                   child: LoadingWidget(controller.isLoading),
-                ),
+                )),
               ],
-            )),
+            ),
           ),
         );
       },

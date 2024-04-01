@@ -60,15 +60,18 @@ class HeyDialog {
                       margin: const EdgeInsets.only(top: 48),
                       child: Row(
                         children: [
-                          Expanded(
-                            child: HeyElevatedButton.primaryText1(
-                              height: 56,
-                              backgroundColor: kIconColor,
-                              foregroundColor: kTextSecondaryColor,
-                              onPressed: () {
-                                Get.back();
-                              },
-                              text: cancelText,
+                          Visibility(
+                            visible: cancelText.isNotEmpty,
+                            child: Expanded(
+                              child: HeyElevatedButton.primaryText1(
+                                height: 56,
+                                backgroundColor: kIconColor,
+                                foregroundColor: kTextSecondaryColor,
+                                onPressed: () {
+                                  Get.back();
+                                },
+                                text: cancelText,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 12),

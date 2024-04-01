@@ -104,7 +104,7 @@ class _HeyWeatherWindCardState extends State<HeyWeatherWindCard> {
         } : null,
         child: ShakeWidget(
           autoPlay: status.value == 3,
-          duration: const Duration(milliseconds: 1600),
+          duration: const Duration(milliseconds: 5600),
           shakeConstant: ShakeLittleConstant1(),
           child: Container(
             width: width,

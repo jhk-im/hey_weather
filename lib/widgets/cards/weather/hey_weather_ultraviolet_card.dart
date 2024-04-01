@@ -82,7 +82,7 @@ class _HeyWeatherUltravioletCardState extends State<HeyWeatherUltravioletCard> {
         } : null,
         child: ShakeWidget(
           autoPlay: status.value == 3,
-          duration: const Duration(milliseconds: 1800),
+          duration: const Duration(milliseconds: 5800),
           shakeConstant: ShakeLittleConstant1(),
           child: Container(
             width: width,

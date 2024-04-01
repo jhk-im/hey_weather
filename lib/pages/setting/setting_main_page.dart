@@ -202,6 +202,8 @@ class SettingMainPage extends GetView<SettingMainController> {
                     margin: const EdgeInsets.symmetric(horizontal: 20),
                     child: const Divider(color: kButtonColor, height: 1),
                   ),
+
+                  // 응원의 커피
                   Container(
                     margin: const EdgeInsets.all(20),
                     child: GestureDetector(

@@ -50,6 +50,12 @@ void main() async {
 
   await SharedPreferencesUtil().initialize();
 
+  // Set portrait orientation
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
+
   runApp(const MyApp());
 }
 

@@ -97,6 +97,7 @@ class TranslationsInfo extends Translations {
     'dialog_delete_weather_title': '@name 위젯을 삭제할까요?',
     'dialog_delete_weather_subtitle': '이 위젯을 삭제해도 다시 추가할 수 있어요',
     'dialog_delete_location': '이 지역을 삭제할까요?',
+    'dialog_delete_notification': '이 알림을 삭제할까요?',
     'dialog_notification_subtitle': '이미 등록된 시간대예요.',
 
     // toast

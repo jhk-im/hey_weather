@@ -53,7 +53,16 @@ class SettingMainController extends GetxController with WidgetsBindingObserver {
     if (await canLaunchUrl(Uri.parse(url))) {
       await launchUrl(Uri.parse(url));
     } else {
-      throw '이메일 앱을 열 수 없습니다.';
+      throw 'Could not launch email';
+    }
+  }
+
+  moveToCoffee() async {
+    var url = 'https://www.buymeacoffee.com/heyweather';
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      throw 'Could not launch $url';
     }
   }
 

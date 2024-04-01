@@ -64,10 +64,7 @@ class SettingMainPage extends GetView<SettingMainController> {
                   ),
 
                   // 지역 설정
-                  InkWell(
-                    splashColor: kBaseColor,
-                    highlightColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
+                  GestureDetector(
                     onTap: () {
                       Get.toNamed(Routes.routeAddress);
                     },
@@ -79,7 +76,12 @@ class SettingMainPage extends GetView<SettingMainController> {
                             'setting_location'.tr,
                             color: kTextPrimaryColor,
                           ),
-                          const Spacer(),
+                          Expanded(
+                            child: Container(
+                              color: Colors.transparent,
+                              height: 20,
+                            ),
+                          ),
                           SvgUtils.icon(context, 'arrow_right', color: kIconColor),
                         ],
                       ),
@@ -93,10 +95,7 @@ class SettingMainPage extends GetView<SettingMainController> {
                   ),
 
                   // 알림 설정
-                  InkWell(
-                    splashColor: kBaseColor,
-                    highlightColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
+                  GestureDetector(
                     onTap: () async {
                       var result = await Get.toNamed(Routes.routeSettingNotification);
 
@@ -112,7 +111,12 @@ class SettingMainPage extends GetView<SettingMainController> {
                             'setting_notification'.tr,
                             color: kTextPrimaryColor,
                           ),
-                          const Spacer(),
+                          Expanded(
+                            child: Container(
+                              color: Colors.transparent,
+                              height: 20,
+                            ),
+                          ),
                           HeyText.bodySemiBold(
                             controller.isNotificationPermission ? 'on'.tr : 'off'.tr,
                             color: controller.isNotificationPermission ? kTextPrimaryColor : kDividerPrimaryColor,
@@ -131,10 +135,7 @@ class SettingMainPage extends GetView<SettingMainController> {
                   ),
 
                   // 온도 설정
-                  InkWell(
-                    splashColor: kBaseColor,
-                    highlightColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
+                  GestureDetector(
                     onTap: () {
                       HeyBottomSheet.showTemperatureBottomSheet(
                         context,
@@ -150,7 +151,12 @@ class SettingMainPage extends GetView<SettingMainController> {
                             'setting_temperature'.tr,
                             color: kTextPrimaryColor,
                           ),
-                          const Spacer(),
+                          Expanded(
+                            child: Container(
+                              color: Colors.transparent,
+                              height: 20,
+                            ),
+                          ),
                           HeyText.bodySemiBold(
                             controller.isFahrenheit ? 'fahrenheit'.tr : 'celsius'.tr,
                             color: kTextPrimaryColor,
@@ -169,10 +175,7 @@ class SettingMainPage extends GetView<SettingMainController> {
                   ),
 
                   // 의견 보내기
-                  InkWell(
-                    splashColor: kBaseColor,
-                    highlightColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
+                  GestureDetector(
                     onTap: controller.sendEmail,
                     child: Container(
                       padding: const EdgeInsets.all(24),
@@ -182,7 +185,12 @@ class SettingMainPage extends GetView<SettingMainController> {
                             'send_opinion'.tr,
                             color: kTextPrimaryColor,
                           ),
-                          const Spacer(),
+                          Expanded(
+                            child: Container(
+                              color: Colors.transparent,
+                              height: 20,
+                            ),
+                          ),
                           SvgUtils.icon(context, 'arrow_right', color: kIconColor),
                         ],
                       ),
@@ -194,15 +202,10 @@ class SettingMainPage extends GetView<SettingMainController> {
                     margin: const EdgeInsets.symmetric(horizontal: 20),
                     child: const Divider(color: kButtonColor, height: 1),
                   ),
-                  /*Container(
+                  Container(
                     margin: const EdgeInsets.all(20),
-                    child: InkWell(
-                      splashColor: kBaseColor,
-                      highlightColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      onTap: () {
-
-                      },
+                    child: GestureDetector(
+                      onTap: controller.moveToCoffee,
                       child: Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
@@ -237,7 +240,7 @@ class SettingMainPage extends GetView<SettingMainController> {
                         ),
                       ),
                     ),
-                  ),*/
+                  ),
                 ],
               ),
 

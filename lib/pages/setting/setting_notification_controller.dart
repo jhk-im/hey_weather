@@ -102,8 +102,17 @@ class SettingNotificationController extends GetxController with WidgetsBindingOb
   }
 
   removeNotification(UserNotification notification) async {
-    await _repository.deleteUserNotification(notification.id ?? '');
-    _notificationList.remove(notification);
+    if (Get.context != null) {
+      HeyDialog.showCommonDialog(
+        Get.context!,
+        title: 'setting_notification'.tr,
+        subtitle: 'dialog_delete_notification'.tr,
+        onOk: () async {
+          await _repository.deleteUserNotification(notification.id ?? '');
+          _notificationList.remove(notification);
+        },
+      );
+    }
   }
 
   createNotification(String dateTime) async {
@@ -124,7 +133,7 @@ class SettingNotificationController extends GetxController with WidgetsBindingOb
       await _repository.updateUserNotification(newNotification);
       await _getNotificationList();
     } else {
-      _showDialog();
+      _showUpdateDialog();
     }
   }
 
@@ -153,12 +162,12 @@ class SettingNotificationController extends GetxController with WidgetsBindingOb
         _notificationList[index] = notification;
         _notificationList.sort((a, b) => DateTime.parse(a.dateTime ?? '').compareTo(DateTime.parse(b.dateTime ?? '')));
       } else {
-        _showDialog();
+        _showUpdateDialog();
       }
     }
   }
 
-  _showDialog() {
+  _showUpdateDialog() {
     if (Get.context != null) {
       HeyDialog.showCommonDialog(
         Get.context!,

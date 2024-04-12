@@ -275,7 +275,7 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
                   height: 48,
                 ),
                 const SizedBox(height: 12),
-                HeyText.captionMedium1(
+                HeyText.callOutSemiBold(
                   timeText,
                   fontSize: kFont14,
                   color: kTextPointColor,

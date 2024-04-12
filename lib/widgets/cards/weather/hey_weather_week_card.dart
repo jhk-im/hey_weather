@@ -309,15 +309,14 @@ class _HeyWeatherWeekCardState extends State<HeyWeatherWeekCard> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    HeyText.captionMedium1(
+                    HeyText.callOutSemiBold(
                       'today'.tr,
                       fontSize: kFont14,
                       color: kTextPointColor,
                     ),
                     const SizedBox(width: 4),
-                    HeyText.subHeadline(
+                    HeyText.captionMedium1(
                       date,
-                      fontSize: kFont12,
                       color: kTextPointColor.withOpacity(0.3),
                     ),
                   ],

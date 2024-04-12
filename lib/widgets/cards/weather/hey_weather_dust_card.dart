@@ -97,7 +97,7 @@ class _HeyWeatherDustCardState extends State<HeyWeatherDustCard> {
           child: Container(
             width: rxWidth.value,
             height: height,
-            padding: EdgeInsets.only(top: 20, bottom: 20, left: 24, right: status.value == 0 ? 24 : 20),
+            padding: const EdgeInsets.only(top: 14, bottom: 20, left: 24),
             decoration: BoxDecoration(
               color: kBaseColor,
               borderRadius: BorderRadius.circular(20),
@@ -111,21 +111,24 @@ class _HeyWeatherDustCardState extends State<HeyWeatherDustCard> {
                 Column(
                   children: [
                     // icon, title
-                    Row(
-                      children: [
-                        SvgUtils.icon(
-                          context,
-                          'dust',
-                          width: 20,
-                          height: 20,
-                        ),
-                        const SizedBox(width: 6),
-                        HeyText.bodySemiBold(
-                          'dust'.tr,
-                          fontSize: kFont16,
-                          color: kTextDisabledColor,
-                        ),
-                      ],
+                    Container(
+                      margin: const EdgeInsets.only(top: 6),
+                      child: Row(
+                        children: [
+                          SvgUtils.icon(
+                            context,
+                            'dust',
+                            width: 20,
+                            height: 20,
+                          ),
+                          const SizedBox(width: 6),
+                          HeyText.bodySemiBold(
+                            'dust'.tr,
+                            fontSize: kFont16,
+                            color: kTextDisabledColor,
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 24),
                     Expanded(
@@ -144,6 +147,7 @@ class _HeyWeatherDustCardState extends State<HeyWeatherDustCard> {
                   visible: status.value > 0,
                   child: Container(
                     color: status.value == 1 || status.value == 3 ? Colors.transparent : kBaseColor.withOpacity(0.5),
+                    padding: const EdgeInsets.only(right: 14),
                     child: Column(
                       children: [
                         InkWell(

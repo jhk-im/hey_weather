@@ -87,7 +87,7 @@ class _HeyWeatherUltravioletCardState extends State<HeyWeatherUltravioletCard> {
           child: Container(
             width: width,
             height: 170,
-            padding: EdgeInsets.only(top: 20, bottom: 20, left: 24, right: status.value == 0 ? 24 : 20),
+            padding: const EdgeInsets.only(top: 14, bottom: 20, left: 24),
             decoration: BoxDecoration(
               color: kBaseColor,
               borderRadius: BorderRadius.circular(20),
@@ -104,21 +104,24 @@ class _HeyWeatherUltravioletCardState extends State<HeyWeatherUltravioletCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // icon, title
-                        Row(
-                          children: [
-                            SvgUtils.icon(
-                              context,
-                              'ultraviolet',
-                              width: 20,
-                              height: 20,
-                            ),
-                            const SizedBox(width: 6),
-                            HeyText.bodySemiBold(
-                              'ultraviolet'.tr,
-                              fontSize: kFont16,
-                              color: kTextDisabledColor,
-                            ),
-                          ],
+                        Container(
+                          margin: const EdgeInsets.only(top: 6),
+                          child: Row(
+                            children: [
+                              SvgUtils.icon(
+                                context,
+                                'ultraviolet',
+                                width: 20,
+                                height: 20,
+                              ),
+                              const SizedBox(width: 6),
+                              HeyText.bodySemiBold(
+                                'ultraviolet'.tr,
+                                fontSize: kFont16,
+                                color: kTextDisabledColor,
+                              ),
+                            ],
+                          ),
                         ),
 
                         // status
@@ -143,6 +146,7 @@ class _HeyWeatherUltravioletCardState extends State<HeyWeatherUltravioletCard> {
                             Container(
                               width: double.maxFinite,
                               height: 8,
+                              margin: const EdgeInsets.only(right: 20),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 gradient: const LinearGradient(
@@ -186,6 +190,7 @@ class _HeyWeatherUltravioletCardState extends State<HeyWeatherUltravioletCard> {
                   visible: status.value > 0,
                   child: Container(
                     color: status.value == 1 || status.value == 3 ? Colors.transparent : kBaseColor.withOpacity(0.5),
+                    padding: const EdgeInsets.only(right: 14),
                     child: Column(
                       children: [
                         InkWell(

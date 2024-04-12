@@ -31,10 +31,7 @@ class AddressPage extends GetView<AddressController> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           // back
-                          InkWell(
-                            splashColor: kBaseColor,
-                            highlightColor: Colors.transparent,
-                            hoverColor: Colors.transparent,
+                          GestureDetector(
                             onTap: () {
                               Get.back(result: controller.isUpdated);
                             },
@@ -59,26 +56,31 @@ class AddressPage extends GetView<AddressController> {
                           const Spacer(),
 
                           // 편집
-                          InkWell(
-                            splashColor: kBaseColor,
-                            highlightColor: Colors.transparent,
-                            hoverColor: Colors.transparent,
-                            onTap: controller.editModeToggle,
-                            child: Container(
-                              width: 72,
-                              padding: const EdgeInsets.only(right: 24),
-                              child: Row(
-                                children: [
-                                  const Spacer(),
-                                  Obx(() => HeyText.body(
-                                    controller.isEditMode ? 'done'.tr : 'edit'.tr,
-                                    color: kTextDisabledColor,
-                                    fontSize: kFont18,
-                                  )),
-                                ],
+                          Obx(() => Visibility(
+                            visible: controller.addressList.isNotEmpty,
+                            child: GestureDetector(
+                              onTap: controller.editModeToggle,
+                              child: Container(
+                                width: 72,
+                                padding: const EdgeInsets.only(right: 24),
+                                child: Row(
+                                  children: [
+                                    const Spacer(),
+                                    Obx(() => HeyText.body(
+                                      controller.isEditMode ? 'done'.tr : 'edit'.tr,
+                                      color: kTextDisabledColor,
+                                      fontSize: kFont18,
+                                    )),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
+                          )),
+
+                          Obx(() => Visibility(
+                            visible: controller.addressList.isEmpty,
+                            child: Container(width: 72),
+                          )),
                         ],
                       ),
                     ),

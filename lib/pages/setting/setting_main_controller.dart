@@ -45,7 +45,7 @@ class SettingMainController extends GetxController with WidgetsBindingObserver {
 
   sendEmail() async {
     var email = 'teamsoolwww@gmail.com';
-    var subject = '헤이웨더 의견보내기';
+    var subject = '헤이날씨 의견보내기';
     var body = await _getEmailBody();
 
     var url = 'mailto:$email?subject=${Uri.encodeComponent(subject)}&body=${Uri.encodeComponent(body)}';
@@ -70,7 +70,7 @@ class SettingMainController extends GetxController with WidgetsBindingObserver {
     Map<String, dynamic> appInfo = await _getAppInfo();
     Map<String, dynamic> deviceInfo = await _getDeviceInfo();
 
-    String body = "안녕하세요, 헤이웨더 팀입니다.\n아래에 의견을 자유롭게 남겨주세요.\n\n";
+    String body = "안녕하세요, 헤이날씨 팀입니다.\n아래에 의견을 자유롭게 남겨주세요.\n\n";
 
     body += "================================\n";
     body += "아래 내용을 함께 보내주시면 도움이 됩니다.\n";

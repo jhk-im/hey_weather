@@ -133,7 +133,7 @@ class _HeyWeatherWeekCardState extends State<HeyWeatherWeekCard> {
             child: Stack(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(6),
+                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -240,6 +240,8 @@ class _HeyWeatherWeekCardState extends State<HeyWeatherWeekCard> {
                             ],
                           ),
                         ),
+                      } else ... {
+                        _editContents(dateList[0], '${kWeatherWeekIconList[todayAmStatus]}_on', '${kWeatherWeekIconList[todayPmStatus]}_on'),
                       },
                     ],
                   ),
@@ -261,18 +263,15 @@ class _HeyWeatherWeekCardState extends State<HeyWeatherWeekCard> {
                           child: Row(
                             children: [
                               const Spacer(),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 6, right: 6),
-                                child: SvgUtils.icon(
-                                  context,
-                                  status.value == 1
-                                      ? 'circle_check'
-                                      : status.value == 2
-                                      ? 'circle_check_selected'
-                                      : 'circle_minus',
-                                  width: 24,
-                                  height: 24,
-                                ),
+                              SvgUtils.icon(
+                                context,
+                                status.value == 1
+                                    ? 'circle_check'
+                                    : status.value == 2
+                                    ? 'circle_check_selected'
+                                    : 'circle_minus',
+                                width: 24,
+                                height: 24,
                               ),
                             ],
                           ),
@@ -288,6 +287,47 @@ class _HeyWeatherWeekCardState extends State<HeyWeatherWeekCard> {
         ),
       ),
     ));
+  }
+
+  Widget _editContents(String date, String amIcon, String pmIcon) {
+    bool isAM =  DateTime.now().hour < 12;
+
+    return Expanded(
+      child: Column(
+        children: [
+          const Spacer(),
+          Center(
+            child: Column(
+              children: [
+                SvgUtils.weatherIcon(
+                  context,
+                  isAM ? amIcon : pmIcon,
+                  width: 48,
+                  height: 48,
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    HeyText.captionMedium1(
+                      'today'.tr,
+                      fontSize: kFont14,
+                      color: kTextPointColor,
+                    ),
+                    const SizedBox(width: 4),
+                    HeyText.subHeadline(
+                      date,
+                      fontSize: kFont12,
+                      color: kTextPointColor.withOpacity(0.3),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _weatherItem({
@@ -318,25 +358,28 @@ class _HeyWeatherWeekCardState extends State<HeyWeatherWeekCard> {
             ],
           ),
 
-          const Spacer(flex: 4),
+          const Spacer(),
 
           Row(
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Visibility(
-                    visible: dateText.isEmpty,
-                    child: HeyText.caption1(
-                      'am'.tr,
-                      color: kTextDisabledColor,
+              SizedBox(
+                width: 26,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Visibility(
+                      visible: dateText.isEmpty,
+                      child: HeyText.caption1(
+                        'am'.tr,
+                        color: kTextDisabledColor,
+                      ),
                     ),
-                  ),
-                  HeyText.caption1(
-                    '$amPercent%',
-                    color: amPercent > 0 ? kPrimarySecondColor : kDisabledText,
-                  ),
-                ],
+                    HeyText.caption1(
+                      '$amPercent%',
+                      color: amPercent > 0 ? kPrimarySecondColor : kDisabledText,
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(width: 8),
               SvgUtils.weatherIcon(
@@ -353,45 +396,44 @@ class _HeyWeatherWeekCardState extends State<HeyWeatherWeekCard> {
                 height: 34,
               ),
               const SizedBox(width: 8),
-
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Visibility(
-                    visible: dateText.isEmpty,
-                    child: HeyText.caption1(
-                      'pm'.tr,
-                      color: kTextDisabledColor,
+              SizedBox(
+                width: 26,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Visibility(
+                      visible: dateText.isEmpty,
+                      child: HeyText.caption1(
+                        'pm'.tr,
+                        color: kTextDisabledColor,
+                      ),
                     ),
-                  ),
-                  HeyText.caption1(
-                    '$pmPercent%',
-                    color: pmPercent > 0 ? kPrimarySecondColor : kDisabledText,
-                  ),
-                ],
+                    HeyText.caption1(
+                      '$pmPercent%',
+                      color: pmPercent > 0 ? kPrimarySecondColor : kDisabledText,
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
 
-          const Spacer(flex: 3),
+          const Spacer(),
 
-          SizedBox(
-            child: Row(
-              children: [
-                const SizedBox(width: 16),
-                HeyText.bodySemiBold(
-                  '${isFahrenheit.value ? Utils.celsiusToFahrenheit(minTemp.toDouble()) : minTemp}°',
-                  fontSize: kFont16,
-                  color: kTextPointColor.withOpacity(0.6),
-                ),
-                const SizedBox(width: 16),
-                HeyText.bodySemiBold(
-                  '${isFahrenheit.value ? Utils.celsiusToFahrenheit(maxTemp.toDouble()) : maxTemp}°',
-                  fontSize: kFont16,
-                  color: kTextPointColor,
-                ),
-              ],
-            ),
+          Row(
+            children: [
+              HeyText.bodySemiBold(
+                '${isFahrenheit.value ? Utils.celsiusToFahrenheit(minTemp.toDouble()) : minTemp}°',
+                fontSize: kFont16,
+                color: kTextPointColor.withOpacity(0.6),
+              ),
+              const SizedBox(width: 16),
+              HeyText.bodySemiBold(
+                '${isFahrenheit.value ? Utils.celsiusToFahrenheit(maxTemp.toDouble()) : maxTemp}°',
+                fontSize: kFont16,
+                color: kTextPointColor,
+              ),
+            ],
           )
         ],
       ),

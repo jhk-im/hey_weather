@@ -54,6 +54,24 @@ class Utils {
     return '$hour시 $minute분';
   }
 
+  static String convertToTimeFormat(String str) {
+    int hour = int.parse(str.substring(0, 2));
+    String period = (hour < 12) ? '오전' : '오후';
+    if (hour == 0) {
+      hour = 12;
+    } else if (hour > 12) {
+      hour -= 12;
+    }
+    return '$period $hour시';
+  }
+
+  String convertToTimeFormat2(String input) {
+    List<String> parts = input.split(RegExp(r'[시분]'));
+    int hour = int.parse(parts[0]);
+    int minute = int.parse(parts[1]);
+    return '$hour:${minute.toString().padLeft(2, '0')}';
+  }
+
   static Future<bool> checkInternetConnection() async {
     var connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult == ConnectivityResult.none) {
@@ -93,17 +111,6 @@ class Utils {
     final String formattedTime = DateFormat('a h:mm').format(dateTime);
     final String korAmPm = formattedTime.contains('AM') ? '오전' : '오후';
     return formattedTime.replaceFirst(RegExp('[APMapm]{2}'), korAmPm);
-  }
-
-  static String convertToTimeFormat(String str) {
-    int hour = int.parse(str.substring(0, 2));
-    String period = (hour < 12) ? '오전' : '오후';
-    if (hour == 0) {
-      hour = 12;
-    } else if (hour > 12) {
-      hour -= 12;
-    }
-    return '$period $hour시';
   }
 
   static int celsiusToFahrenheit(double celsius) {

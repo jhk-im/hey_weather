@@ -60,7 +60,7 @@ class _HeyWeatherFeelCardState extends State<HeyWeatherFeelCard> {
           child: Container(
             width: width,
             height: 170,
-            padding: EdgeInsets.only(top: 20, bottom: 20, left: 24, right: status.value == 0 ? 24 : 20),
+            padding: const EdgeInsets.only(top: 14, bottom: 20, left: 24),
             decoration: BoxDecoration(
               color: kBaseColor,
               borderRadius: BorderRadius.circular(20),
@@ -74,22 +74,24 @@ class _HeyWeatherFeelCardState extends State<HeyWeatherFeelCard> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 체감온도
-                    Row(
-                      children: [
-                        SvgUtils.icon(
-                          context,
-                          'feel_temp',
-                          width: 20,
-                          height: 20,
-                        ),
-                        const SizedBox(width: 6),
-                        HeyText.bodySemiBold(
-                          'feel_temp'.tr,
-                          fontSize: kFont16,
-                          color: kTextDisabledColor,
-                        ),
-                      ],
+                    Container(
+                      margin: const EdgeInsets.only(top: 6),
+                      child: Row(
+                        children: [
+                          SvgUtils.icon(
+                            context,
+                            'feel_temp',
+                            width: 20,
+                            height: 20,
+                          ),
+                          const SizedBox(width: 6),
+                          HeyText.bodySemiBold(
+                            'feel_temp'.tr,
+                            fontSize: kFont16,
+                            color: kTextDisabledColor,
+                          ),
+                        ],
+                      ),
                     ),
 
                     const Spacer(),
@@ -111,6 +113,7 @@ class _HeyWeatherFeelCardState extends State<HeyWeatherFeelCard> {
                             HeyText.largeTitleBold(
                               '${isFahrenheit.value ? Utils.celsiusToFahrenheit(widget.max.toDouble()) : widget.max}°',
                               color: kTextPointColor,
+                              fontSize: kFont32,
                             ),
                           ],
                         ),
@@ -129,6 +132,7 @@ class _HeyWeatherFeelCardState extends State<HeyWeatherFeelCard> {
                             HeyText.largeTitleBold(
                               '${isFahrenheit.value ? Utils.celsiusToFahrenheit(widget.min.toDouble()) : widget.min}°',
                               color: kIconColor,
+                              fontSize: kFont32,
                             ),
                           ],
                         ),
@@ -141,6 +145,7 @@ class _HeyWeatherFeelCardState extends State<HeyWeatherFeelCard> {
                   visible: status.value > 0,
                   child: Container(
                     color: status.value == 1 || status.value == 3 ? Colors.transparent : kBaseColor.withOpacity(0.5),
+                    padding: const EdgeInsets.only(right: 14),
                     child: Column(
                       children: [
                         InkWell(

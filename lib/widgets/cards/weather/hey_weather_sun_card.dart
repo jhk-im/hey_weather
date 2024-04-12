@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/svg_utils.dart';
+import 'package:hey_weather/common/utils.dart';
 
 class HeyWeatherSunCard extends StatefulWidget {
   const HeyWeatherSunCard({
@@ -65,7 +66,7 @@ class _HeyWeatherSunCardState extends State<HeyWeatherSunCard> {
           child: Container(
             width: rxWidth.value,
             height: height,
-            padding: EdgeInsets.only(top: 20, bottom: 20, left: 24, right: status.value == 3 ? 20 : 24),
+            padding: const EdgeInsets.only(top: 14, bottom: 20, left: 24),
             decoration: BoxDecoration(
               color: kBaseColor,
               borderRadius: BorderRadius.circular(20),
@@ -79,90 +80,108 @@ class _HeyWeatherSunCardState extends State<HeyWeatherSunCard> {
                 Column(
                   children: [
                     // icon, title
-                    Row(
-                      children: [
-                        SvgUtils.icon(
-                          context,
-                          'sunrise_sunset',
-                          width: 20,
-                          height: 20,
-                        ),
-                        const SizedBox(width: 6),
-                        HeyText.bodySemiBold(
-                          'sunrise_sunset'.tr,
-                          fontSize: kFont16,
-                          color: kTextDisabledColor,
-                        ),
-                      ],
+                    Container(
+                      margin: const EdgeInsets.only(top: 6),
+                      child: Row(
+                        children: [
+                          SvgUtils.icon(
+                            context,
+                            'sunrise_sunset',
+                            width: 20,
+                            height: 20,
+                          ),
+                          const SizedBox(width: 6),
+                          HeyText.bodySemiBold(
+                            'sunrise_sunset'.tr,
+                            fontSize: kFont16,
+                            color: kTextDisabledColor,
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 24),
                     Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              SvgUtils.icon(
-                                context,
-                                'sunrise',
-                                width: 40,
-                                height: 40,
-                              ),
-                              Row(
-                                children: [
-                                  HeyText.bodySemiBold(
-                                    'am'.tr,
-                                    fontSize: kFont16,
-                                    color: kTextDisabledColor,
-                                  ),
-                                  if (status.value != 3) ... {
-                                    const SizedBox(width: 2),
-                                    HeyText.bodySemiBold(
-                                      widget.sunrise,
-                                      fontSize: kFont16,
-                                      color: kTextPointColor,
-                                    ),
-                                  },
-                                ],
-                              ),
-                            ],
-                          ),
+                      child: Container(
+                        padding: const EdgeInsets.only(right: 24),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                SvgUtils.icon(
+                                  context,
+                                  'sunrise',
+                                  width: 40,
+                                  height: 40,
+                                ),
+                                Row(
+                                  children: [
+                                    if (status.value != 3) ... {
+                                      HeyText.bodySemiBold(
+                                        'am'.tr,
+                                        fontSize: kFont16,
+                                        color: kTextDisabledColor,
+                                      ),
+                                      const SizedBox(width: 2),
+                                      HeyText.bodySemiBold(
+                                        widget.sunrise,
+                                        fontSize: kFont16,
+                                        color: kTextPointColor,
+                                      ),
+                                    } else ... {
+                                      HeyText.bodySemiBold(
+                                        Utils().convertToTimeFormat2(widget.sunrise),
+                                        fontSize: kFont16,
+                                        color: kTextPointColor,
+                                      ),
+                                    },
+                                  ],
+                                ),
+                              ],
+                            ),
 
-                          Container(
-                            width: 1,
-                            color: kButtonColor,
-                          ),
+                            Container(
+                              width: 1,
+                              color: kButtonColor,
+                            ),
 
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              SvgUtils.icon(
-                                context,
-                                'sunset',
-                                width: 40,
-                                height: 40,
-                              ),
-                              Row(
-                                children: [
-                                  HeyText.bodySemiBold(
-                                    'pm'.tr,
-                                    fontSize: kFont16,
-                                    color: kTextDisabledColor,
-                                  ),
-                                  if (status.value != 3) ... {
-                                    const SizedBox(width: 2),
-                                    HeyText.bodySemiBold(
-                                      widget.sunset,
-                                      fontSize: kFont16,
-                                      color: kTextPointColor,
-                                    ),
-                                  },
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                SvgUtils.icon(
+                                  context,
+                                  'sunset',
+                                  width: 40,
+                                  height: 40,
+                                ),
+                                Row(
+                                  children: [
+                                    if (status.value != 3) ... {
+                                      HeyText.bodySemiBold(
+                                        'pm'.tr,
+                                        fontSize: kFont16,
+                                        color: kTextDisabledColor,
+                                      ),
+                                      const SizedBox(width: 2),
+                                      HeyText.bodySemiBold(
+                                        widget.sunset,
+                                        fontSize: kFont16,
+                                        color: kTextPointColor,
+                                      ),
+                                    } else ... {
+                                      HeyText.bodySemiBold(
+                                        Utils().convertToTimeFormat2(widget.sunset),
+                                        fontSize: kFont16,
+                                        color: kTextPointColor,
+                                      ),
+                                    },
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     )
                   ],
@@ -172,6 +191,7 @@ class _HeyWeatherSunCardState extends State<HeyWeatherSunCard> {
                   visible: status.value > 0,
                   child: Container(
                     color: status.value == 1 || status.value == 3 ? Colors.transparent : kBaseColor.withOpacity(0.5),
+                    padding: const EdgeInsets.only(right: 14),
                     child: Column(
                       children: [
                         InkWell(

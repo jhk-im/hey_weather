@@ -32,10 +32,7 @@ class SettingMainPage extends GetView<SettingMainController> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         // back
-                        InkWell(
-                          splashColor: kBaseColor,
-                          highlightColor: Colors.transparent,
-                          hoverColor: Colors.transparent,
+                        GestureDetector(
                           onTap: () {
                             Get.back(result: controller.isUpdate);
                           },

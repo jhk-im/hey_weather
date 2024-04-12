@@ -109,7 +109,7 @@ class _HeyWeatherWindCardState extends State<HeyWeatherWindCard> {
           child: Container(
             width: width,
             height: 170,
-            padding: EdgeInsets.only(top: 20, bottom: 20, left: 24, right: status.value == 0 ? 24 : 20),
+            padding: const EdgeInsets.only(top: 14, bottom: 20, left: 24),
             decoration: BoxDecoration(
               color: kBaseColor,
               borderRadius: BorderRadius.circular(20),
@@ -129,21 +129,24 @@ class _HeyWeatherWindCardState extends State<HeyWeatherWindCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // icon, title
-                          Row(
-                            children: [
-                              SvgUtils.icon(
-                                context,
-                                'wind',
-                                width: 20,
-                                height: 20,
-                              ),
-                              const SizedBox(width: 6),
-                              HeyText.bodySemiBold(
-                                'wind'.tr,
-                                fontSize: kFont16,
-                                color: kTextDisabledColor,
-                              ),
-                            ],
+                          Container(
+                            margin: const EdgeInsets.only(top: 6),
+                            child: Row(
+                              children: [
+                                SvgUtils.icon(
+                                  context,
+                                  'wind',
+                                  width: 20,
+                                  height: 20,
+                                ),
+                                const SizedBox(width: 6),
+                                HeyText.bodySemiBold(
+                                  'wind'.tr,
+                                  fontSize: kFont16,
+                                  color: kTextDisabledColor,
+                                ),
+                              ],
+                            ),
                           ),
 
                           // status
@@ -203,6 +206,7 @@ class _HeyWeatherWindCardState extends State<HeyWeatherWindCard> {
                   visible: status.value > 0,
                   child: Container(
                     color: status.value == 1 || status.value == 3 ? Colors.transparent : kBaseColor.withOpacity(0.5),
+                    padding: const EdgeInsets.only(right: 14),
                     child: Column(
                       children: [
                         InkWell(

@@ -182,13 +182,16 @@ class AddressController extends GetxController with WidgetsBindingObserver {
 
     if (!isEditMode) {
       _editStatus(3);
+
       _isUpdated(true);
       final idList = addressList.map((element) => element.id ?? '').toList();
       await _repository.updateUserAddressEditIdList(idList);
-
       final recent = addressList.where((e) => e.id != kCurrentLocationId).toList();
       recent.sort((a, b) => DateTime.parse(b.createDateTime ?? '').compareTo(DateTime.parse(a.createDateTime ?? '')));
       addressList[addressList.indexOf(recent.first)].isRecent = true;
+
+      await Future.delayed(const Duration(milliseconds: 500));
+      _editStatus(0);
     } else {
       _editStatus(1);
       await Future.delayed(const Duration(milliseconds: 500));

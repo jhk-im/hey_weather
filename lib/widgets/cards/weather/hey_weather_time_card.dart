@@ -57,14 +57,14 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
     double height = 286;
     RxDouble rxWidth;
     RxDouble rxHeight;
-    RxBool isContentsVisible = false.obs;
+    RxBool isMainContentsVisible = false.obs;
     if (status.value == 3) {
       rxWidth = editWidth.obs;
       rxHeight = editHeight.obs;
     } else {
       rxWidth = width.obs;
       rxHeight = height.obs;
-      isContentsVisible(true);
+      isMainContentsVisible(true);
     }
     widget.setHeight?.call(id, rxHeight.value);
 
@@ -86,7 +86,7 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
           child: Container(
             width: rxWidth.value,
             height: rxHeight.value,
-            padding: const EdgeInsets.only(top: 20, bottom: 20),
+            padding: const EdgeInsets.only(top: 14, bottom: 20),
             decoration: BoxDecoration(
               color: kBaseColor,
               borderRadius: BorderRadius.circular(20),
@@ -103,30 +103,31 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
                   children: [
                     // icon, title
                     Container(
-                      margin: const EdgeInsets.only(left: 24),
+                      margin: const EdgeInsets.only(top: 6, left: 24),
                       child: Row(
                         children: [
-                          Padding(
-                            padding: status.value == 3 ? const EdgeInsets.only(bottom: 24) : EdgeInsets.zero,
-                            child: SvgUtils.icon(
-                              context,
-                              'weather_by_time',
-                              width: 20,
-                              height: 20,
-                            ),
+                          SvgUtils.icon(
+                            context,
+                            'weather_by_time',
+                            width: 20,
+                            height: 20,
                           ),
                           const SizedBox(width: 6),
-                          HeyText.bodySemiBold(
-                            status.value == 3 ? 'weather_by_time_edit'.tr : 'weather_by_time'.tr,
-                            fontSize: kFont16,
-                            color: kTextDisabledColor,
+                          Flexible(
+                            child: HeyText.bodySemiBold(
+                              'weather_by_time'.tr,
+                              fontSize: kFont16,
+                              color: kTextDisabledColor,
+                              textOverflow: TextOverflow.ellipsis,
+                            ),
                           ),
+                          SizedBox(width: status.value == 3 ? 40 : 0),
                         ],
                       ),
                     ),
                     const SizedBox(height: 20),
 
-                    if (isContentsVisible.value) ... {
+                    if (isMainContentsVisible.value) ... {
                       Expanded(
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
@@ -165,38 +166,45 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
                           },
                         ),
                       ),
+                    } else ... {
+                      // 편집
+                      _editContents(),
                     },
                   ],
                 ),
 
-                SizedBox(
-                  width: double.maxFinite,
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 50,
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.centerRight,
-                            end: Alignment.centerLeft,
-                            colors: [kWidgetGradientLeft, kWidgetGradientRight],
+                // Gradient
+                Visibility(
+                  visible: status.value < 3,
+                  child: SizedBox(
+                    width: double.maxFinite,
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 50,
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.centerRight,
+                              end: Alignment.centerLeft,
+                              colors: [kWidgetGradientLeft, kWidgetGradientRight],
+                            ),
                           ),
                         ),
-                      ),
 
-                      const Spacer(),
+                        const Spacer(),
 
-                      Container(
-                        width: 50,
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                            colors: [kWidgetGradientLeft, kWidgetGradientRight],
+                        Container(
+                          width: 50,
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              colors: [kWidgetGradientLeft, kWidgetGradientRight],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
 
@@ -204,7 +212,7 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
                   visible: status.value > 0,
                   child: Container(
                     color: status.value == 1 || status.value == 3 ? Colors.transparent : kBaseColor.withOpacity(0.5),
-                    padding: const EdgeInsets.only(right: 20),
+                    padding: const EdgeInsets.only(right: 14),
                     child: Column(
                       children: [
                         InkWell(
@@ -241,6 +249,43 @@ class _HeyWeatherTimeCardState extends State<HeyWeatherTimeCard> {
         ),
       ),
     ));
+  }
+
+  Widget _editContents() {
+    String time = widget.temperatureList[0].fcstTime ?? '0000';
+    int currentTime = int.parse(time);
+    String timeText = Utils.convertToTimeFormat(time);
+    int rainIndex = int.parse(widget.rainStatusList[0].fcstValue ?? '0');
+    String rainStatus = widget.rainStatusList[0].weatherCategory?.codeValues?[rainIndex] ?? '없음';
+    int skyIndex = int.parse(widget.skyStatusList[0].fcstValue ?? '0');
+    String skyStatus = widget.skyStatusList[0].weatherCategory?.codeValues?[skyIndex] ?? '';
+    int iconIndex = Utils.getIconIndex(rainStatus: rainStatus, skyStatus: skyStatus, currentTime: currentTime, sunrise: widget.sunrise, sunset: widget.sunset);
+
+    return Expanded(
+      child: Column(
+        children: [
+          const Spacer(),
+          Center(
+            child: Column(
+              children: [
+                SvgUtils.weatherIcon(
+                  context,
+                  '${kWeatherIconList[iconIndex]}_on',
+                  width: 48,
+                  height: 48,
+                ),
+                const SizedBox(height: 12),
+                HeyText.captionMedium1(
+                  timeText,
+                  fontSize: kFont14,
+                  color: kTextPointColor,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _weatherItem({

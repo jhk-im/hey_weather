@@ -154,6 +154,7 @@ class HeyCustomButton extends Container {
               text,
               color: kTextSecondaryColor,
             ),
+            const SizedBox(width: 2),
           ],
         ),
       ),

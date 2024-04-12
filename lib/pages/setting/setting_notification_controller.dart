@@ -183,9 +183,18 @@ class SettingNotificationController extends GetxController with WidgetsBindingOb
   _getNotificationList() async {
     var getUserNotificationList = await _repository.getUserNotificationList();
     getUserNotificationList.when(
-      success: (notificationList) {
-        notificationList.sort((a, b) => DateTime.parse(a.dateTime ?? '').compareTo(DateTime.parse(b.dateTime ?? '')));
-        _notificationList(notificationList);
+      success: (notificationList) async {
+        if (notificationList.isEmpty) {
+          DateTime now = DateTime.now();
+          DateTime morning7 = DateTime(now.year, now.month, now.day, 7);
+          await createNotification(morning7.toString());
+          DateTime evening5 = DateTime(now.year, now.month, now.day, 17);
+          await createNotification(evening5.toString());
+          _getNotificationList();
+        } else {
+          notificationList.sort((a, b) => DateTime.parse(a.dateTime ?? '').compareTo(DateTime.parse(b.dateTime ?? '')));
+          _notificationList(notificationList);
+        }
       },
       error: (Exception e) {
         logger.e('SettingNotificationController.getNotificationList $e');

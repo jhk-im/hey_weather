@@ -85,7 +85,7 @@ class SettingMainPage extends GetView<SettingMainController> {
                     ),
                   ),
 
-                  // Divider
+                  /*// Divider
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 20),
                     child: const Divider(color: kButtonColor, height: 1),
@@ -123,7 +123,7 @@ class SettingMainPage extends GetView<SettingMainController> {
                         ],
                       ),
                     ),
-                  ),
+                  ),*/
 
                   // Divider
                   Container(

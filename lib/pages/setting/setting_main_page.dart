@@ -201,7 +201,7 @@ class SettingMainPage extends GetView<SettingMainController> {
                   ),
 
                   // 응원의 커피
-                  Container(
+                  /*Container(
                     margin: const EdgeInsets.all(20),
                     child: GestureDetector(
                       onTap: controller.moveToCoffee,
@@ -239,7 +239,7 @@ class SettingMainPage extends GetView<SettingMainController> {
                         ),
                       ),
                     ),
-                  ),
+                  ),*/
                 ],
               ),
 

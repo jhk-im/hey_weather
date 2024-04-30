@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:logger/logger.dart';
-import 'package:device_info/device_info.dart';
-import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:ios_utsname_ext/extension.dart';
 
 class SettingMainController extends GetxController with WidgetsBindingObserver {
@@ -57,14 +57,14 @@ class SettingMainController extends GetxController with WidgetsBindingObserver {
     }
   }
 
-  moveToCoffee() async {
+  /*moveToCoffee() async {
     var url = 'https://www.buymeacoffee.com/heyweather';
     if (await canLaunchUrl(Uri.parse(url))) {
       await launchUrl(Uri.parse(url));
     } else {
       throw 'Could not launch $url';
     }
-  }
+  }*/
 
   Future<String> _getEmailBody() async {
     Map<String, dynamic> appInfo = await _getAppInfo();

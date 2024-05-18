@@ -46,3 +46,4 @@ app.*.map.json
 *.env
 *.freezed.dart
 *.g.dart
+*.jks

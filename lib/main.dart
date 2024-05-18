@@ -25,6 +25,10 @@ import 'package:hey_weather/repository/soruce/remote/weather_api.dart';
 import 'package:hey_weather/repository/soruce/weather_repository.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+FlutterLocalNotificationsPlugin();
 
 void main() async {
   await initializeDateFormatting('ko_KR', null);
@@ -55,6 +59,8 @@ void main() async {
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
+
+  
 
   runApp(const MyApp());
 }

@@ -1,4 +1,4 @@
-package co.teamsool.heyweather
+package com.teamsool.heyweather
 
 import io.flutter.embedding.android.FlutterActivity
 

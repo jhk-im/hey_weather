@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -25,12 +26,11 @@ import 'package:hey_weather/repository/soruce/remote/weather_api.dart';
 import 'package:hey_weather/repository/soruce/weather_repository.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
 
 void main() async {
+  // Set portrait orientation
+  WidgetsFlutterBinding.ensureInitialized();
+
   await initializeDateFormatting('ko_KR', null);
 
   await dotenv.load(fileName: 'assets/.env');
@@ -54,13 +54,11 @@ void main() async {
 
   await SharedPreferencesUtil().initialize();
 
-  // Set portrait orientation
-  WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
 
-  
+  await Firebase.initializeApp();
 
   runApp(const MyApp());
 }

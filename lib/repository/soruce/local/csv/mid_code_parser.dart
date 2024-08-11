@@ -4,7 +4,6 @@ import 'package:hey_weather/repository/soruce/mapper/weather_mapper.dart';
 import 'package:hey_weather/repository/soruce/remote/dto/mid_code_dto.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_code.dart';
 
-
 class MidCodeParser implements CsvParser<MidCode> {
   @override
   Future<List<MidCode>> parse(String csvString) async {

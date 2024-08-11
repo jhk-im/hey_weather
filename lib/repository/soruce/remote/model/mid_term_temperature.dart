@@ -18,24 +18,25 @@ class MidTermTemperature {
   int? taMax10;
   String? date;
 
-  MidTermTemperature(
-      {this.regId,
-        this.taMin3,
-        this.taMax3,
-        this.taMin4,
-        this.taMax4,
-        this.taMin5,
-        this.taMax5,
-        this.taMin6,
-        this.taMax6,
-        this.taMin7,
-        this.taMax7,
-        this.taMin8,
-        this.taMax8,
-        this.taMin9,
-        this.taMax9,
-        this.taMin10,
-        this.taMax10,});
+  MidTermTemperature({
+    this.regId,
+    this.taMin3,
+    this.taMax3,
+    this.taMin4,
+    this.taMax4,
+    this.taMin5,
+    this.taMax5,
+    this.taMin6,
+    this.taMax6,
+    this.taMin7,
+    this.taMax7,
+    this.taMin8,
+    this.taMax8,
+    this.taMin9,
+    this.taMax9,
+    this.taMin10,
+    this.taMax10,
+  });
 
   MidTermTemperature.fromJson(Map<String, dynamic> json) {
     regId = json['regId'];
@@ -94,10 +95,10 @@ class MidTaList {
 
   MidTaList(
       {this.dataType,
-        this.items,
-        this.pageNo,
-        this.numOfRows,
-        this.totalCount});
+      this.items,
+      this.pageNo,
+      this.numOfRows,
+      this.totalCount});
 
   MidTaList.fromJson(Map<String, dynamic> json) {
     dataType = json['dataType'];

@@ -43,144 +43,147 @@ class _HeyWeatherFeelCardState extends State<HeyWeatherFeelCard> {
     isFahrenheit(SharedPreferencesUtil().getBool(kFahrenheit));
 
     return Obx(() => Material(
-      color: Colors.transparent,
-      child: GestureDetector(
-        onTap: status.value == 1 || status.value == 2 ? () {
-          if (status.value == 1) {
-            status(2);
-          } else {
-            status(1);
-          }
-          widget.onSelect?.call(id, status.value == 2);
-        } : null,
-        child: ShakeWidget(
-          autoPlay: status.value == 3,
-          duration: const Duration(milliseconds: 5500),
-          shakeConstant: ShakeLittleConstant1(),
-          child: Container(
-            width: width,
-            height: 170,
-            padding: const EdgeInsets.only(top: 14, bottom: 20, left: 24),
-            decoration: BoxDecoration(
-              color: kBaseColor,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: status.value == 2 ? kPrimaryDarkerColor : kBaseColor,
-                width: 1, // 외곽선 두께
-              ),
-            ),
-            child: Stack(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(top: 6),
-                      child: Row(
-                        children: [
-                          SvgUtils.icon(
-                            context,
-                            'feel_temp',
-                            width: 20,
-                            height: 20,
-                          ),
-                          const SizedBox(width: 6),
-                          HeyText.bodySemiBold(
-                            'feel_temp'.tr,
-                            fontSize: kFont16,
-                            color: kTextDisabledColor,
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const Spacer(),
-
-                    Column(
-                      children: [
-                        Row(
-                          children: [
-                            HeyText.bodySemiBold(
-                              'highest'.tr,
-                              color: kTextPointColor,
-                            ),
-                            SvgUtils.icon(
-                              context,
-                              'highest',
-                              width: 24,
-                              height: 24,
-                            ),
-                            HeyText.largeTitleBold(
-                              '${isFahrenheit.value ? Utils.celsiusToFahrenheit(widget.max.toDouble()) : widget.max}°',
-                              color: kTextPointColor,
-                              fontSize: kFont32,
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            HeyText.bodySemiBold(
-                              'lowest'.tr,
-                              color: kTextPointColor,
-                            ),
-                            SvgUtils.icon(
-                              context,
-                              'lowest',
-                              width: 24,
-                              height: 24,
-                            ),
-                            HeyText.largeTitleBold(
-                              '${isFahrenheit.value ? Utils.celsiusToFahrenheit(widget.min.toDouble()) : widget.min}°',
-                              color: kIconColor,
-                              fontSize: kFont32,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+          color: Colors.transparent,
+          child: GestureDetector(
+            onTap: status.value == 1 || status.value == 2
+                ? () {
+                    if (status.value == 1) {
+                      status(2);
+                    } else {
+                      status(1);
+                    }
+                    widget.onSelect?.call(id, status.value == 2);
+                  }
+                : null,
+            child: ShakeWidget(
+              autoPlay: status.value == 3,
+              duration: const Duration(milliseconds: 5500),
+              shakeConstant: ShakeLittleConstant1(),
+              child: Container(
+                width: width,
+                height: 170,
+                padding: const EdgeInsets.only(top: 14, bottom: 20, left: 24),
+                decoration: BoxDecoration(
+                  color: kBaseColor,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: status.value == 2 ? kPrimaryDarkerColor : kBaseColor,
+                    width: 1, // 외곽선 두께
+                  ),
                 ),
-
-                Visibility(
-                  visible: status.value > 0,
-                  child: Container(
-                    color: status.value == 1 || status.value == 3 ? Colors.transparent : kBaseColor.withOpacity(0.5),
-                    padding: const EdgeInsets.only(right: 14),
-                    child: Column(
+                child: Stack(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        InkWell(
-                          splashColor: kBaseColor,
-                          highlightColor: Colors.transparent,
-                          hoverColor: Colors.transparent,
-                          onTap: status.value == 3 ? () {
-                            widget.onRemove?.call(id);
-                          } : null,
+                        Container(
+                          margin: const EdgeInsets.only(top: 6),
                           child: Row(
                             children: [
-                              const Spacer(),
                               SvgUtils.icon(
                                 context,
-                                status.value == 1
-                                    ? 'circle_check'
-                                    : status.value == 2
-                                    ? 'circle_check_selected'
-                                    : 'circle_minus',
-                                width: 24,
-                                height: 24,
+                                'feel_temp',
+                                width: 20,
+                                height: 20,
+                              ),
+                              const SizedBox(width: 6),
+                              HeyText.bodySemiBold(
+                                'feel_temp'.tr,
+                                fontSize: kFont16,
+                                color: kTextDisabledColor,
                               ),
                             ],
                           ),
                         ),
                         const Spacer(),
+                        Column(
+                          children: [
+                            Row(
+                              children: [
+                                HeyText.bodySemiBold(
+                                  'highest'.tr,
+                                  color: kTextPointColor,
+                                ),
+                                SvgUtils.icon(
+                                  context,
+                                  'highest',
+                                  width: 24,
+                                  height: 24,
+                                ),
+                                HeyText.largeTitleBold(
+                                  '${isFahrenheit.value ? Utils.celsiusToFahrenheit(widget.max.toDouble()) : widget.max}°',
+                                  color: kTextPointColor,
+                                  fontSize: kFont32,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                HeyText.bodySemiBold(
+                                  'lowest'.tr,
+                                  color: kTextPointColor,
+                                ),
+                                SvgUtils.icon(
+                                  context,
+                                  'lowest',
+                                  width: 24,
+                                  height: 24,
+                                ),
+                                HeyText.largeTitleBold(
+                                  '${isFahrenheit.value ? Utils.celsiusToFahrenheit(widget.min.toDouble()) : widget.min}°',
+                                  color: kIconColor,
+                                  fontSize: kFont32,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ],
                     ),
-                  ),
+                    Visibility(
+                      visible: status.value > 0,
+                      child: Container(
+                        color: status.value == 1 || status.value == 3
+                            ? Colors.transparent
+                            : kBaseColor.withOpacity(0.5),
+                        padding: const EdgeInsets.only(right: 14),
+                        child: Column(
+                          children: [
+                            InkWell(
+                              splashColor: kBaseColor,
+                              highlightColor: Colors.transparent,
+                              hoverColor: Colors.transparent,
+                              onTap: status.value == 3
+                                  ? () {
+                                      widget.onRemove?.call(id);
+                                    }
+                                  : null,
+                              child: Row(
+                                children: [
+                                  const Spacer(),
+                                  SvgUtils.icon(
+                                    context,
+                                    status.value == 1
+                                        ? 'circle_check'
+                                        : status.value == 2
+                                            ? 'circle_check_selected'
+                                            : 'circle_minus',
+                                    width: 24,
+                                    height: 24,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Spacer(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
-    ));
+        ));
   }
 }

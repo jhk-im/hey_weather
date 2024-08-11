@@ -23,26 +23,26 @@ class FineDust {
 
   FineDust(
       {this.so2Grade,
-        this.coFlag,
-        this.khaiValue,
-        this.so2Value,
-        this.coValue,
-        this.pm10Flag,
-        this.pm10Value,
-        this.pm10Value24,
-        this.pm25Value,
-        this.pm25Value24,
-        this.o3Grade,
-        this.khaiGrade,
-        this.no2Flag,
-        this.no2Grade,
-        this.o3Flag,
-        this.so2Flag,
-        this.dataTime,
-        this.coGrade,
-        this.no2Value,
-        this.pm10Grade,
-        this.o3Value});
+      this.coFlag,
+      this.khaiValue,
+      this.so2Value,
+      this.coValue,
+      this.pm10Flag,
+      this.pm10Value,
+      this.pm10Value24,
+      this.pm25Value,
+      this.pm25Value24,
+      this.o3Grade,
+      this.khaiGrade,
+      this.no2Flag,
+      this.no2Grade,
+      this.o3Flag,
+      this.so2Flag,
+      this.dataTime,
+      this.coGrade,
+      this.no2Value,
+      this.pm10Grade,
+      this.o3Value});
 
   FineDust.fromJson(Map<String, dynamic> json) {
     so2Grade = json['so2Grade'];
@@ -99,7 +99,6 @@ class FineDust {
     return 'FineDust: { 미세먼지(pm10Value): $pm10Value, 초미세먼지(pm25Value): $pm25Value, dateTime: $dataTime }';
   }
 }
-
 
 class DnstyList {
   int? totalCount;

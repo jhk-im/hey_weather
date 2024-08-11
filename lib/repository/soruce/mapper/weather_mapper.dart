@@ -139,8 +139,8 @@ extension ToShortTerm on WeatherShortTermEntity {
 
 extension ToShortTermEntity on ShortTerm {
   WeatherShortTermEntity toShortTermEntity() {
-    var entity =
-    WeatherShortTermEntity(category: category ?? '', fcstValue: fcstValue ?? '');
+    var entity = WeatherShortTermEntity(
+        category: category ?? '', fcstValue: fcstValue ?? '');
     entity.baseTime = baseTime;
     entity.baseDate = baseDate;
     entity.fcstTime = fcstTime;
@@ -305,7 +305,6 @@ extension ToMidTermLandEntity on MidTermLand {
     return entity;
   }
 }
-
 
 // 관측소
 extension ToObservatory on ObservatoryDto {

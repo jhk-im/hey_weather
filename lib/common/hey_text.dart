@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hey_weather/common/constants.dart';
 
-
 class HeyText extends Text {
-
-  const HeyText(super.data, {
+  const HeyText(
+    super.data, {
     super.key,
     super.style,
     super.textAlign,
@@ -33,7 +32,8 @@ class HeyText extends Text {
     );
   }
 
-  factory HeyText.captionMedium1(String text, {Color? color, double? fontSize}) {
+  factory HeyText.captionMedium1(String text,
+      {Color? color, double? fontSize}) {
     return HeyText(
       text,
       style: TextStyle(
@@ -133,7 +133,8 @@ class HeyText extends Text {
   }
 
   // Semi Bold
-  factory HeyText.footnoteSemiBold(String text, {Color? color, double? fontSize}) {
+  factory HeyText.footnoteSemiBold(String text,
+      {Color? color, double? fontSize}) {
     return HeyText(
       text,
       style: TextStyle(
@@ -144,7 +145,8 @@ class HeyText extends Text {
     );
   }
 
-  factory HeyText.subHeadlineSemiBold(String text, {Color? color, double? fontSize}) {
+  factory HeyText.subHeadlineSemiBold(String text,
+      {Color? color, double? fontSize}) {
     return HeyText(
       text,
       style: TextStyle(
@@ -155,7 +157,8 @@ class HeyText extends Text {
     );
   }
 
-  factory HeyText.callOutSemiBold(String text, {Color? color, double? fontSize, TextOverflow? textOverflow}) {
+  factory HeyText.callOutSemiBold(String text,
+      {Color? color, double? fontSize, TextOverflow? textOverflow}) {
     return HeyText(
       text,
       style: TextStyle(
@@ -167,7 +170,8 @@ class HeyText extends Text {
     );
   }
 
-  factory HeyText.bodySemiBold(String text, {Color? color, double? fontSize, TextOverflow? textOverflow}) {
+  factory HeyText.bodySemiBold(String text,
+      {Color? color, double? fontSize, TextOverflow? textOverflow}) {
     return HeyText(
       text,
       style: TextStyle(
@@ -213,7 +217,8 @@ class HeyText extends Text {
     );
   }
 
-  factory HeyText.largeTitleBold(String text, {Color? color, double? fontSize}) {
+  factory HeyText.largeTitleBold(String text,
+      {Color? color, double? fontSize}) {
     return HeyText(
       text,
       style: TextStyle(
@@ -222,7 +227,6 @@ class HeyText extends Text {
         fontSize: fontSize ?? kFont34,
         height: 1.2,
       ),
-
     );
   }
 }

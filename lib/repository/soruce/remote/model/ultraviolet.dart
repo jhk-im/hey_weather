@@ -165,10 +165,10 @@ class UltravioletList {
 
   UltravioletList(
       {this.dataType,
-        this.items,
-        this.pageNo,
-        this.numOfRows,
-        this.totalCount});
+      this.items,
+      this.pageNo,
+      this.numOfRows,
+      this.totalCount});
 
   UltravioletList.fromJson(Map<String, dynamic> json) {
     dataType = json['dataType'];

@@ -40,46 +40,58 @@ class SunRiseSet {
   // int? suntransit;
 
   factory SunRiseSet.fromJson(Map<String, dynamic> json) => SunRiseSet(
-    locdate: json["locdate"].toString().replaceAll(" ", "").replaceAll("-", ""),
-    location: json["location"].toString().replaceAll(" ", "").replaceAll("-", ""),
-    sunrise: json["sunrise"].toString().replaceAll(" ", "").replaceAll("-", ""),
-    sunset: json["sunset"].toString().replaceAll(" ", "").replaceAll("-", ""),
-    moonrise: json["moonrise"].toString().replaceAll(" ", "").replaceAll("-", ""),
-    moonset: json["moonset"].toString().replaceAll(" ", "").replaceAll("-", ""),
-    longitudeNum: json["longitudeNum"].toString().replaceAll(" ", "").replaceAll("-", ""),
-    latitudeNum: json["latitudeNum"].toString().replaceAll(" ", "").replaceAll("-", ""),
-    // aste: json["aste"],
-    // astm: json["astm"],
-    // civile: json["civile"],
-    // civilm: json["civilm"],
-    // latitude: json["latitude"],
-    // longitude: json["longitude"],
-    // moontransit: json["moontransit"],
-    // naute: json["naute"],
-    // nautm: json["nautm"],
-    // suntransit: json["suntransit"],
-  );
+        locdate:
+            json["locdate"].toString().replaceAll(" ", "").replaceAll("-", ""),
+        location:
+            json["location"].toString().replaceAll(" ", "").replaceAll("-", ""),
+        sunrise:
+            json["sunrise"].toString().replaceAll(" ", "").replaceAll("-", ""),
+        sunset:
+            json["sunset"].toString().replaceAll(" ", "").replaceAll("-", ""),
+        moonrise:
+            json["moonrise"].toString().replaceAll(" ", "").replaceAll("-", ""),
+        moonset:
+            json["moonset"].toString().replaceAll(" ", "").replaceAll("-", ""),
+        longitudeNum: json["longitudeNum"]
+            .toString()
+            .replaceAll(" ", "")
+            .replaceAll("-", ""),
+        latitudeNum: json["latitudeNum"]
+            .toString()
+            .replaceAll(" ", "")
+            .replaceAll("-", ""),
+        // aste: json["aste"],
+        // astm: json["astm"],
+        // civile: json["civile"],
+        // civilm: json["civilm"],
+        // latitude: json["latitude"],
+        // longitude: json["longitude"],
+        // moontransit: json["moontransit"],
+        // naute: json["naute"],
+        // nautm: json["nautm"],
+        // suntransit: json["suntransit"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "locdate": locdate,
-    "location": location,
-    "sunrise": sunrise,
-    "sunset": sunset,
-    "moonrise": moonrise,
-    "moonset": moonset,
-    "longitudeNum": longitudeNum,
-    "latitudeNum": latitudeNum,
-    // "aste": aste,
-    // "astm": astm,
-    // "civile": civile,
-    // "civilm": civilm,
-    // "latitude": latitude,
-    // "longitude": longitude,
-    // "moontransit": moontransit,
-    // "naute": naute,
-    // "nautm": nautm,
-    // "suntransit": suntransit,
-  };
+        "locdate": locdate,
+        "location": location,
+        "sunrise": sunrise,
+        "sunset": sunset,
+        "moonrise": moonrise,
+        "moonset": moonset,
+        "longitudeNum": longitudeNum,
+        "latitudeNum": latitudeNum,
+        // "aste": aste,
+        // "astm": astm,
+        // "civile": civile,
+        // "civilm": civilm,
+        // "latitude": latitude,
+        // "longitude": longitude,
+        // "moontransit": moontransit,
+        // "naute": naute,
+        // "nautm": nautm,
+        // "suntransit": suntransit,
+      };
 
   @override
   String toString() {

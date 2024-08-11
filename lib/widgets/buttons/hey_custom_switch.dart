@@ -16,7 +16,6 @@ class HeyCustomSwitch extends StatefulWidget {
 }
 
 class _HeyCustomSwitchState extends State<HeyCustomSwitch> {
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -29,8 +28,8 @@ class _HeyCustomSwitchState extends State<HeyCustomSwitch> {
           height: 27, // 전체 Switch의 세로 크기
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15), // 둥근 테두리로 만들기
-              color: widget.isSelected ? kPrimaryDarkerColor : kTextDisabledColor
-          ),
+              color:
+                  widget.isSelected ? kPrimaryDarkerColor : kTextDisabledColor),
           child: Stack(
             children: [
               Positioned(

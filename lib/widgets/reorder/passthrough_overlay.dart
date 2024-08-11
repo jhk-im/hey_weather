@@ -393,7 +393,7 @@ class PassthroughOverlayState extends State<PassthroughOverlay>
 /// For convenience, it is legal to use [Positioned] widgets around the offstage
 /// widgets.
 class _Theatre extends RenderObjectWidget {
-  _Theatre({
+  const _Theatre({
     required this.offstage,
     this.onstage,
   });
@@ -528,8 +528,9 @@ class _RenderTheatre extends RenderBox
         ContainerRenderObjectMixin<RenderBox, StackParentData> {
   @override
   void setupParentData(RenderObject child) {
-    if (child.parentData is! StackParentData)
+    if (child.parentData is! StackParentData) {
       child.parentData = StackParentData();
+    }
   }
 
   // Because both RenderObjectWithChildMixin and ContainerRenderObjectMixin

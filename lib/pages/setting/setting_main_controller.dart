@@ -27,7 +27,8 @@ class SettingMainController extends GetxController with WidgetsBindingObserver {
 
   @override
   void onInit() {
-    _isNotificationPermission(SharedPreferencesUtil().getBool(kNotificationPermission));
+    _isNotificationPermission(
+        SharedPreferencesUtil().getBool(kNotificationPermission));
     _isFahrenheit(SharedPreferencesUtil().getBool(kFahrenheit));
     super.onInit();
   }
@@ -40,7 +41,8 @@ class SettingMainController extends GetxController with WidgetsBindingObserver {
   }
 
   updateNotification() {
-    _isNotificationPermission(SharedPreferencesUtil().getBool(kNotificationPermission));
+    _isNotificationPermission(
+        SharedPreferencesUtil().getBool(kNotificationPermission));
   }
 
   sendEmail() async {
@@ -48,7 +50,8 @@ class SettingMainController extends GetxController with WidgetsBindingObserver {
     var subject = '헤이날씨 의견보내기';
     var body = await _getEmailBody();
 
-    var url = 'mailto:$email?subject=${Uri.encodeComponent(subject)}&body=${Uri.encodeComponent(body)}';
+    var url =
+        'mailto:$email?subject=${Uri.encodeComponent(subject)}&body=${Uri.encodeComponent(body)}';
 
     if (await canLaunchUrl(Uri.parse(url))) {
       await launchUrl(Uri.parse(url));
@@ -87,9 +90,7 @@ class SettingMainController extends GetxController with WidgetsBindingObserver {
 
   Future<Map<String, dynamic>> _getAppInfo() async {
     PackageInfo info = await PackageInfo.fromPlatform();
-    return {
-      "헤이웨더 버전": info.version
-    };
+    return {"헤이웨더 버전": info.version};
   }
 
   Future<Map<String, dynamic>> _getDeviceInfo() async {
@@ -102,10 +103,8 @@ class SettingMainController extends GetxController with WidgetsBindingObserver {
       } else if (GetPlatform.isIOS) {
         deviceData = _readIosDeviceInfo(await deviceInfoPlugin.iosInfo);
       }
-    } catch(error) {
-      deviceData = {
-        "Error": "Failed to get platform version."
-      };
+    } catch (error) {
+      deviceData = {"Error": "Failed to get platform version."};
     }
 
     return deviceData;
@@ -128,9 +127,6 @@ class SettingMainController extends GetxController with WidgetsBindingObserver {
     var version = info.systemVersion;
     var machine = info.utsname.machine.iOSProductName;
 
-    return {
-      "OS 버전": "$systemName $version",
-      "기기": machine
-    };
+    return {"OS 버전": "$systemName $version", "기기": machine};
   }
 }

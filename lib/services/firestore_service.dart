@@ -13,12 +13,8 @@ class FirestoreService {
       await _db.collection('users').doc(token).set({
         'token': token,
         'alarms': {
-          '07:00': {
-            'enabled': true
-          },
-          '17:00': {
-            'enabled': true
-          }
+          '07:00': {'enabled': true},
+          '17:00': {'enabled': true}
         },
         'createdAt': FieldValue.serverTimestamp(),
       });
@@ -27,17 +23,20 @@ class FirestoreService {
     }
   }
 
-  Future<void> updateAlarm(DateTime prevTime, DateTime updateTime, bool isEnabled) async {
+  Future<void> updateAlarm(
+      DateTime prevTime, DateTime updateTime, bool isEnabled) async {
     String? token = await FirebaseMessaging.instance.getToken();
     if (token != null) {
       logger.i("FCM Token and Alarm update: $token");
-      String prevAlarmKey = prevTime.toIso8601String().split('T')[1].substring(0, 5);
+      String prevAlarmKey =
+          prevTime.toIso8601String().split('T')[1].substring(0, 5);
       // 기존 알람 삭제
       await _db.collection('users').doc(token).update({
         'alarms.$prevAlarmKey': FieldValue.delete(),
       });
 
-      String updateAlarmKey = updateTime.toIso8601String().split('T')[1].substring(0, 5);
+      String updateAlarmKey =
+          updateTime.toIso8601String().split('T')[1].substring(0, 5);
       await _db.collection('users').doc(token).update({
         'alarms.$updateAlarmKey': {
           'enabled': isEnabled,
@@ -74,7 +73,8 @@ class FirestoreService {
     String? token = await FirebaseMessaging.instance.getToken();
     if (token != null) {
       logger.i("FCM Token and Alarm Enabled: $token");
-      String alarmKey = alarmTime.toIso8601String().split('T')[1].substring(0, 5);
+      String alarmKey =
+          alarmTime.toIso8601String().split('T')[1].substring(0, 5);
       await _db.collection('users').doc(token).update({
         'alarms.$alarmKey.enabled': isEnabled,
       });

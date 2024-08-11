@@ -30,32 +30,32 @@ class MidTermLand {
 
   MidTermLand(
       {this.regId,
-        this.rnSt3Am,
-        this.rnSt3Pm,
-        this.rnSt4Am,
-        this.rnSt4Pm,
-        this.rnSt5Am,
-        this.rnSt5Pm,
-        this.rnSt6Am,
-        this.rnSt6Pm,
-        this.rnSt7Am,
-        this.rnSt7Pm,
-        this.rnSt8,
-        this.rnSt9,
-        this.rnSt10,
-        this.wf3Am,
-        this.wf3Pm,
-        this.wf4Am,
-        this.wf4Pm,
-        this.wf5Am,
-        this.wf5Pm,
-        this.wf6Am,
-        this.wf6Pm,
-        this.wf7Am,
-        this.wf7Pm,
-        this.wf8,
-        this.wf9,
-        this.wf10});
+      this.rnSt3Am,
+      this.rnSt3Pm,
+      this.rnSt4Am,
+      this.rnSt4Pm,
+      this.rnSt5Am,
+      this.rnSt5Pm,
+      this.rnSt6Am,
+      this.rnSt6Pm,
+      this.rnSt7Am,
+      this.rnSt7Pm,
+      this.rnSt8,
+      this.rnSt9,
+      this.rnSt10,
+      this.wf3Am,
+      this.wf3Pm,
+      this.wf4Am,
+      this.wf4Pm,
+      this.wf5Am,
+      this.wf5Pm,
+      this.wf6Am,
+      this.wf6Pm,
+      this.wf7Am,
+      this.wf7Pm,
+      this.wf8,
+      this.wf9,
+      this.wf10});
 
   MidTermLand.fromJson(Map<String, dynamic> json) {
     regId = json['regId'];
@@ -134,10 +134,10 @@ class MidLandFcstList {
 
   MidLandFcstList(
       {this.dataType,
-        this.items,
-        this.pageNo,
-        this.numOfRows,
-        this.totalCount});
+      this.items,
+      this.pageNo,
+      this.numOfRows,
+      this.totalCount});
 
   MidLandFcstList.fromJson(Map<String, dynamic> json) {
     dataType = json['dataType'];

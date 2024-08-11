@@ -61,10 +61,10 @@ class ShortTermList {
 
   ShortTermList(
       {this.dataType,
-        this.items,
-        this.pageNo,
-        this.numOfRows,
-        this.totalCount});
+      this.items,
+      this.pageNo,
+      this.numOfRows,
+      this.totalCount});
 
   ShortTermList.fromJson(Map<String, dynamic> json) {
     dataType = json['dataType'];

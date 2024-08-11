@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
@@ -7,13 +8,16 @@ import 'package:hey_weather/common/hey_dialog.dart';
 import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:hey_weather/common/utils.dart';
 import 'package:hey_weather/getx/routes.dart';
+import 'package:hey_weather/repository/soruce/local/model/user_notification.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_term_land.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_term_temperature.dart';
 import 'package:hey_weather/repository/soruce/remote/model/short_term.dart';
 import 'package:hey_weather/repository/soruce/weather_repository.dart';
+import 'package:hey_weather/services/firestore_service.dart';
 import 'package:logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:uuid/uuid.dart';
 
 class HomeController extends GetxController with WidgetsBindingObserver {
   final WeatherRepository _repository = GetIt.I<WeatherRepository>();
@@ -159,6 +163,12 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     super.onInit();
     getData();
+
+    _getNotificationList();
+    FirebaseMessaging.instance.getToken().then((String? token) {
+      assert(token != null);
+      logger.i('FCM Token: $token');
+    });
   }
 
   @override
@@ -702,5 +712,34 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     }, error: (Exception e) {
       logger.e('HomeController.updateUserAddressList $e');
     });
+  }
+
+  _getNotificationList() async {
+    var getUserNotificationList = await _repository.getUserNotificationList();
+    getUserNotificationList.when(
+      success: (notificationList) async {
+        if (notificationList.isEmpty) {
+          DateTime now = DateTime.now();
+          DateTime morning7 = DateTime(now.year, now.month, now.day, 7);
+          await createNotification(morning7.toString());
+          DateTime evening5 = DateTime(now.year, now.month, now.day, 17);
+          await createNotification(evening5.toString());
+
+          await FirestoreService().initialTokenAndDefaultAlarms();
+        }
+      },
+      error: (Exception e) {
+        logger.e('SettingNotificationController.getNotificationList $e');
+      },
+    );
+  }
+
+  createNotification(String dateTime) async {
+    String uuid = const Uuid().v4();
+    final newNotification = UserNotification();
+    newNotification.id = uuid;
+    newNotification.dateTime = dateTime;
+    newNotification.isOn = true;
+    await _repository.updateUserNotification(newNotification);
   }
 }

@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
@@ -6,12 +7,15 @@ import 'package:hey_weather/common/hey_dialog.dart';
 import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:hey_weather/repository/soruce/local/model/user_notification.dart';
 import 'package:hey_weather/repository/soruce/weather_repository.dart';
+import 'package:hey_weather/services/firestore_service.dart';
 import 'package:logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 
 class SettingNotificationController extends GetxController with WidgetsBindingObserver {
   final WeatherRepository _repository = GetIt.I<WeatherRepository>();
+
+  final FirestoreService _firestoreService = FirestoreService();
 
   final RxBool _isLoading = false.obs;
   bool get isLoading => _isLoading.value;
@@ -63,15 +67,28 @@ class SettingNotificationController extends GetxController with WidgetsBindingOb
     SharedPreferencesUtil().setBool(kNotificationPermission, status.isGranted);
   }
 
+  _updateAllNotification(bool isOn) async {
+    await _firestoreService.updateAllAlarm(isOn);
+
+    for (var value in notificationList) {
+      value.isOn = isOn;
+      await _repository.updateUserNotification(value);
+    }
+
+    _getNotificationList();
+  }
+
   /// User Interaction
   notificationPermissionToggle(bool isOn) async {
     _isUpdated(true);
     if (!isOn) {
+      _updateAllNotification(isOn);
       _isNotificationPermission(isOn);
       SharedPreferencesUtil().setBool(kNotificationPermission, isOn);
     } else {
       var status = await Permission.notification.status;
       if (status.isGranted) {
+        _updateAllNotification(isOn);
         _isNotificationPermission(isOn);
         SharedPreferencesUtil().setBool(kNotificationPermission, isOn);
       } else {
@@ -95,6 +112,9 @@ class SettingNotificationController extends GetxController with WidgetsBindingOb
     notification.isOn = !isOn;
     await _repository.updateUserNotification(notification);
     notificationList[index] = notification;
+
+    DateTime dateTime1 = DateTime.parse(notification.dateTime ?? '');
+    await _firestoreService.updateAlarmEnabled(dateTime1, !isOn);
   }
 
   editModeToggle() async {
@@ -145,7 +165,9 @@ class SettingNotificationController extends GetxController with WidgetsBindingOb
 
     if (hour1 == hour2) {
       notification.dateTime = updateDateTime;
+      bool isEnabled = notification.isOn ?? false;
       await _repository.updateUserNotification(notification);
+      await _firestoreService.updateAlarm(dateTime1, dateTime2, isEnabled);
       _notificationList[index] = notification;
       _notificationList.sort((a, b) => DateTime.parse(a.dateTime ?? '').compareTo(DateTime.parse(b.dateTime ?? '')));
     } else {
@@ -158,7 +180,9 @@ class SettingNotificationController extends GetxController with WidgetsBindingOb
       });
       if (checkNotification == null) {
         notification.dateTime = updateDateTime;
+        bool isEnabled = notification.isOn ?? false;
         await _repository.updateUserNotification(notification);
+        await _firestoreService.updateAlarm(dateTime1, dateTime2, isEnabled);
         _notificationList[index] = notification;
         _notificationList.sort((a, b) => DateTime.parse(a.dateTime ?? '').compareTo(DateTime.parse(b.dateTime ?? '')));
       } else {

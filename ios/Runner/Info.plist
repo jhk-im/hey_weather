@@ -43,6 +43,18 @@
 	<string>꼭 필요한 날씨 정보만\n간단한 푸시 알림으로 보내드려요</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+    <true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+        <string>remote-notification</string>
+	</array>
+	<key>NSAppTransportSecurity</key>
+    <dict>
+      <key>NSAllowsArbitraryLoads</key>
+      <true/>
+    </dict>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

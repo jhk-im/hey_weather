@@ -4,7 +4,6 @@ import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class SplashController extends GetxController {
-
   @override
   void onInit() {
     super.onInit();
@@ -49,7 +48,7 @@ class SplashController extends GetxController {
     } else {
       if (permission == Permission.location) {
         SharedPreferencesUtil().setBool(kLocationPermission, true);
-      }  else if (permission == Permission.notification) {
+      } else if (permission == Permission.notification) {
         SharedPreferencesUtil().setBool(kNotificationPermission, true);
       }
     }

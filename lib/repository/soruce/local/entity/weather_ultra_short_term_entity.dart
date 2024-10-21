@@ -22,5 +22,8 @@ class WeatherUltraShortTermEntity extends HiveObject {
   int? nx;
   @HiveField(8)
   int? ny;
-  WeatherUltraShortTermEntity({required this.category, required this.obsrValue,});
+  WeatherUltraShortTermEntity({
+    required this.category,
+    required this.obsrValue,
+  });
 }

@@ -70,7 +70,6 @@ class Meta {
     this.totalCount,
     this.pageableCount,
     this.isEnd,
-
   });
 
   Meta.fromJson(Map<String, dynamic> json) {

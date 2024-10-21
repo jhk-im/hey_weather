@@ -108,8 +108,10 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   int get timeSunset => _timeSunset.value;
 
   // 주간 Card
-  final Rx<MidTermTemperature> _weekMidTermTemperature = MidTermTemperature().obs;
-  MidTermTemperature get weekMidTermTemperature => _weekMidTermTemperature.value;
+  final Rx<MidTermTemperature> _weekMidTermTemperature =
+      MidTermTemperature().obs;
+  MidTermTemperature get weekMidTermTemperature =>
+      _weekMidTermTemperature.value;
   final Rx<MidTermLand> _weekMidTermLand = MidTermLand().obs;
   MidTermLand get weekMidTermLand => _weekMidTermLand.value;
 
@@ -200,12 +202,9 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     if (Get.context != null && !_isOnBoard) {
       _isOnBoard = true;
       SharedPreferencesUtil().setBool(kOnBoard, true);
-      HeyBottomSheet.showOnBoardingBottomSheet(
-          Get.context!,
-          onAdd: (idList) {
-            updateUserMyWeather(idList, isUpdate: true);
-          }
-      );
+      HeyBottomSheet.showOnBoardingBottomSheet(Get.context!, onAdd: (idList) {
+        updateUserMyWeather(idList, isUpdate: true);
+      });
     }
   }
 
@@ -308,19 +307,23 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   /// Data
   Future getData() async {
     // 사용자 주소 리스트
-    var getUserAddressList =  await _repository.getUserAddressList();
+    var getUserAddressList = await _repository.getUserAddressList();
     getUserAddressList.when(success: (addressList) async {
       // 최근 선택 주소 idList
-      var getUserAddressRecentIdList =  await _repository.getUserAddressRecentIdList();
+      var getUserAddressRecentIdList =
+          await _repository.getUserAddressRecentIdList();
       getUserAddressRecentIdList.when(
         success: (idList) {
-          addressList.sort((a, b) => idList.indexOf(a.id!).compareTo(idList.indexOf(b.id!)));
+          addressList.sort(
+              (a, b) => idList.indexOf(a.id!).compareTo(idList.indexOf(b.id!)));
           // 현재 위치인 경우 업데이트
           if (addressList.first.id == kCurrentLocationId) {
             _currentAddressId(kCurrentLocationId);
-            _getUpdateAddressWithCoordinate(isAddressUpdate: true, addressList: addressList);
+            _getUpdateAddressWithCoordinate(
+                isAddressUpdate: true, addressList: addressList);
           } else {
-            _addressText('${addressList.first.region2depthName} ${addressList.first.region3depthName}');
+            _addressText(
+                '${addressList.first.region2depthName} ${addressList.first.region3depthName}');
             _currentAddressId(addressList.first.id);
             _getUpdateAddressWithCoordinate(addressList: addressList);
           }
@@ -331,10 +334,10 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       );
       _getUserMyWeatherIdList();
       _showOnboardBottomSheet();
-
     }, error: (Exception e) async {
       // 최초 진입
-      logger.i('HomeController.getData -> empty getUserAddressList (init first)');
+      logger
+          .i('HomeController.getData -> empty getUserAddressList (init first)');
       _currentAddressId(kCurrentLocationId);
       await _repository.insertUserAddressEditIdList(kCurrentLocationId);
       await _repository.insertUserAddressRecentIdList(kCurrentLocationId);
@@ -343,26 +346,32 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     });
   }
 
-  Future _getUpdateAddressWithCoordinate({bool isAddressUpdate = false, List<Address>? addressList}) async {
-    logger.d('getUpdateAddressWithCoordinate() currentAddressId -> $currentAddressId');
-    var getUpdateAddressWithCoordinate = await _repository.getUpdateAddressWithCoordinate(currentAddressId);
+  Future _getUpdateAddressWithCoordinate(
+      {bool isAddressUpdate = false, List<Address>? addressList}) async {
+    logger.d(
+        'getUpdateAddressWithCoordinate() currentAddressId -> $currentAddressId');
+    var getUpdateAddressWithCoordinate =
+        await _repository.getUpdateAddressWithCoordinate(currentAddressId);
     getUpdateAddressWithCoordinate.when(success: (address) async {
-      if (addressList != null) { // 리스트 업데이트
-        final oldAddress = addressList.firstWhere((element) => element.id == kCurrentLocationId);
+      if (addressList != null) {
+        // 리스트 업데이트
+        final oldAddress = addressList
+            .firstWhere((element) => element.id == kCurrentLocationId);
         final index = addressList.indexOf(oldAddress);
         addressList.remove(oldAddress);
         addressList.insert(index, address);
         if (isAddressUpdate) {
-          _addressText('${addressList.first.region2depthName} ${addressList.first.region3depthName}');
+          _addressText(
+              '${addressList.first.region2depthName} ${addressList.first.region3depthName}');
         }
         _recentAddressList(addressList);
-      } else { // 최초 진입
+      } else {
+        // 최초 진입
         _addressText('${address.region2depthName} ${address.region3depthName}');
         _recentAddressList.add(address);
       }
 
       _updateWeatherWidget(address);
-
     }, error: (Exception e) {
       logger.e('HomeController.getUpdateAddressWithCoordinate $e');
     });
@@ -384,7 +393,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     double longitude = address.x ?? 0;
     double latitude = address.y ?? 0;
     // 일출 일몰
-    var getSunRiseSet = await _repository.getSunRiseSetWithCoordinate(addressId, longitude, latitude);
+    var getSunRiseSet = await _repository.getSunRiseSetWithCoordinate(
+        addressId, longitude, latitude);
     getSunRiseSet.when(success: (sunRiseSet) {
       // logger.i('HomeController.getSunRiseSetWithCoordinate success');
       var sunrise = sunRiseSet.sunrise ?? '0500';
@@ -403,12 +413,14 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     String depth1 = address.region1depthName ?? '';
     String depth2 = address.region2depthName ?? '';
     String addressId = address.id ?? '';
-    var getObservatory = await _repository.getObservatoryWithAddress(depth1, depth2);
+    var getObservatory =
+        await _repository.getObservatoryWithAddress(depth1, depth2);
     getObservatory.when(success: (observatory) async {
       // logger.i('HomeController.getObservatoryWithAddress success');
 
       // 자외선
-      var getUltraviolet = await _repository.getUltraviolet(addressId, observatory.code.toString());
+      var getUltraviolet = await _repository.getUltraviolet(
+          addressId, observatory.code.toString());
       getUltraviolet.when(success: (ultraviolet) {
         // logger.i('HomeController.getUltraviolet success');
         _ultraviolet(int.parse(ultraviolet.h0 ?? '0'));
@@ -447,7 +459,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     double longitude = address.x ?? 0;
     double latitude = address.y ?? 0;
     String addressId = address.id ?? '';
-    var getUltraShortTerm = await _repository.getUltraShortTermList(addressId, longitude, latitude);
+    var getUltraShortTerm =
+        await _repository.getUltraShortTermList(addressId, longitude, latitude);
     getUltraShortTerm.when(success: (ultraShortTermList) async {
       // logger.i('HomeController.getUltraShortTermList success');
 
@@ -469,7 +482,6 @@ class HomeController extends GetxController with WidgetsBindingObserver {
             _windDirection(value.round());
         }
       }
-
     }, error: (e) {
       logger.e('HomeController.getUltraShortTermList error -> $e');
     });
@@ -480,12 +492,15 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     double latitude = address.y ?? 0;
     String addressId = address.id ?? '';
 
-    var getUltraShortTermSixTime = await _repository.getUltraShortTermSixTime(addressId, longitude, latitude);
+    var getUltraShortTermSixTime = await _repository.getUltraShortTermSixTime(
+        addressId, longitude, latitude);
     getUltraShortTermSixTime.when(success: (ultraSixTime) async {
       // logger.i('HomeController.getUltraShortTermSixTime success');
 
       // 기온
-      var temperatureFirstList = ultraSixTime.where((element) => element.category == kWeatherCategoryTemperature).toList();
+      var temperatureFirstList = ultraSixTime
+          .where((element) => element.category == kWeatherCategoryTemperature)
+          .toList();
       for (var element in temperatureFirstList) {
         element.weatherCategory?.name = '기온(1시간)';
         element.category = kWeatherCategoryTemperatureShort;
@@ -493,46 +508,65 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         element.baseTime = newBaseTime;
       }
       // 하늘 상태
-      var skyFirstList = ultraSixTime.where((element) => element.category == kWeatherCategorySky).toList();
+      var skyFirstList = ultraSixTime
+          .where((element) => element.category == kWeatherCategorySky)
+          .toList();
       for (var element in skyFirstList) {
         var newBaseTime = element.baseTime?.replaceAll('30', '00');
         element.baseTime = newBaseTime;
       }
       // 강수 형태
-      var rainStatusFirstList = ultraSixTime.where((element) => element.category == kWeatherCategoryRainStatus).toList();
+      var rainStatusFirstList = ultraSixTime
+          .where((element) => element.category == kWeatherCategoryRainStatus)
+          .toList();
       for (var element in rainStatusFirstList) {
         if (rainStatusFirstList.indexOf(element) == 0) {
-          var fcstValue = element.weatherCategory?.codeValues?.indexOf(rainStatusText).toString();
+          var fcstValue = element.weatherCategory?.codeValues
+              ?.indexOf(rainStatusText)
+              .toString();
           element.fcstValue = fcstValue;
         }
         var newBaseTime = element.baseTime?.replaceAll('30', '00');
         element.baseTime = newBaseTime;
       }
 
-      var getShortTermList = await _repository.getShortTermList(addressId, longitude, latitude);
+      var getShortTermList =
+          await _repository.getShortTermList(addressId, longitude, latitude);
       getShortTermList.when(success: (shortTermList) async {
         // logger.i('HomeController.getShortTermList success');
 
         DateTime dateTime = DateTime.now();
-        DateTime currentDateTime = DateTime(dateTime.year, dateTime.month, dateTime.day, dateTime.hour + 5);
+        DateTime currentDateTime = DateTime(
+            dateTime.year, dateTime.month, dateTime.day, dateTime.hour + 5);
         var sevenHoursLater = currentDateTime.add(const Duration(hours: 7));
 
         var shortTermListSixTime = shortTermList.where((item) {
-          var forecastDateTime = DateTime.parse("${item.fcstDate} ${item.fcstTime.toString().padLeft(4, '0')}");
-          return forecastDateTime.isAfter(currentDateTime) && forecastDateTime.isBefore(sevenHoursLater);
+          var forecastDateTime = DateTime.parse(
+              "${item.fcstDate} ${item.fcstTime.toString().padLeft(4, '0')}");
+          return forecastDateTime.isAfter(currentDateTime) &&
+              forecastDateTime.isBefore(sevenHoursLater);
         }).toList();
 
         // 기온
-        var temperatureNextList = shortTermListSixTime.where((element) => element.category == kWeatherCategoryTemperatureShort).toList();
+        var temperatureNextList = shortTermListSixTime
+            .where((element) =>
+                element.category == kWeatherCategoryTemperatureShort)
+            .toList();
         var temperatureList = temperatureFirstList + temperatureNextList;
         // 하늘
-        var skyNextList = shortTermListSixTime.where((element) => element.category == kWeatherCategorySky).toList();
+        var skyNextList = shortTermListSixTime
+            .where((element) => element.category == kWeatherCategorySky)
+            .toList();
         var skyList = skyFirstList + skyNextList;
         // 강수 형태
-        var rainStatusNextList = shortTermListSixTime.where((element) => element.category == kWeatherCategoryRainStatus).toList();
+        var rainStatusNextList = shortTermListSixTime
+            .where((element) => element.category == kWeatherCategoryRainStatus)
+            .toList();
         var rainStatusList = rainStatusFirstList + rainStatusNextList;
         // 강수 확률
-        var rainPercentList = shortTermList.where((element) => element.category == kWeatherCategoryRainPercent).toList();
+        var rainPercentList = shortTermList
+            .where((element) => element.category == kWeatherCategoryRainPercent)
+            .toList();
 
         _timeTemperatureList(temperatureList);
         _timeSkyStatusList(skyList);
@@ -540,11 +574,18 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         _timeRainPercentList(rainPercentList);
         _rainPercentage(int.parse(rainPercentList[0].fcstValue ?? '0'));
 
-        var rainTempPercentList = rainPercentList.sublist(1, rainPercentList.length);
-        var maxRainValue = rainTempPercentList.reduce((value, element) => int.parse(value.fcstValue ?? '0') > int.parse(element.fcstValue ?? '0') ? value : element);
-        ShortTerm? maxFcstValueObject = rainTempPercentList.firstWhereOrNull((element) => element.fcstValue == maxRainValue.fcstValue);
+        var rainTempPercentList =
+            rainPercentList.sublist(1, rainPercentList.length);
+        var maxRainValue = rainTempPercentList.reduce((value, element) =>
+            int.parse(value.fcstValue ?? '0') >
+                    int.parse(element.fcstValue ?? '0')
+                ? value
+                : element);
+        ShortTerm? maxFcstValueObject = rainTempPercentList.firstWhereOrNull(
+            (element) => element.fcstValue == maxRainValue.fcstValue);
         if (maxFcstValueObject != null) {
-          _homeRainTimeText(Utils.convertToTimeFormat(maxFcstValueObject.fcstTime ?? '0000'));
+          _homeRainTimeText(
+              Utils.convertToTimeFormat(maxFcstValueObject.fcstTime ?? '0000'));
           _homeRainPercent(int.parse(maxFcstValueObject.fcstValue ?? '0'));
         }
 
@@ -557,10 +598,17 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         String time = temperatureList[0].fcstTime ?? '0000';
         int currentTime = int.parse(time);
         int rainIndex = int.parse(rainStatusList[0].fcstValue ?? '0');
-        String rainStatus = rainStatusList[0].weatherCategory?.codeValues?[rainIndex] ?? '없음';
+        String rainStatus =
+            rainStatusList[0].weatherCategory?.codeValues?[rainIndex] ?? '없음';
         int skyIndex = int.parse(skyList[0].fcstValue ?? '0');
-        String skyStatus = skyList[0].weatherCategory?.codeValues?[skyIndex] ?? '';
-        int iconIndex = Utils.getIconIndex(rainStatus: _rainStatusText.value, skyStatus: skyStatus, currentTime: currentTime, sunrise: _timeSunrise.value, sunset: _timeSunset.value);
+        String skyStatus =
+            skyList[0].weatherCategory?.codeValues?[skyIndex] ?? '';
+        int iconIndex = Utils.getIconIndex(
+            rainStatus: _rainStatusText.value,
+            skyStatus: skyStatus,
+            currentTime: currentTime,
+            sunrise: _timeSunrise.value,
+            sunset: _timeSunset.value);
         if (rainStatus != '없음') {
           _homeWeatherStatusText(rainStatus);
         } else {
@@ -572,11 +620,14 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         logger.e('HomeController.getShortTermList error -> $e');
       });
 
-      var getYesterdayShortTerm = await _repository.getYesterdayShortTermList(addressId, longitude, latitude);
+      var getYesterdayShortTerm = await _repository.getYesterdayShortTermList(
+          addressId, longitude, latitude);
       getYesterdayShortTerm.when(success: (shortTermList) async {
         // logger.i('HomeController.getYesterdayShortTerm success');
         var currentTime = Utils.getCurrentTimeInHHFormat();
-        var yesterday = shortTermList.firstWhereOrNull((element) => element.category == kWeatherCategoryTemperatureShort && element.fcstTime == currentTime);
+        var yesterday = shortTermList.firstWhereOrNull((element) =>
+            element.category == kWeatherCategoryTemperatureShort &&
+            element.fcstTime == currentTime);
         if (yesterday != null) {
           _homeYesterdayTemperature(int.parse(yesterday.fcstValue ?? '0'));
         }
@@ -600,7 +651,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       // logger.i('HomeController.getMidCode success -> $midCode');
       String regId = midCode.code ?? '';
 
-      var getMidTermTemperature = await _repository.getMidTermTemperature(addressId, regId);
+      var getMidTermTemperature =
+          await _repository.getMidTermTemperature(addressId, regId);
       getMidTermTemperature.when(success: (midTermTemperature) {
         // logger.i('HomeController.getMidTermTemperature success -> $midTermTemperature');
         _weekMidTermTemperature(midTermTemperature);
@@ -609,7 +661,8 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       });
 
       // 중기 육상 예보
-      var getMidTermLand = await _repository.getMidTermLand(addressId, depth1, depth2);
+      var getMidTermLand =
+          await _repository.getMidTermLand(addressId, depth1, depth2);
       getMidTermLand.when(success: (midTermLand) {
         // logger.i('HomeController.getMidTermLand success -> $midTermLand');
         _weekMidTermLand(midTermLand);
@@ -626,25 +679,27 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     var getUserMyWeatherIdList = await _repository.getUserMyWeather();
     getUserMyWeatherIdList.when(
       success: (idList) {
-        logger.i('HomeController.getData.getUserMyWeatherIdList idList -> $idList');
+        logger.i(
+            'HomeController.getData.getUserMyWeatherIdList idList -> $idList');
         _myWeatherList(idList);
-        if(!_myWeatherList.contains('empty')) {
+        if (!_myWeatherList.contains('empty')) {
           _myWeatherList.add('empty');
         }
       },
       error: (Exception e) {
         logger.i('HomeController.getData.getUserMyWeatherIdList $e');
-        if(!_myWeatherList.contains('empty')) {
+        if (!_myWeatherList.contains('empty')) {
           _myWeatherList.add('empty');
         }
       },
     );
   }
 
-  Future updateUserMyWeather(List<String> idList, {bool isUpdate = false}) async {
+  Future updateUserMyWeather(List<String> idList,
+      {bool isUpdate = false}) async {
     await _repository.updateUserMyWeather(idList);
 
-    if(!_myWeatherList.contains('empty')) {
+    if (!_myWeatherList.contains('empty')) {
       _myWeatherList.add('empty');
     }
 
@@ -668,11 +723,11 @@ class HomeController extends GetxController with WidgetsBindingObserver {
           _myWeatherList.remove(id);
           _updateScroll();
 
-          if(!_myWeatherList.contains('empty')) {
+          if (!_myWeatherList.contains('empty')) {
             _myWeatherList.add('empty');
           }
 
-          if(_myWeatherList.length < 2) {
+          if (_myWeatherList.length < 2) {
             editToggle(false);
           }
           _repository.updateUserMyWeather(List.from(_myWeatherList));
@@ -683,14 +738,15 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   Future updateUserAddressList() async {
     // 사용자 주소 리스트
-    var getUserAddressList =  await _repository.getUserAddressList();
+    var getUserAddressList = await _repository.getUserAddressList();
     getUserAddressList.when(success: (addressList) async {
-
       // 최근 선택 주소 idList
-      var getUserAddressRecentIdList =  await _repository.getUserAddressRecentIdList();
+      var getUserAddressRecentIdList =
+          await _repository.getUserAddressRecentIdList();
       getUserAddressRecentIdList.when(
         success: (idList) {
-          addressList.sort((a, b) => idList.indexOf(a.id!).compareTo(idList.indexOf(b.id!)));
+          addressList.sort(
+              (a, b) => idList.indexOf(a.id!).compareTo(idList.indexOf(b.id!)));
           _recentAddressList(addressList);
           _addressText(addressList.first.addressName);
           _currentAddressId(addressList.first.id);

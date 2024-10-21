@@ -4,7 +4,8 @@ import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/svg_utils.dart';
 
 class HeySnackBar {
-  static show(BuildContext context, String message, {bool isCheckIcon = false}) {
+  static show(BuildContext context, String message,
+      {bool isCheckIcon = false}) {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -20,7 +21,7 @@ class HeySnackBar {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              if (isCheckIcon) ... {
+              if (isCheckIcon) ...{
                 SvgUtils.icon(
                   context,
                   'circle_check_selected',

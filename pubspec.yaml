@@ -34,11 +34,10 @@ dependencies:
   xml2json: ^6.2.2
   xml: ^6.5.0
   device_info_plus: ^10.1.0
-  package_info_plus: ^8.0.0
+  package_info_plus: ^8.1.0
   ios_utsname_ext: ^2.3.0
   url_launcher: ^6.2.6
   flutter_shake_animated: ^0.0.5
-  flutter_local_notifications: ^17.1.2
 
 dev_dependencies:
   flutter_test:

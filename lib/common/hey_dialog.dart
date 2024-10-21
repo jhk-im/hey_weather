@@ -5,8 +5,8 @@ import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/widgets/buttons/hey_elevated_button.dart';
 
 class HeyDialog {
-
-  static void showCommonDialog(BuildContext context, {
+  static void showCommonDialog(
+    BuildContext context, {
     String title = '',
     String subtitle = '',
     String okText = '확인',
@@ -20,14 +20,16 @@ class HeyDialog {
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       barrierColor: Colors.black54,
       transitionDuration: const Duration(milliseconds: 200),
-      pageBuilder: (BuildContext buildContext, Animation<double> animation, Animation<double> secondaryAnimation) {
+      pageBuilder: (BuildContext buildContext, Animation<double> animation,
+          Animation<double> secondaryAnimation) {
         return Center(
           child: SingleChildScrollView(
             child: Material(
               color: Colors.transparent,
               child: Container(
                 width: width,
-                padding: const EdgeInsets.only(top:24, right: 16, left: 16, bottom: 16),
+                padding: const EdgeInsets.only(
+                    top: 24, right: 16, left: 16, bottom: 16),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   color: kButtonColor,
@@ -42,20 +44,18 @@ class HeyDialog {
                         fontSize: 18,
                       ),
                     ),
-
                     Container(
                       margin: const EdgeInsets.only(top: 12, left: 8),
                       child: Column(
                         children: [
                           HeyText.subHeadline(
                             subtitle,
-                            color:kTextDisabledColor,
+                            color: kTextDisabledColor,
                             fontSize: 15,
                           ),
                         ],
                       ),
                     ),
-
                     Container(
                       margin: const EdgeInsets.only(top: 48),
                       child: Row(

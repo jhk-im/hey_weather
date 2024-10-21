@@ -48,7 +48,7 @@ class ShortTerm {
 
   @override
   String toString() {
-    return 'Fcst: { $weatherCategory, fcstValue: $fcstValue,  category: $category, nx: $nx, ny: $ny, fcstDate: $fcstDate, fcstTime: $fcstTime, baseDate: $baseDate, baseTime: $baseTime }';
+    return 'ShortTerm: { $weatherCategory, fcstValue: $fcstValue,  category: $category, nx: $nx, ny: $ny, fcstDate: $fcstDate, fcstTime: $fcstTime, baseDate: $baseDate, baseTime: $baseTime }';
   }
 }
 
@@ -61,10 +61,10 @@ class ShortTermList {
 
   ShortTermList(
       {this.dataType,
-        this.items,
-        this.pageNo,
-        this.numOfRows,
-        this.totalCount});
+      this.items,
+      this.pageNo,
+      this.numOfRows,
+      this.totalCount});
 
   ShortTermList.fromJson(Map<String, dynamic> json) {
     dataType = json['dataType'];

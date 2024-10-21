@@ -4,30 +4,35 @@ import 'package:intl/intl.dart';
 import 'dart:math';
 
 class Utils {
-  static int getIconIndex({String rainStatus = '없음', String skyStatus = '', int currentTime = 0, int sunrise = 0, int sunset = 0}) {
+  static int getIconIndex(
+      {String rainStatus = '없음',
+      String skyStatus = '',
+      int currentTime = 0,
+      int sunrise = 0,
+      int sunset = 0}) {
     int iconIndex = 0;
     if (rainStatus == '없음') {
       switch (skyStatus) {
-        case '맑음' :
+        case '맑음':
           if (currentTime > sunrise && currentTime < sunset) {
             iconIndex = 2;
           } else {
             iconIndex = 3;
           }
-        case '구름많음' :
+        case '구름많음':
           if (currentTime > sunrise && currentTime < sunset) {
             iconIndex = 4;
           } else {
             iconIndex = 5;
           }
-        case '흐림' :
+        case '흐림':
           iconIndex = 6;
       }
     } else {
       switch (rainStatus) {
-        case '비' || '소나기' || '빗방울' || '비/눈' || '빗방울/눈날림' :
+        case '비' || '소나기' || '빗방울' || '비/눈' || '빗방울/눈날림':
           iconIndex = 0;
-        case '눈' || '눈날림' :
+        case '눈' || '눈날림':
           iconIndex = 1;
       }
     }
@@ -39,7 +44,9 @@ class Utils {
     if (temperature >= 10.0) {
       return temperature;
     } else {
-      return 13.12 + (0.6215 * temperature) - (11.37 * pow(windSpeed, 0.16)) +
+      return 13.12 +
+          (0.6215 * temperature) -
+          (11.37 * pow(windSpeed, 0.16)) +
           (0.3965 * temperature * pow(windSpeed, 0.16));
     }
   }
@@ -85,7 +92,7 @@ class Utils {
     final koreanRegExp = RegExp('[가-힣]');
 
     if (text.isEmpty || !koreanRegExp.hasMatch(text)) {
-      return false;  // 한글이 아닌 경우
+      return false; // 한글이 아닌 경우
     }
 
     final lastChar = text.characters.last;

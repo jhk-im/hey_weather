@@ -6,7 +6,7 @@ class RenderSizeTransitionWithIntrinsicSize extends RenderProxyBox {
     this.axis = Axis.vertical,
     required this.sizeFactor,
     RenderBox? child,
-  })  :
+  }) :
 //       _axis = axis,
 //       _sizeFactor = sizeFactor,
         super(child);

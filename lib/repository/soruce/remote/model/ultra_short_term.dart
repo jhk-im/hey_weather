@@ -54,10 +54,10 @@ class UltraShortTermList {
 
   UltraShortTermList(
       {this.dataType,
-        this.items,
-        this.pageNo,
-        this.numOfRows,
-        this.totalCount});
+      this.items,
+      this.pageNo,
+      this.numOfRows,
+      this.totalCount});
 
   UltraShortTermList.fromJson(Map<String, dynamic> json) {
     dataType = json['dataType'];
@@ -102,4 +102,3 @@ class Items {
     return data;
   }
 }
-

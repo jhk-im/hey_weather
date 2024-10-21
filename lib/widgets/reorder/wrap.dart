@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import './rendering/wrap.dart';
 
 class WrapWithMainAxisCount extends Wrap {
-  WrapWithMainAxisCount({
+  const WrapWithMainAxisCount({
     Key? key,
     Axis direction = Axis.horizontal,
     WrapAlignment alignment = WrapAlignment.start,

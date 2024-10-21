@@ -94,8 +94,9 @@ class RenderWrapWithMainAxisCount extends RenderWrap {
 
   @override
   void setupParentData(RenderBox child) {
-    if (child.parentData is! WrapWithMainAxisCountParentData)
+    if (child.parentData is! WrapWithMainAxisCountParentData) {
       child.parentData = WrapWithMainAxisCountParentData();
+    }
   }
 
   double _computeIntrinsicHeightForWidth(double width) {
@@ -195,8 +196,9 @@ class RenderWrapWithMainAxisCount extends RenderWrap {
       childCount += 1;
       child = childAfter(child);
     }
-    if (childCount > 0)
+    if (childCount > 0) {
       maxRunMainAxisExtent = math.max(maxRunMainAxisExtent, runMainAxisExtent);
+    }
     return maxRunMainAxisExtent;
   }
 
@@ -478,17 +480,19 @@ class RenderWrapWithMainAxisCount extends RenderWrap {
         if (flipMainAxis) childMainPosition -= childMainAxisExtent;
         childParentData.offset = _getOffset(
             childMainPosition, crossAxisOffset + childCrossAxisOffset);
-        if (flipMainAxis)
+        if (flipMainAxis) {
           childMainPosition -= childBetweenSpace;
-        else
+        } else {
           childMainPosition += childMainAxisExtent + childBetweenSpace;
+        }
         child = childParentData.nextSibling;
       }
 
-      if (flipCrossAxis)
+      if (flipCrossAxis) {
         crossAxisOffset -= runBetweenSpace;
-      else
+      } else {
         crossAxisOffset += runCrossAxisExtent + runBetweenSpace;
+      }
     }
   }
 
@@ -496,10 +500,11 @@ class RenderWrapWithMainAxisCount extends RenderWrap {
   void paint(PaintingContext context, Offset offset) {
     // TODO(ianh): move the debug flex overflow paint logic somewhere common so
     // it can be reused here
-    if (_hasVisualOverflow)
+    if (_hasVisualOverflow) {
       context.pushClipRect(
           needsCompositing, offset, Offset.zero & size, defaultPaint);
-    else
+    } else {
       defaultPaint(context, offset);
+    }
   }
 }

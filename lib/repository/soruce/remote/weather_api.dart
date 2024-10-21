@@ -12,7 +12,7 @@ class WeatherApi {
       'x': '$x',
       'y': '$y',
     });
-    var headers = <String, String> {
+    var headers = <String, String>{
       'Authorization': 'KakaoAK $kakaoApiKey',
     };
     return await http.get(url, headers: headers);
@@ -23,7 +23,7 @@ class WeatherApi {
     var url = Uri.https(kakaoUrl, '/v2/local/search/address.json', {
       'query': query,
     });
-    var headers = <String, String> {
+    var headers = <String, String>{
       'Authorization': 'KakaoAK $kakaoApiKey',
     };
     return await http.get(url, headers: headers);
@@ -34,8 +34,10 @@ class WeatherApi {
 
   // 초단기 실황
   // 기온, 습도, 강수량, 강수 형태, 풍속, 풍향
-  Future<http.Response> getUltraShortTerm(String date, String time, int x, int y) async {
-    var url = Uri.https(weatherUrl, '/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst', {
+  Future<http.Response> getUltraShortTerm(
+      String date, String time, int x, int y) async {
+    var url = Uri.https(
+        weatherUrl, '/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst', {
       'dataType': 'JSON',
       'serviceKey': serviceKey ?? '',
       'numOfRows': '10',
@@ -50,14 +52,13 @@ class WeatherApi {
 
   // 초단기 예보
   Future<http.Response> getUltraShortTermSixTime(int x, int y) async {
-
     DateTime now = DateTime.now();
     DateTime oneHourBefore = now.subtract(const Duration(hours: 1));
     String formattedDate = DateFormat('yyyyMMdd HHmm').format(oneHourBefore);
     List<String> formatted = formattedDate.split(' ');
 
-    var url =
-    Uri.https(weatherUrl, '/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst', {
+    var url = Uri.https(
+        weatherUrl, '/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst', {
       'dataType': 'JSON',
       'serviceKey': serviceKey ?? '',
       'numOfRows': '60',
@@ -71,9 +72,10 @@ class WeatherApi {
   }
 
   // 단기 예보
-  Future<http.Response> getShortTerm(String date, String time, int x, int y, {String numberOfRows = '600'}) async {
-    var url =
-    Uri.https(weatherUrl, '/1360000/VilageFcstInfoService_2.0/getVilageFcst', {
+  Future<http.Response> getShortTerm(String date, String time, int x, int y,
+      {String numberOfRows = '600'}) async {
+    var url = Uri.https(
+        weatherUrl, '/1360000/VilageFcstInfoService_2.0/getVilageFcst', {
       'dataType': 'JSON',
       'serviceKey': serviceKey ?? '',
       'numOfRows': numberOfRows,
@@ -88,8 +90,7 @@ class WeatherApi {
 
   // 중기 기온 예보
   Future<http.Response> getMidTermTemperature(String tmFc, String regId) async {
-    var url =
-    Uri.https(weatherUrl, '/1360000/MidFcstInfoService/getMidTa', {
+    var url = Uri.https(weatherUrl, '/1360000/MidFcstInfoService/getMidTa', {
       'serviceKey': serviceKey ?? '',
       'dataType': 'JSON',
       'numOfRows': '10',
@@ -103,7 +104,7 @@ class WeatherApi {
   // 중기 육상 예보
   Future<http.Response> getMidTermLand(String tmFc, String regId) async {
     var url =
-    Uri.https(weatherUrl, '1360000/MidFcstInfoService/getMidLandFcst', {
+        Uri.https(weatherUrl, '1360000/MidFcstInfoService/getMidLandFcst', {
       'serviceKey': serviceKey ?? '',
       'dataType': 'JSON',
       'numOfRows': '10',
@@ -116,7 +117,8 @@ class WeatherApi {
 
   // 자외선 지수 조회
   Future<http.Response> getUltraviolet(String time, String areaNo) async {
-    var url = Uri.https(weatherUrl, '/1360000/LivingWthrIdxServiceV4/getUVIdxV4', {
+    var url =
+        Uri.https(weatherUrl, '/1360000/LivingWthrIdxServiceV4/getUVIdxV4', {
       'serviceKey': serviceKey ?? '',
       'dataType': 'JSON',
       'numOfRows': '10',
@@ -128,8 +130,10 @@ class WeatherApi {
   }
 
   // 좌표로 출몰시간 조회 (XML)
-  Future<http.Response> getRiseSetInfoWithCoordinate(String locdate, double longitude, double latitude) async {
-    var url = Uri.https(weatherUrl, '/B090041/openapi/service/RiseSetInfoService/getLCRiseSetInfo', {
+  Future<http.Response> getRiseSetInfoWithCoordinate(
+      String locdate, double longitude, double latitude) async {
+    var url = Uri.https(weatherUrl,
+        '/B090041/openapi/service/RiseSetInfoService/getLCRiseSetInfo', {
       'serviceKey': serviceKey ?? '',
       'locdate': locdate,
       'longitude': '$longitude',
@@ -156,7 +160,8 @@ class WeatherApi {
   // 도시별 실시간 대기오염 측정정보 조회
   // 전국, 서울, 부산, 대구, 인천, 광주, 대전, 울산, 경기, 강원, 충북, 충남, 전북, 전남, 경북, 경남, 제주, 세종
   Future<http.Response> getFineDustWithCity(String cityName) async {
-    var url = Uri.https(weatherUrl, '/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty', {
+    var url = Uri.https(
+        weatherUrl, '/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty', {
       'returnType': 'JSON',
       'serviceKey': serviceKey ?? '',
       'numOfRows': '1',

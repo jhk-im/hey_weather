@@ -17,14 +17,13 @@ class HeyWeatherAddressButton extends StatefulWidget {
   final Function? onSelectedAddress;
 
   @override
-  State<HeyWeatherAddressButton> createState() => _HeyWeatherAddressButtonState();
+  State<HeyWeatherAddressButton> createState() =>
+      _HeyWeatherAddressButtonState();
 }
 
 class _HeyWeatherAddressButtonState extends State<HeyWeatherAddressButton> {
-
   @override
   Widget build(BuildContext context) {
-
     return GestureDetector(
       onTap: () {
         // isSelected(isSelected.value != true);
@@ -37,7 +36,8 @@ class _HeyWeatherAddressButtonState extends State<HeyWeatherAddressButton> {
           children: [
             HeyText.bodySemiBold(
               '${widget.address.addressName}',
-              color: widget.isSelected ? kPrimaryDarkerColor : kTextPrimaryColor,
+              color:
+                  widget.isSelected ? kPrimaryDarkerColor : kTextPrimaryColor,
             ),
             const SizedBox(width: 12),
             Visibility(

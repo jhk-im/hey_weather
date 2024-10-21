@@ -5,7 +5,6 @@ import 'package:hey_weather/pages/setting/setting_main_controller.dart';
 import 'package:hey_weather/pages/setting/setting_notification_controller.dart';
 
 class HomeBinding implements Bindings {
-
   @override
   void dependencies() {
     Get.put(HomeController());

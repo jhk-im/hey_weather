@@ -155,7 +155,8 @@ class AddressController extends GetxController with WidgetsBindingObserver {
   selectAddress(Address address) async {
     if (!isEditMode && address.id != null) {
       // 최근 선택 주소 리스트 업데이트
-      await _repository.insertUserAddressRecentIdList(address.id!, isSelect: true);
+      await _repository.insertUserAddressRecentIdList(address.id!,
+          isSelect: true);
       Get.offAllNamed(Routes.routeHome);
     }
   }
@@ -186,8 +187,10 @@ class AddressController extends GetxController with WidgetsBindingObserver {
       _isUpdated(true);
       final idList = addressList.map((element) => element.id ?? '').toList();
       await _repository.updateUserAddressEditIdList(idList);
-      final recent = addressList.where((e) => e.id != kCurrentLocationId).toList();
-      recent.sort((a, b) => DateTime.parse(b.createDateTime ?? '').compareTo(DateTime.parse(a.createDateTime ?? '')));
+      final recent =
+          addressList.where((e) => e.id != kCurrentLocationId).toList();
+      recent.sort((a, b) => DateTime.parse(b.createDateTime ?? '')
+          .compareTo(DateTime.parse(a.createDateTime ?? '')));
       addressList[addressList.indexOf(recent.first)].isRecent = true;
 
       await Future.delayed(const Duration(milliseconds: 500));
@@ -199,8 +202,8 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     }
   }
 
-  showCreateAddressBottomSheet(BuildContext context, SearchAddress address) async {
-
+  showCreateAddressBottomSheet(
+      BuildContext context, SearchAddress address) async {
     Address newAddress = Address();
     newAddress.id = kCreateWidgetId;
     newAddress.addressName = address.addressName;
@@ -232,7 +235,8 @@ class AddressController extends GetxController with WidgetsBindingObserver {
   /// Data
   Future _getUpdateAddressWithCoordinate() async {
     //logger.i('AddressController getUpdateAddressWithCoordinate()');
-    var getUpdateAddressWithCoordinate = await _repository.getUpdateAddressWithCoordinate(kCurrentLocationId);
+    var getUpdateAddressWithCoordinate =
+        await _repository.getUpdateAddressWithCoordinate(kCurrentLocationId);
     getUpdateAddressWithCoordinate.when(success: (address) async {
       _isUpdated(true);
       await _updateCurrentWeatherWidget(address);
@@ -243,22 +247,28 @@ class AddressController extends GetxController with WidgetsBindingObserver {
 
   Future _getData() async {
     // 사용자 주소 리스트
-    var getUserAddressList =  await _repository.getUserAddressList();
+    var getUserAddressList = await _repository.getUserAddressList();
     getUserAddressList.when(success: (addressList) async {
-      var currentAddress = addressList.firstWhereOrNull((element) => element.id == kCurrentLocationId);
+      var currentAddress = addressList
+          .firstWhereOrNull((element) => element.id == kCurrentLocationId);
       if (currentAddress != null) {
         await _updateCurrentWeatherWidget(currentAddress);
       }
-      final sortList = addressList.where((e) => e.id != kCurrentLocationId).toList();
-      final recent = addressList.where((e) => e.id != kCurrentLocationId).toList();
+      final sortList =
+          addressList.where((e) => e.id != kCurrentLocationId).toList();
+      final recent =
+          addressList.where((e) => e.id != kCurrentLocationId).toList();
 
-      recent.sort((a, b) => DateTime.parse(b.createDateTime ?? '').compareTo(DateTime.parse(a.createDateTime ?? '')));
+      recent.sort((a, b) => DateTime.parse(b.createDateTime ?? '')
+          .compareTo(DateTime.parse(a.createDateTime ?? '')));
 
       // 편집 주소 idList
-      var getUserAddressEditIdList =  await _repository.getUserAddressEditIdList();
+      var getUserAddressEditIdList =
+          await _repository.getUserAddressEditIdList();
       getUserAddressEditIdList.when(
         success: (idList) {
-          sortList.sort((a, b) => idList.indexOf(a.id!).compareTo(idList.indexOf(b.id!)));
+          sortList.sort(
+              (a, b) => idList.indexOf(a.id!).compareTo(idList.indexOf(b.id!)));
           if (sortList.isNotEmpty) {
             sortList[sortList.indexOf(recent.first)].isRecent = true;
             _addressList(sortList);
@@ -312,7 +322,8 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     double longitude = address.x ?? 0;
     double latitude = address.y ?? 0;
     // 일출 일몰
-    var getSunRiseSet = await _repository.getSunRiseSetWithCoordinate(addressId, longitude, latitude);
+    var getSunRiseSet = await _repository.getSunRiseSetWithCoordinate(
+        addressId, longitude, latitude);
     getSunRiseSet.when(success: (sunRiseSet) {
       // logger.i('HomeController.getSunRiseSetWithCoordinate success');
       var sunrise = sunRiseSet.sunrise ?? '0500';
@@ -354,7 +365,8 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     double longitude = address.x ?? 0;
     double latitude = address.y ?? 0;
     String addressId = address.id ?? '';
-    var getUltraShortTerm = await _repository.getUltraShortTermList(addressId, longitude, latitude);
+    var getUltraShortTerm =
+        await _repository.getUltraShortTermList(addressId, longitude, latitude);
     getUltraShortTerm.when(success: (ultraShortTermList) async {
       //logger.i('AddressController.getUltraShortTermList success');
 
@@ -371,7 +383,8 @@ class AddressController extends GetxController with WidgetsBindingObserver {
               address.rain = value.round();
             }
           case kWeatherCategoryRainStatus:
-            address.rainStatusText = item.weatherCategory?.codeValues?[value.round()];
+            address.rainStatusText =
+                item.weatherCategory?.codeValues?[value.round()];
         }
       }
     }, error: (e) {
@@ -385,12 +398,15 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     double latitude = address.y ?? 0;
     String addressId = address.id ?? '';
 
-    var getUltraShortTermSixTime = await _repository.getUltraShortTermSixTime(addressId, longitude, latitude);
+    var getUltraShortTermSixTime = await _repository.getUltraShortTermSixTime(
+        addressId, longitude, latitude);
     getUltraShortTermSixTime.when(success: (ultraSixTime) async {
       //logger.i('AddressController.getUltraShortTermSixTime success');
 
       // 기온
-      var temperatureList = ultraSixTime.where((element) => element.category == kWeatherCategoryTemperature).toList();
+      var temperatureList = ultraSixTime
+          .where((element) => element.category == kWeatherCategoryTemperature)
+          .toList();
       for (var element in temperatureList) {
         element.weatherCategory?.name = '기온(1시간)';
         element.category = kWeatherCategoryTemperatureShort;
@@ -398,7 +414,9 @@ class AddressController extends GetxController with WidgetsBindingObserver {
         element.baseTime = newBaseTime;
       }
       // 하늘 상태
-      var skyList = ultraSixTime.where((element) => element.category == kWeatherCategorySky).toList();
+      var skyList = ultraSixTime
+          .where((element) => element.category == kWeatherCategorySky)
+          .toList();
       for (var element in skyList) {
         var newBaseTime = element.baseTime?.replaceAll('30', '00');
         element.baseTime = newBaseTime;
@@ -408,8 +426,14 @@ class AddressController extends GetxController with WidgetsBindingObserver {
       String time = temperatureList[0].fcstTime ?? '0000';
       int currentTime = int.parse(time);
       int skyIndex = int.parse(skyList[0].fcstValue ?? '0');
-      String skyStatus = skyList[0].weatherCategory?.codeValues?[skyIndex] ?? '';
-      int iconIndex = Utils.getIconIndex(rainStatus: _rainStatusText.value, skyStatus: skyStatus, currentTime: currentTime, sunrise: address.timeSunrise ?? 0, sunset: address.timeSunset ?? 0);
+      String skyStatus =
+          skyList[0].weatherCategory?.codeValues?[skyIndex] ?? '';
+      int iconIndex = Utils.getIconIndex(
+          rainStatus: _rainStatusText.value,
+          skyStatus: skyStatus,
+          currentTime: currentTime,
+          sunrise: address.timeSunrise ?? 0,
+          sunset: address.timeSunset ?? 0);
       address.weatherIconName = kWeatherIconList[iconIndex];
       address.weatherStatusText = kWeatherStatus[address.weatherIconName];
     }, error: (e) {
@@ -424,11 +448,14 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     double latitude = address.y ?? 0;
     String addressId = address.id ?? '';
 
-    var getYesterdayShortTerm = await _repository.getYesterdayShortTermList(addressId, longitude, latitude);
+    var getYesterdayShortTerm = await _repository.getYesterdayShortTermList(
+        addressId, longitude, latitude);
     getYesterdayShortTerm.when(success: (shortTermList) async {
       //logger.i('AddressController.getYesterdayShortTerm success');
       var currentTime = Utils.getCurrentTimeInHHFormat();
-      var yesterday = shortTermList.firstWhereOrNull((element) => element.category == kWeatherCategoryTemperatureShort && element.fcstTime == currentTime);
+      var yesterday = shortTermList.firstWhereOrNull((element) =>
+          element.category == kWeatherCategoryTemperatureShort &&
+          element.fcstTime == currentTime);
       if (yesterday != null) {
         address.yesterdayTemperature = int.parse(yesterday.fcstValue ?? '0');
       }
@@ -449,7 +476,7 @@ class AddressController extends GetxController with WidgetsBindingObserver {
   }
 
   Future _updateAddressCard(Address address, String searchText) async {
-    String uuid =  const Uuid().v4();
+    String uuid = const Uuid().v4();
 
     // final newAddress = Address();
     // newAddress.addressName = Utils().containsSearchText(address.addressName, searchText);
@@ -458,7 +485,8 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     // newAddress.id = uuid;
     // newAddress.createDateTime = DateTime.now().toLocal().toString();
     // await _repository.updateUserAddressWithId(newAddress);
-    address.addressName = Utils().containsSearchText(address.addressName, searchText);
+    address.addressName =
+        Utils().containsSearchText(address.addressName, searchText);
     address.id = uuid;
     address.createDateTime = DateTime.now().toLocal().toString();
 

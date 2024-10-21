@@ -32,8 +32,8 @@ class _HeyWeatherWindCardState extends State<HeyWeatherWindCard> {
 
   // Colors
   final Map<String, Color> stateColors = {
-    'weak'.tr : kPrimaryDarkerColor,
-    'normal'.tr : kHeyGreenColor,
+    'weak'.tr: kPrimaryDarkerColor,
+    'normal'.tr: kHeyGreenColor,
     'strong'.tr: kHeyOrangeColor,
     'very_strong'.tr: kHeyRedColor,
   };
@@ -44,7 +44,6 @@ class _HeyWeatherWindCardState extends State<HeyWeatherWindCard> {
     'strong'.tr,
     'very_strong'.tr,
   ];
-
 
   @override
   Widget build(BuildContext context) {
@@ -92,156 +91,163 @@ class _HeyWeatherWindCardState extends State<HeyWeatherWindCard> {
     }
 
     return Obx(() => Material(
-      color: Colors.transparent,
-      child: GestureDetector(
-        onTap: status.value == 1 || status.value == 2 ? () {
-          if (status.value == 1) {
-            status(2);
-          } else {
-            status(1);
-          }
-          widget.onSelect?.call(id, status.value == 2);
-        } : null,
-        child: ShakeWidget(
-          autoPlay: status.value == 3,
-          duration: const Duration(milliseconds: 5600),
-          shakeConstant: ShakeLittleConstant1(),
-          child: Container(
-            width: width,
-            height: 170,
-            padding: const EdgeInsets.only(top: 14, bottom: 20, left: 24),
-            decoration: BoxDecoration(
-              color: kBaseColor,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: status.value == 2 ? kPrimaryDarkerColor : kBaseColor,
-                width: 1, // 외곽선 두께
-              ),
-            ),
-            child: Stack(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: double.maxFinite,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // icon, title
-                          Container(
-                            margin: const EdgeInsets.only(top: 6),
-                            child: Row(
-                              children: [
-                                SvgUtils.icon(
-                                  context,
-                                  'wind',
-                                  width: 20,
-                                  height: 20,
-                                ),
-                                const SizedBox(width: 6),
-                                HeyText.bodySemiBold(
-                                  'wind'.tr,
-                                  fontSize: kFont16,
-                                  color: kTextDisabledColor,
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          // status
-                          Container(
-                            margin: const EdgeInsets.only(top: 8),
-                            child: HeyText.subHeadlineSemiBold(
-                              stateList[stateIndex],
-                              color: stateColors[stateList[stateIndex]] ?? kTextPointColor,
-                            ),
-                          ),
-
-                          Container(
-                            margin: const EdgeInsets.only(top: 16),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                HeyText.largeTitleBold(
-                                  widget.speed < 1 ? '1' : widget.speed.round().toString(),
-                                  color: kTextPointColor,
-                                ),
-                                const SizedBox(width: 4),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 4),
-                                  child: HeyText.bodySemiBold(
-                                    'm/s',
-                                    color: kTextDisabledColor,
-                                    fontSize: kFont20,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-
-                          Row(
-                            children: [
-                              HeyText.footnote(
-                                direction,
-                                color: kTextDisabledColor,
-                              ),
-                              const SizedBox(width: 4),
-                              SvgUtils.icon(
-                                context,
-                                'direction',
-                                width: 10,
-                                height: 10,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+          color: Colors.transparent,
+          child: GestureDetector(
+            onTap: status.value == 1 || status.value == 2
+                ? () {
+                    if (status.value == 1) {
+                      status(2);
+                    } else {
+                      status(1);
+                    }
+                    widget.onSelect?.call(id, status.value == 2);
+                  }
+                : null,
+            child: ShakeWidget(
+              autoPlay: status.value == 3,
+              duration: const Duration(milliseconds: 5600),
+              shakeConstant: ShakeLittleConstant1(),
+              child: Container(
+                width: width,
+                height: 170,
+                padding: const EdgeInsets.only(top: 14, bottom: 20, left: 24),
+                decoration: BoxDecoration(
+                  color: kBaseColor,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: status.value == 2 ? kPrimaryDarkerColor : kBaseColor,
+                    width: 1, // 외곽선 두께
+                  ),
                 ),
-
-                Visibility(
-                  visible: status.value > 0,
-                  child: Container(
-                    color: status.value == 1 || status.value == 3 ? Colors.transparent : kBaseColor.withOpacity(0.5),
-                    padding: const EdgeInsets.only(right: 14),
-                    child: Column(
+                child: Stack(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        InkWell(
-                          splashColor: kBaseColor,
-                          highlightColor: Colors.transparent,
-                          hoverColor: Colors.transparent,
-                          onTap: status.value == 3 ? () {
-                            widget.onRemove?.call(id);
-                          } : null,
-                          child: Row(
+                        SizedBox(
+                          width: double.maxFinite,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Spacer(),
-                              SvgUtils.icon(
-                                context,
-                                status.value == 1
-                                    ? 'circle_check'
-                                    : status.value == 2
-                                    ? 'circle_check_selected'
-                                    : 'circle_minus',
-                                width: 24,
-                                height: 24,
+                              // icon, title
+                              Container(
+                                margin: const EdgeInsets.only(top: 6),
+                                child: Row(
+                                  children: [
+                                    SvgUtils.icon(
+                                      context,
+                                      'wind',
+                                      width: 20,
+                                      height: 20,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    HeyText.bodySemiBold(
+                                      'wind'.tr,
+                                      fontSize: kFont16,
+                                      color: kTextDisabledColor,
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              // status
+                              Container(
+                                margin: const EdgeInsets.only(top: 8),
+                                child: HeyText.subHeadlineSemiBold(
+                                  stateList[stateIndex],
+                                  color: stateColors[stateList[stateIndex]] ??
+                                      kTextPointColor,
+                                ),
+                              ),
+
+                              Container(
+                                margin: const EdgeInsets.only(top: 16),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    HeyText.largeTitleBold(
+                                      widget.speed < 1
+                                          ? '1'
+                                          : widget.speed.round().toString(),
+                                      color: kTextPointColor,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 4),
+                                      child: HeyText.bodySemiBold(
+                                        'm/s',
+                                        color: kTextDisabledColor,
+                                        fontSize: kFont20,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              Row(
+                                children: [
+                                  HeyText.footnote(
+                                    direction,
+                                    color: kTextDisabledColor,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  SvgUtils.icon(
+                                    context,
+                                    'direction',
+                                    width: 10,
+                                    height: 10,
+                                  ),
+                                ],
                               ),
                             ],
                           ),
                         ),
-                        const Spacer(),
                       ],
                     ),
-                  ),
+                    Visibility(
+                      visible: status.value > 0,
+                      child: Container(
+                        color: status.value == 1 || status.value == 3
+                            ? Colors.transparent
+                            : kBaseColor.withOpacity(0.5),
+                        padding: const EdgeInsets.only(right: 14),
+                        child: Column(
+                          children: [
+                            InkWell(
+                              splashColor: kBaseColor,
+                              highlightColor: Colors.transparent,
+                              hoverColor: Colors.transparent,
+                              onTap: status.value == 3
+                                  ? () {
+                                      widget.onRemove?.call(id);
+                                    }
+                                  : null,
+                              child: Row(
+                                children: [
+                                  const Spacer(),
+                                  SvgUtils.icon(
+                                    context,
+                                    status.value == 1
+                                        ? 'circle_check'
+                                        : status.value == 2
+                                            ? 'circle_check_selected'
+                                            : 'circle_minus',
+                                    width: 24,
+                                    height: 24,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Spacer(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
-    ));
+        ));
   }
 }

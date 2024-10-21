@@ -25,8 +25,8 @@ import 'package:hey_weather/widgets/cards/weather/hey_weather_wind_card.dart';
 import 'svg_utils.dart';
 
 class HeyBottomSheet {
-
-  static void showOnBoardingBottomSheet(BuildContext context, {Function? onAdd}) {
+  static void showOnBoardingBottomSheet(BuildContext context,
+      {Function? onAdd}) {
     double height = (MediaQuery.of(context).size.height) - 97;
 
     Map<String, bool> weatherSelectMap = {
@@ -78,14 +78,16 @@ class HeyBottomSheet {
                         onTap: () {
                           Get.back();
                         },
-                        child: SvgUtils.icon(context, 'close', width: 32, height: 32),
+                        child: SvgUtils.icon(context, 'close',
+                            width: 32, height: 32),
                       ),
                     ],
                   ),
                 ),
                 // Subtitle
                 Container(
-                  margin: const EdgeInsets.only(top: 12, bottom: 16, left: 20, right: 20),
+                  margin: const EdgeInsets.only(
+                      top: 12, bottom: 16, left: 20, right: 20),
                   child: HeyText.body(
                     'bs_onboard_subtitle'.tr,
                     fontSize: kFont18,
@@ -212,7 +214,9 @@ class HeyBottomSheet {
     );
   }
 
-  static void showAddWeatherBottomSheet(BuildContext context, List<String> idList, {
+  static void showAddWeatherBottomSheet(
+    BuildContext context,
+    List<String> idList, {
     Function? onConfirm,
     List<ShortTerm>? timeTemperatureList,
     List<ShortTerm>? timeSkyStatusList,
@@ -373,7 +377,7 @@ class HeyBottomSheet {
               weatherSelectMap[id] = selected;
             },
           );
-        default :
+        default:
           return Container();
       }
     }
@@ -415,7 +419,8 @@ class HeyBottomSheet {
                         onTap: () {
                           Get.back();
                         },
-                        child: SvgUtils.icon(context, 'close', width: 32, height: 32),
+                        child: SvgUtils.icon(context, 'close',
+                            width: 32, height: 32),
                       ),
                     ],
                   ),
@@ -424,12 +429,14 @@ class HeyBottomSheet {
                 Expanded(
                   child: SingleChildScrollView(
                     child: Container(
-                      padding: const EdgeInsets.only(top: 16, bottom: 32, left: 20, right: 20),
+                      padding: const EdgeInsets.only(
+                          top: 16, bottom: 32, left: 20, right: 20),
                       child: Center(
                         child: Wrap(
                           spacing: 15,
                           runSpacing: 15,
-                          children: List.generate(weatherIdList.length, (index) {
+                          children:
+                              List.generate(weatherIdList.length, (index) {
                             return weatherWidgets(weatherIdList[index]);
                           }),
                         ),
@@ -460,7 +467,8 @@ class HeyBottomSheet {
     );
   }
 
-  static void showSelectAddressBottomSheet(BuildContext context, {
+  static void showSelectAddressBottomSheet(
+    BuildContext context, {
     required List<Address> addressList,
     required currentAddress,
     Function? onSelectedAddress,
@@ -510,7 +518,8 @@ class HeyBottomSheet {
                         onTap: () {
                           Get.back();
                         },
-                        child: SvgUtils.icon(context, 'close', width: 32, height: 32),
+                        child: SvgUtils.icon(context, 'close',
+                            width: 32, height: 32),
                       ),
                     ],
                   ),
@@ -521,7 +530,7 @@ class HeyBottomSheet {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        for(var address in addressList) ... {
+                        for (var address in addressList) ...{
                           HeyWeatherAddressButton(
                             address: address,
                             isSelected: currentAddress == address.id,
@@ -559,7 +568,8 @@ class HeyBottomSheet {
     );
   }
 
-  static void showCreateAddressBottomSheet(BuildContext context, {
+  static void showCreateAddressBottomSheet(
+    BuildContext context, {
     required Address address,
     required String searchText,
     required Function onCreateAddress,
@@ -575,7 +585,6 @@ class HeyBottomSheet {
       ),
       backgroundColor: kButtonColor,
       builder: (BuildContext context) {
-
         // final addressName = Utils().containsSearchText(address.addressName, searchText);
 
         return SafeArea(
@@ -598,7 +607,10 @@ class HeyBottomSheet {
                             color: kPrimaryDarkerColor,
                           ),
                           HeyText.title3Bold(
-                            Utils.hasKoreanFinalConsonant(address.addressName ?? '') ? 'question_add_1'.tr : 'question_add_2'.tr,
+                            Utils.hasKoreanFinalConsonant(
+                                    address.addressName ?? '')
+                                ? 'question_add_1'.tr
+                                : 'question_add_2'.tr,
                             fontSize: kFont18,
                             color: kTextPointColor,
                           ),
@@ -613,7 +625,8 @@ class HeyBottomSheet {
                       onTap: () {
                         Get.back();
                       },
-                      child: SvgUtils.icon(context, 'close', width: 32, height: 32),
+                      child: SvgUtils.icon(context, 'close',
+                          width: 32, height: 32),
                     ),
                   ],
                 ),
@@ -649,7 +662,8 @@ class HeyBottomSheet {
     );
   }
 
-  static void showTemperatureBottomSheet(BuildContext context, {
+  static void showTemperatureBottomSheet(
+    BuildContext context, {
     required isFahrenheit,
     Function? onSelected,
   }) {
@@ -695,7 +709,8 @@ class HeyBottomSheet {
                         onTap: () {
                           Get.back();
                         },
-                        child: SvgUtils.icon(context, 'close', width: 32, height: 32),
+                        child: SvgUtils.icon(context, 'close',
+                            width: 32, height: 32),
                       ),
                     ],
                   ),
@@ -716,13 +731,16 @@ class HeyBottomSheet {
                             onSelected?.call(false);
                           },
                           child: Padding(
-                            padding: const EdgeInsets.only(bottom: 30, left: 24, right: 24),
+                            padding: const EdgeInsets.only(
+                                bottom: 30, left: 24, right: 24),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 HeyText.body(
                                   '${'celsius'.tr} ${'celsius_text'.tr}',
-                                  color: !isFahrenheit ? kPrimaryDarkerColor : kTextPrimaryColor,
+                                  color: !isFahrenheit
+                                      ? kPrimaryDarkerColor
+                                      : kTextPrimaryColor,
                                 ),
                                 const SizedBox(width: 12),
                                 Visibility(
@@ -749,13 +767,16 @@ class HeyBottomSheet {
                             onSelected?.call(true);
                           },
                           child: Padding(
-                            padding: const EdgeInsets.only(bottom: 54, left: 24, right: 24),
+                            padding: const EdgeInsets.only(
+                                bottom: 54, left: 24, right: 24),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 HeyText.body(
                                   '${'fahrenheit'.tr} ${'fahrenheit_text'.tr}',
-                                  color: isFahrenheit ? kPrimaryDarkerColor : kTextPrimaryColor,
+                                  color: isFahrenheit
+                                      ? kPrimaryDarkerColor
+                                      : kTextPrimaryColor,
                                 ),
                                 const SizedBox(width: 12),
                                 Visibility(

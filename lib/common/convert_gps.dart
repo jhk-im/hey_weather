@@ -21,7 +21,7 @@ class ConvertGps {
 
   static double get snTmp =>
       Math.tan(Math.pi * 0.25 + slat2 * 0.5) /
-          Math.tan(Math.pi * 0.25 + slat1 * 0.5);
+      Math.tan(Math.pi * 0.25 + slat1 * 0.5);
   static double get sn =>
       Math.log(Math.cos(slat1) / Math.cos(slat2)) / Math.log(snTmp);
 

@@ -18,7 +18,6 @@ class HeyCustomButton extends Container {
     required Widget text,
     Function? onPressed,
   }) {
-
     return HeyCustomButton(
       child: GestureDetector(
         onTap: () {
@@ -29,14 +28,14 @@ class HeyCustomButton extends Container {
     );
   }
 
-  factory HeyCustomButton.textIcon(BuildContext context, {
+  factory HeyCustomButton.textIcon(
+    BuildContext context, {
     double fontSize = 15,
     Color color = kTextSecondaryColor,
     String? iconName,
     String? text,
     Function? onPressed,
   }) {
-
     return HeyCustomButton(
       child: GestureDetector(
         onTap: () {
@@ -73,13 +72,13 @@ class HeyCustomButton extends Container {
     Color backgroundColor = kPrimaryColor,
     Function? onPressed,
   }) {
-
     return HeyCustomButton(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(radius),
         color: backgroundColor,
       ),
-      padding: EdgeInsets.symmetric(vertical: paddingVertical, horizontal: paddingHorizontal),
+      padding: EdgeInsets.symmetric(
+          vertical: paddingVertical, horizontal: paddingHorizontal),
       child: GestureDetector(
         onTap: () {
           onPressed?.call();
@@ -98,7 +97,6 @@ class HeyCustomButton extends Container {
     Color outlineColor = kDividerPrimaryColor,
     Function? onPressed,
   }) {
-
     return HeyCustomButton(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(radius),
@@ -108,7 +106,8 @@ class HeyCustomButton extends Container {
         ),
         color: backgroundColor,
       ),
-      padding: EdgeInsets.symmetric(vertical: paddingVertical, horizontal: paddingHorizontal),
+      padding: EdgeInsets.symmetric(
+          vertical: paddingVertical, horizontal: paddingHorizontal),
       child: GestureDetector(
         onTap: () {
           onPressed?.call();
@@ -118,7 +117,8 @@ class HeyCustomButton extends Container {
     );
   }
 
-  factory HeyCustomButton.tagWithIcon(BuildContext context, {
+  factory HeyCustomButton.tagWithIcon(
+    BuildContext context, {
     required String iconName,
     required String text,
     double paddingTop = 8,
@@ -130,7 +130,6 @@ class HeyCustomButton extends Container {
     Color backgroundColor = kButtonColor,
     Function? onPressed,
   }) {
-
     return HeyCustomButton(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(radius),

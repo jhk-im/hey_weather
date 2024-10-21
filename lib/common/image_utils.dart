@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ImageUtils extends StatelessWidget {
-  const ImageUtils({
-    super.key,
-    required this.iconName,
-    this.width,
-    this.height
-  });
+  const ImageUtils(
+      {super.key, required this.iconName, this.width, this.height});
 
   final String iconName;
   final double? width;

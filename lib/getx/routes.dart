@@ -15,10 +15,19 @@ class Routes {
 
   static List<GetPage> pages = [
     GetPage(name: routeRoot, page: () => const SplashPage()),
-
-    GetPage(name: routeHome, page: () => const HomePage(), binding: HomeBinding()),
-    GetPage(name: routeAddress, page: () => const AddressPage(), binding: HomeBinding()),
-    GetPage(name: routeSetting, page: () => const SettingMainPage(), binding: HomeBinding()),
-    GetPage(name: routeSettingNotification, page: () => const SettingNotificationPage(), binding: HomeBinding()),
+    GetPage(
+        name: routeHome, page: () => const HomePage(), binding: HomeBinding()),
+    GetPage(
+        name: routeAddress,
+        page: () => const AddressPage(),
+        binding: HomeBinding()),
+    GetPage(
+        name: routeSetting,
+        page: () => const SettingMainPage(),
+        binding: HomeBinding()),
+    GetPage(
+        name: routeSettingNotification,
+        page: () => const SettingNotificationPage(),
+        binding: HomeBinding()),
   ];
 }

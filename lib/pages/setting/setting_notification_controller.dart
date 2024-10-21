@@ -10,7 +10,8 @@ import 'package:logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 
-class SettingNotificationController extends GetxController with WidgetsBindingObserver {
+class SettingNotificationController extends GetxController
+    with WidgetsBindingObserver {
   final WeatherRepository _repository = GetIt.I<WeatherRepository>();
 
   final RxBool _isLoading = false.obs;
@@ -34,7 +35,8 @@ class SettingNotificationController extends GetxController with WidgetsBindingOb
 
   @override
   void onInit() {
-    _isNotificationPermission(SharedPreferencesUtil().getBool(kNotificationPermission));
+    _isNotificationPermission(
+        SharedPreferencesUtil().getBool(kNotificationPermission));
     _getNotificationList();
     super.onInit();
     WidgetsBinding.instance.addObserver(this);
@@ -117,11 +119,11 @@ class SettingNotificationController extends GetxController with WidgetsBindingOb
 
   createNotification(String dateTime) async {
     var checkNotification = notificationList.firstWhereOrNull((element) {
-     DateTime dateTime1 = DateTime.parse(element.dateTime ?? '');
-     DateTime dateTime2 = DateTime.parse(dateTime);
-     int hour1 = dateTime1.hour;
-     int hour2 = dateTime2.hour;
-     return hour1 == hour2;
+      DateTime dateTime1 = DateTime.parse(element.dateTime ?? '');
+      DateTime dateTime2 = DateTime.parse(dateTime);
+      int hour1 = dateTime1.hour;
+      int hour2 = dateTime2.hour;
+      return hour1 == hour2;
     });
 
     if (checkNotification == null) {
@@ -137,7 +139,8 @@ class SettingNotificationController extends GetxController with WidgetsBindingOb
     }
   }
 
-  updateNotification(int index, String updateDateTime, UserNotification notification) async {
+  updateNotification(
+      int index, String updateDateTime, UserNotification notification) async {
     DateTime dateTime1 = DateTime.parse(notification.dateTime ?? '');
     DateTime dateTime2 = DateTime.parse(updateDateTime);
     int hour1 = dateTime1.hour;
@@ -147,7 +150,8 @@ class SettingNotificationController extends GetxController with WidgetsBindingOb
       notification.dateTime = updateDateTime;
       await _repository.updateUserNotification(notification);
       _notificationList[index] = notification;
-      _notificationList.sort((a, b) => DateTime.parse(a.dateTime ?? '').compareTo(DateTime.parse(b.dateTime ?? '')));
+      _notificationList.sort((a, b) => DateTime.parse(a.dateTime ?? '')
+          .compareTo(DateTime.parse(b.dateTime ?? '')));
     } else {
       var checkNotification = notificationList.firstWhereOrNull((element) {
         DateTime dateTime1 = DateTime.parse(element.dateTime ?? '');
@@ -160,7 +164,8 @@ class SettingNotificationController extends GetxController with WidgetsBindingOb
         notification.dateTime = updateDateTime;
         await _repository.updateUserNotification(notification);
         _notificationList[index] = notification;
-        _notificationList.sort((a, b) => DateTime.parse(a.dateTime ?? '').compareTo(DateTime.parse(b.dateTime ?? '')));
+        _notificationList.sort((a, b) => DateTime.parse(a.dateTime ?? '')
+            .compareTo(DateTime.parse(b.dateTime ?? '')));
       } else {
         _showUpdateDialog();
       }
@@ -192,7 +197,8 @@ class SettingNotificationController extends GetxController with WidgetsBindingOb
           await createNotification(evening5.toString());
           _getNotificationList();
         } else {
-          notificationList.sort((a, b) => DateTime.parse(a.dateTime ?? '').compareTo(DateTime.parse(b.dateTime ?? '')));
+          notificationList.sort((a, b) => DateTime.parse(a.dateTime ?? '')
+              .compareTo(DateTime.parse(b.dateTime ?? '')));
           _notificationList(notificationList);
         }
       },

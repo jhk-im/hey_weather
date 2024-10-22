@@ -18,7 +18,6 @@ import 'package:hey_weather/repository/soruce/local/entity/weather_mid_term_temp
 import 'package:hey_weather/repository/soruce/local/entity/weather_short_term_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_short_term_list_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_sun_rise_set_entity.dart';
-import 'package:hey_weather/repository/soruce/local/entity/user_notification_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_ultra_short_term_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_ultraviolet_entity.dart';
 import 'package:hey_weather/repository/soruce/local/weather_dao.dart';
@@ -36,7 +35,6 @@ void main() async {
 
   await Hive.initFlutter();
   Hive.registerAdapter(AddressEntityAdapter());
-  Hive.registerAdapter(UserNotificationEntityAdapter());
   Hive.registerAdapter(ObservatoryEntityAdapter());
   Hive.registerAdapter(WeatherUltravioletEntityAdapter());
   Hive.registerAdapter(WeatherSunRiseSetEntityAdapter());

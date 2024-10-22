@@ -48,8 +48,8 @@ class SearchAddressResult {
   final String? addressName;
   @JsonKey(name: 'address_type')
   final String? addressType;
-  final double? x;
-  final double? y;
+  final String? x;
+  final String? y;
 
   SearchAddressResult({this.addressName, this.addressType, this.x, this.y});
 

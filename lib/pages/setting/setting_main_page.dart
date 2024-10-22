@@ -87,46 +87,6 @@ class SettingMainPage extends GetView<SettingMainController> {
                         ),
                       ),
 
-                      /*// Divider
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 20),
-                    child: const Divider(color: kButtonColor, height: 1),
-                  ),
-
-                  // 알림 설정
-                  GestureDetector(
-                    onTap: () async {
-                      var result = await Get.toNamed(Routes.routeSettingNotification);
-
-                      if (result) {
-                        controller.updateNotification();
-                      }
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(24),
-                      child: Row(
-                        children: [
-                          HeyText.body(
-                            'setting_notification'.tr,
-                            color: kTextPrimaryColor,
-                          ),
-                          Expanded(
-                            child: Container(
-                              color: Colors.transparent,
-                              height: 20,
-                            ),
-                          ),
-                          HeyText.bodySemiBold(
-                            controller.isNotificationPermission ? 'on'.tr : 'off'.tr,
-                            color: controller.isNotificationPermission ? kTextPrimaryColor : kDividerPrimaryColor,
-                          ),
-                          const SizedBox(width: 8),
-                          SvgUtils.icon(context, 'arrow_right', color: kIconColor),
-                        ],
-                      ),
-                    ),
-                  ),*/
-
                       // Divider
                       Container(
                         margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -176,76 +136,10 @@ class SettingMainPage extends GetView<SettingMainController> {
                         child: const Divider(color: kButtonColor, height: 1),
                       ),
 
-                      // 의견 보내기
-                      GestureDetector(
-                        onTap: controller.sendEmail,
-                        child: Container(
-                          padding: const EdgeInsets.all(24),
-                          child: Row(
-                            children: [
-                              HeyText.body(
-                                'send_opinion'.tr,
-                                color: kTextPrimaryColor,
-                              ),
-                              Expanded(
-                                child: Container(
-                                  color: Colors.transparent,
-                                  height: 20,
-                                ),
-                              ),
-                              SvgUtils.icon(context, 'arrow_right',
-                                  color: kIconColor),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      // Divider
                       Container(
                         margin: const EdgeInsets.symmetric(horizontal: 20),
                         child: const Divider(color: kButtonColor, height: 1),
                       ),
-
-                      // 응원의 커피
-                      /*Container(
-                    margin: const EdgeInsets.all(20),
-                    child: GestureDetector(
-                      onTap: controller.moveToCoffee,
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: kBaseColor,
-                        ),
-                        width: double.maxFinite,
-                        child: Row(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                HeyText.footnoteSemiBold(
-                                  'coffee_title_1'.tr,
-                                  color: kPrimaryLighterColor,
-                                ),
-                                HeyText.footnoteSemiBold(
-                                  'coffee_title_2'.tr,
-                                  color: kTextPointColor,
-                                ),
-                              ],
-                            ),
-                            const Spacer(),
-                            SvgUtils.icon(
-                              context,
-                              'arrow_right',
-                              color: kTextPointColor,
-                              width: 16,
-                              height: 16,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),*/
                     ],
                   ),
 

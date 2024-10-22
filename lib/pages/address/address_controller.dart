@@ -214,8 +214,8 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     newAddress.region2depthName = names?[names.length - 2];
     newAddress.region3depthName = names?.last;
 
-    newAddress.x = address.x ?? 0;
-    newAddress.y = address.y ?? 0;
+    newAddress.x = double.parse(address.x ?? '0');
+    newAddress.y = double.parse(address.y ?? '0');
 
     var createAddress = await _updateCreateWeatherWidget(newAddress);
     if (context.mounted) {
@@ -481,19 +481,12 @@ class AddressController extends GetxController with WidgetsBindingObserver {
   Future _updateAddressCard(Address address, String searchText) async {
     String uuid = const Uuid().v4();
 
-    // final newAddress = Address();
-    // newAddress.addressName = Utils().containsSearchText(address.addressName, searchText);
-    // newAddress.x = double.parse(address.x!);
-    // newAddress.y = double.parse(address.y!);
-    // newAddress.id = uuid;
-    // newAddress.createDateTime = DateTime.now().toLocal().toString();
-    // await _repository.updateUserAddressWithId(newAddress);
     address.addressName =
         Utils().containsSearchText(address.addressName, searchText);
     address.id = uuid;
     address.createDateTime = DateTime.now().toLocal().toString();
 
-    print('address -> $address');
+    logger.d('_updateAddressCard() address -> $address');
 
     await _repository.updateUserAddressWithId(address);
     await _repository.insertUserAddressEditIdList(uuid);

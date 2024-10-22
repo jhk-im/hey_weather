@@ -6,7 +6,6 @@ import 'package:hey_weather/repository/soruce/local/entity/weather_mid_term_land
 import 'package:hey_weather/repository/soruce/local/entity/weather_mid_term_temperature_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_short_term_list_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_sun_rise_set_entity.dart';
-import 'package:hey_weather/repository/soruce/local/entity/user_notification_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_ultra_short_term_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_ultraviolet_entity.dart';
 import 'package:hey_weather/repository/soruce/mapper/weather_mapper.dart';
@@ -68,28 +67,6 @@ class WeatherDao {
   Future<List<String>?> getUserMyWeatherIdList() async {
     final box = await Hive.openBox<List<String>>(userWeatherSort);
     return box.get(userMyWeather);
-  }
-
-  static const userNotification = 'user_notification';
-  Future updateUserNotification(
-      String id, UserNotificationEntity notification) async {
-    final box = await Hive.openBox<UserNotificationEntity>(userNotification);
-    await box.put(id, notification);
-  }
-
-  Future deleteUserNotification(String id) async {
-    final box = await Hive.openBox<UserNotificationEntity>(userNotification);
-    return box.delete(id);
-  }
-
-  Future clearUserNotification() async {
-    final box = await Hive.openBox<UserNotificationEntity>(userNotification);
-    return box.clear();
-  }
-
-  Future<List<UserNotificationEntity>?> getUserNotificationList() async {
-    final box = await Hive.openBox<UserNotificationEntity>(userNotification);
-    return box.values.toList();
   }
 
   static const observatory = 'weather_observatory';

@@ -6,13 +6,11 @@ import 'package:hey_weather/repository/soruce/local/entity/weather_mid_term_land
 import 'package:hey_weather/repository/soruce/local/entity/weather_mid_term_temperature_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_short_term_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_sun_rise_set_entity.dart';
-import 'package:hey_weather/repository/soruce/local/entity/user_notification_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_ultra_short_term_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_ultraviolet_entity.dart';
 import 'package:hey_weather/repository/soruce/remote/dto/mid_code_dto.dart';
 import 'package:hey_weather/repository/soruce/remote/dto/observatory_dto.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
-import 'package:hey_weather/repository/soruce/local/model/user_notification.dart';
 import 'package:hey_weather/repository/soruce/remote/model/fine_dust.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_code.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_term_land.dart';
@@ -57,27 +55,6 @@ extension ToAddress on AddressEntity {
       code: code,
       regionType: regionType,
       createDateTime: createDateTime,
-    );
-  }
-}
-
-// 알림
-extension ToUserNotificationEntity on UserNotification {
-  UserNotificationEntity toUserNotificationEntity() {
-    var entity = UserNotificationEntity();
-    entity.id = id;
-    entity.dateTime = dateTime;
-    entity.isOn = isOn;
-    return entity;
-  }
-}
-
-extension ToUserNotification on UserNotificationEntity {
-  UserNotification toUserNotification() {
-    return UserNotification(
-      id: id,
-      dateTime: dateTime,
-      isOn: isOn,
     );
   }
 }

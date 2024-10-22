@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -21,6 +22,7 @@ import 'package:hey_weather/repository/soruce/local/entity/user_notification_ent
 import 'package:hey_weather/repository/soruce/local/entity/weather_ultra_short_term_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_ultraviolet_entity.dart';
 import 'package:hey_weather/repository/soruce/local/weather_dao.dart';
+import 'package:hey_weather/repository/soruce/remote/address_api_service.dart';
 import 'package:hey_weather/repository/soruce/remote/weather_api.dart';
 import 'package:hey_weather/repository/soruce/weather_repository.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -30,6 +32,7 @@ void main() async {
   await initializeDateFormatting('ko_KR', null);
 
   await dotenv.load(fileName: 'assets/.env');
+  final kakaoApiKey = dotenv.env['KAKAO_API_KEY'] ?? '';
 
   await Hive.initFlutter();
   Hive.registerAdapter(AddressEntityAdapter());
@@ -45,7 +48,16 @@ void main() async {
   Hive.registerAdapter(WeatherMidTermLandEntityAdapter());
   Hive.registerAdapter(WeatherMidTermTemperatureEntityAdapter());
 
-  final repository = WeatherRepository(WeatherApi(), WeatherDao());
+  final addressDio = Dio();
+  addressDio.options.headers['Authorization'] = 'KakaoAK $kakaoApiKey';
+  final addressApi =
+      AddressApiService(addressDio, baseUrl: "https://dapi.kakao.com");
+  addressDio.interceptors.add(LogInterceptor(
+    responseBody: true, // 응답 바디 로그 출력
+    error: true, // 오류 로그 출력
+    logPrint: (obj) => print(obj), // 로그 출력 방식 설정 (콘솔 출력)
+  ));
+  final repository = WeatherRepository(addressApi, WeatherApi(), WeatherDao());
   GetIt.instance.registerSingleton<WeatherRepository>(repository);
 
   await SharedPreferencesUtil().initialize();

@@ -10,14 +10,15 @@ import 'package:hey_weather/repository/soruce/local/csv/mid_code_parser.dart';
 import 'package:hey_weather/repository/soruce/local/csv/observatory_parser.dart';
 import 'package:hey_weather/repository/soruce/local/weather_dao.dart';
 import 'package:hey_weather/repository/soruce/mapper/weather_mapper.dart';
+import 'package:hey_weather/repository/soruce/remote/address_api_service.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
-import 'package:hey_weather/repository/soruce/local/model/search_address.dart';
 import 'package:hey_weather/repository/soruce/local/model/user_notification.dart';
 import 'package:hey_weather/repository/soruce/remote/model/fine_dust.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_code.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_term_land.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_term_temperature.dart';
 import 'package:hey_weather/repository/soruce/remote/model/observatory.dart';
+import 'package:hey_weather/repository/soruce/remote/model/search_address_response.dart';
 import 'package:hey_weather/repository/soruce/remote/model/short_term.dart';
 import 'package:hey_weather/repository/soruce/remote/model/sun_rise_set.dart';
 import 'package:hey_weather/repository/soruce/remote/model/ultra_short_term.dart';
@@ -30,10 +31,11 @@ import 'package:xml/xml.dart';
 import 'package:xml2json/xml2json.dart';
 
 class WeatherRepository {
+  final AddressApiService _addressApi;
   final WeatherApi _api;
   final WeatherDao _dao;
 
-  WeatherRepository(this._api, this._dao);
+  WeatherRepository(this._addressApi, this._api, this._dao);
 
   var logger = Logger();
 
@@ -85,9 +87,7 @@ class WeatherRepository {
       String currentAddressId,
       {String? addressName}) async {
     Position? position;
-
     final current = await _dao.getUserAddressWithId(currentAddressId);
-    logger.i('getUpdateAddressWithCoordinate() -> position -> $position');
     if (current != null) {
       if (currentAddressId == kCurrentLocationId) {
         position = await _getLocation();
@@ -136,6 +136,7 @@ class WeatherRepository {
     } else {
       // 좌표로 주소 검색
       try {
+        logger.d('getAddressWithCoordinate() 1');
         double longitude = 0;
         double latitude = 0;
         if (position != null) {
@@ -147,15 +148,21 @@ class WeatherRepository {
         }
 
         final response =
-            await _api.getAddressWithCoordinate(longitude, latitude);
-        final jsonResult = jsonDecode(response.body);
-        AddressList result = AddressList.fromJson(jsonResult);
+            await _addressApi.getAddressWithCoordinate(longitude, latitude);
+        logger.d('getAddressWithCoordinate() 2');
         Address address = Address();
+        if (response.documents != null) {
+          final add = response.documents!.first;
+          address.regionType = add.regionType;
+          address.region1depthName = add.region1depthName;
+          address.region2depthName = add.region2depthName;
+          address.region3depthName = add.region3depthName;
+          address.region4depthName = add.region4depthName;
+          address.x = add.x;
+          address.y = add.y;
+          address.code = add.code;
+          address.id = currentAddressId;
 
-        logger.i('getUpdateAddressWithCoordinate() jsonResult -> $jsonResult');
-
-        if (result.documents != null) {
-          address = result.documents![0];
           if (currentAddressId == kCurrentLocationId) {
             address.addressName = '${addressName ?? address.region3depthName}';
           } else {
@@ -164,9 +171,6 @@ class WeatherRepository {
               address.createDateTime = current.createDateTime ?? '';
             }
           }
-          address.x = longitude;
-          address.y = latitude;
-          address.id = currentAddressId;
 
           logger.d('getAddressWithCoordinate() kakao api return -> $address');
           _dao.updateUserAddressWithId(
@@ -251,12 +255,20 @@ class WeatherRepository {
         // logger.i('getUpdateAddressWithCoordinate() longitude -> $longitude, latitude -> $latitude');
 
         final response =
-            await _api.getAddressWithCoordinate(longitude, latitude);
-        final jsonResult = jsonDecode(response.body);
-        AddressList result = AddressList.fromJson(jsonResult);
+            await _addressApi.getAddressWithCoordinate(longitude, latitude);
         Address address = Address();
-        if (result.documents != null) {
-          address = result.documents![0];
+        if (response.documents != null) {
+          final add = response.documents!.first;
+          address.regionType = add.regionType;
+          address.region1depthName = add.region1depthName;
+          address.region2depthName = add.region2depthName;
+          address.region3depthName = add.region3depthName;
+          address.region4depthName = add.region4depthName;
+          address.x = add.x;
+          address.y = add.y;
+          address.code = add.code;
+          address.id = currentAddressId;
+
           if (currentAddressId == kCurrentLocationId) {
             address.addressName = '${addressName ?? address.region3depthName}';
           } else {
@@ -265,9 +277,6 @@ class WeatherRepository {
               address.createDateTime = current.createDateTime ?? '';
             }
           }
-          address.x = longitude;
-          address.y = latitude;
-          address.id = currentAddressId;
 
           logger.d('getAddressWithCoordinate() kakao api return -> $address');
           _dao.updateUserAddressWithId(
@@ -291,14 +300,13 @@ class WeatherRepository {
   }
 
   // 주소 검색
-  Future<Result<List<SearchAddress>>> getSearchAddress(String query) async {
+  Future<Result<List<SearchAddressResult>>> getSearchAddress(
+      String query) async {
     // 카카오 주소 검색
     try {
-      final response = await _api.getSearchAddress(query);
-      final jsonResult = jsonDecode(response.body);
-      SearchAddressList result = SearchAddressList.fromJson(jsonResult);
-      if (result.documents != null) {
-        return Result.success(result.documents!);
+      final response = await _addressApi.getSearchAddress(query);
+      if (response.documents != null) {
+        return Result.success(response.documents!);
       } else {
         return Result.error(Exception('getSearchAddress empty'));
       }

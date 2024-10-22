@@ -9,7 +9,7 @@ import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:hey_weather/common/utils.dart';
 import 'package:hey_weather/getx/routes.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
-import 'package:hey_weather/repository/soruce/local/model/search_address.dart';
+import 'package:hey_weather/repository/soruce/remote/model/search_address_response.dart';
 import 'package:hey_weather/repository/soruce/weather_repository.dart';
 import 'package:logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -41,8 +41,9 @@ class AddressController extends GetxController with WidgetsBindingObserver {
   final RxList<Address> _addressList = <Address>[].obs;
   List<Address> get addressList => _addressList;
 
-  final RxList<SearchAddress> _searchAddressList = <SearchAddress>[].obs;
-  List<SearchAddress> get searchAddressList => _searchAddressList;
+  final RxList<SearchAddressResult> _searchAddressList =
+      <SearchAddressResult>[].obs;
+  List<SearchAddressResult> get searchAddressList => _searchAddressList;
 
   final RxString _searchAddressText = ''.obs;
   String get searchAddressText => _searchAddressText.value;
@@ -203,7 +204,7 @@ class AddressController extends GetxController with WidgetsBindingObserver {
   }
 
   showCreateAddressBottomSheet(
-      BuildContext context, SearchAddress address) async {
+      BuildContext context, SearchAddressResult address) async {
     Address newAddress = Address();
     newAddress.id = kCreateWidgetId;
     newAddress.addressName = address.addressName;
@@ -213,11 +214,13 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     newAddress.region2depthName = names?[names.length - 2];
     newAddress.region3depthName = names?.last;
 
-    newAddress.x = double.parse(address.x ?? '0');
-    newAddress.y = double.parse(address.y ?? '0');
+    newAddress.x = address.x ?? 0;
+    newAddress.y = address.y ?? 0;
 
     var createAddress = await _updateCreateWeatherWidget(newAddress);
-    await _showBottomSheet(context, createAddress);
+    if (context.mounted) {
+      await _showBottomSheet(context, createAddress);
+    }
   }
 
   _showBottomSheet(BuildContext context, Address address) async {

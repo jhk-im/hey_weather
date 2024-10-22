@@ -12,7 +12,6 @@ import 'package:hey_weather/repository/soruce/local/weather_dao.dart';
 import 'package:hey_weather/repository/soruce/mapper/weather_mapper.dart';
 import 'package:hey_weather/repository/soruce/remote/address_api_service.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
-import 'package:hey_weather/repository/soruce/local/model/user_notification.dart';
 import 'package:hey_weather/repository/soruce/remote/model/fine_dust.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_code.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_term_land.dart';
@@ -82,10 +81,8 @@ class WeatherRepository {
         desiredAccuracy: LocationAccuracy.high);
   }
 
-  /// KAKAO 좌표로 주소 검색
-  Future<Result<Address>> getUpdateAddressWithCoordinate(
-      String currentAddressId,
-      {String? addressName}) async {
+  /// 좌표로 주소 검색 (KAKAO)
+  Future<Result<Address>> getUpdateAddressWithCoordinate(String currentAddressId, {String? addressName}) async {
     Position? position;
     final current = await _dao.getUserAddressWithId(currentAddressId);
     if (current != null) {
@@ -136,7 +133,6 @@ class WeatherRepository {
     } else {
       // 좌표로 주소 검색
       try {
-        logger.d('getAddressWithCoordinate() 1');
         double longitude = 0;
         double latitude = 0;
         if (position != null) {
@@ -149,7 +145,6 @@ class WeatherRepository {
 
         final response =
             await _addressApi.getAddressWithCoordinate(longitude, latitude);
-        logger.d('getAddressWithCoordinate() 2');
         Address address = Address();
         if (response.documents != null) {
           final add = response.documents!.first;
@@ -193,115 +188,8 @@ class WeatherRepository {
     }
   }
 
-  Future<Result<Address>> createAddressWithCoordinate(String currentAddressId,
-      {String? addressName}) async {
-    Position? position;
-
-    // 좌표값 변경이 없는 경우 로컬 리턴
-    final current = await _dao.getUserAddressWithId(currentAddressId);
-
-    if (currentAddressId == kCurrentLocationId) {
-      position = await _getLocation();
-      // logger.i('getUpdateAddressWithCoordinate() -> position -> $position');
-      if (current != null) {
-        final currentX = current.x!.toStringAsFixed(3);
-        final positionX = position.longitude.toStringAsFixed(3);
-        final currentY = current.y!.toStringAsFixed(3);
-        final positionY = position.latitude.toStringAsFixed(3);
-        if (currentX == positionX && currentY == positionY) {
-          logger.d(
-              'createAddressWithCoordinate() local return -> ${current.toAddress()}');
-          return Result.success(current.toAddress());
-        }
-      }
-    }
-
-    // 통신 오류용 기본 주소 정보
-    Address defaultAddress = Address();
-    defaultAddress.addressName = '태평로1가';
-    defaultAddress.region1depthName = '서울특별시';
-    defaultAddress.region2depthName = '중구';
-    defaultAddress.region3depthName = '태평로1가';
-    defaultAddress.x = 126.97723484374212;
-    defaultAddress.y = 37.56770871576262;
-    defaultAddress.id = kCurrentLocationId;
-
-    // 인터넷 연결 끊김
-    var connect = await Utils.checkInternetConnection();
-    if (!connect) {
-      if (current != null) {
-        logger.d(
-            'createAddressWithCoordinate() network not connected local return -> ${current.toAddress()}');
-        return Result.success(current.toAddress());
-      } else {
-        logger.d(
-            'createAddressWithCoordinate() network not connected default return -> $defaultAddress');
-        _dao.updateUserAddressWithId(
-            kCurrentLocationId, defaultAddress.toAddressEntity());
-        return Result.success(defaultAddress);
-      }
-    } else {
-      // 좌표로 주소 검색
-      try {
-        double longitude = 0;
-        double latitude = 0;
-        if (position != null) {
-          longitude = position.longitude;
-          latitude = position.latitude;
-        } else {
-          longitude = current?.x ?? 0;
-          latitude = current?.y ?? 0;
-        }
-        // logger.i('getUpdateAddressWithCoordinate() longitude -> $longitude, latitude -> $latitude');
-
-        final response =
-            await _addressApi.getAddressWithCoordinate(longitude, latitude);
-        Address address = Address();
-        if (response.documents != null) {
-          final add = response.documents!.first;
-          address.regionType = add.regionType;
-          address.region1depthName = add.region1depthName;
-          address.region2depthName = add.region2depthName;
-          address.region3depthName = add.region3depthName;
-          address.region4depthName = add.region4depthName;
-          address.x = add.x;
-          address.y = add.y;
-          address.code = add.code;
-          address.id = currentAddressId;
-
-          if (currentAddressId == kCurrentLocationId) {
-            address.addressName = '${addressName ?? address.region3depthName}';
-          } else {
-            if (current != null) {
-              address.addressName = current.addressName ?? '';
-              address.createDateTime = current.createDateTime ?? '';
-            }
-          }
-
-          logger.d('getAddressWithCoordinate() kakao api return -> $address');
-          _dao.updateUserAddressWithId(
-              currentAddressId, address.toAddressEntity());
-          return Result.success(address);
-        } else {
-          logger.d(
-              'getAddressWithCoordinate() kakao api failed default return -> $defaultAddress');
-          _dao.updateUserAddressWithId(
-              kCurrentLocationId, defaultAddress.toAddressEntity());
-          return Result.success(defaultAddress);
-        }
-      } catch (e) {
-        logger.d(
-            'getAddressWithCoordinate() -> kakao api failed default return $defaultAddress');
-        _dao.updateUserAddressWithId(
-            kCurrentLocationId, defaultAddress.toAddressEntity());
-        return Result.success(defaultAddress);
-      }
-    }
-  }
-
-  // 주소 검색
-  Future<Result<List<SearchAddressResult>>> getSearchAddress(
-      String query) async {
+  /// 주소로 좌표 검색 (KAKAO)
+  Future<Result<List<SearchAddressResult>>> getSearchAddress(String query) async {
     // 카카오 주소 검색
     try {
       final response = await _addressApi.getSearchAddress(query);
@@ -316,7 +204,7 @@ class WeatherRepository {
     }
   }
 
-  /// 주소 정보
+  /// 주소 목록
   Future<Result<List<Address>>> getUserAddressList() async {
     final list = await _dao.getAllUserAddressList();
     if (list.isNotEmpty) {
@@ -326,13 +214,13 @@ class WeatherRepository {
     }
   }
 
-  // id로 주소 추가
+  /// 주소 추가
   Future updateUserAddressWithId(Address address) async {
     // logger.i('updateUserAddressWithId() -> $address');
     await _dao.updateUserAddressWithId(address.id!, address.toAddressEntity());
   }
 
-  // 주소 삭제
+  /// 주소 삭제
   Future deleteUserAddressWithId(String addressId) async {
     await _dao.deleteUserAddressWithId(addressId);
     final recentIdList = await _dao.getUserAddressRecentIdList();
@@ -342,7 +230,7 @@ class WeatherRepository {
     }
   }
 
-  /// 편집 주소 리스트 정보
+  /// 편집 주소 목록
   Future<Result<List<String>>> getUserAddressEditIdList() async {
     final list = await _dao.getUserAddressEditIdList();
     if (list != null) {
@@ -352,9 +240,8 @@ class WeatherRepository {
     }
   }
 
-  // 편집 주소 추가
+  /// 편집 주소 추가
   Future insertUserAddressEditIdList(String id) async {
-    // logger.i('insertUserAddressEditIdList(id: $id)');
     final idList = await _dao.getUserAddressEditIdList();
     if (idList == null) {
       await _dao.updateUserAddressEdit([id]);
@@ -364,13 +251,12 @@ class WeatherRepository {
     }
   }
 
-  // 편집 주소 업데이트
+  /// 편집 주소 변경
   Future updateUserAddressEditIdList(List<String> idList) async {
-    // logger.i('updateUserAddressEditIdList(idList: $idList)');
     await _dao.updateUserAddressEdit(idList.toSet().toList());
   }
 
-  /// 최근 선택한 주소 리스트 정보
+  /// 최근 선택한 주소 목록
   Future<Result<List<String>>> getUserAddressRecentIdList() async {
     final list = await _dao.getUserAddressRecentIdList();
     if (list != null) {
@@ -380,10 +266,9 @@ class WeatherRepository {
     }
   }
 
-  // 최근 선택한 순서 업데이트
+  /// 최근 선택한 순서 추가
   Future insertUserAddressRecentIdList(String id,
       {bool isSelect = false}) async {
-    // logger.i('insertUserAddressRecentIdList(id: $id)');
     final idList = await _dao.getUserAddressRecentIdList();
     if (idList == null) {
       await _dao.updateUserAddressRecent([id]);
@@ -402,35 +287,13 @@ class WeatherRepository {
     }
   }
 
-  // 최근 선택 주소 업데이트
+  /// 최근 선택 주소 변경
   Future updateUserAddressRecentIdList(List<String> idList) async {
     // logger.i('updateUserAddressRecentIdList(idList: $idList)');
     await _dao.updateUserAddressEdit(idList.toSet().toList());
   }
 
-  /// 알림 리스트
-  Future<Result<List<UserNotification>>> getUserNotificationList() async {
-    final list = await _dao.getUserNotificationList();
-    if (list != null) {
-      return Result.success(list.map((e) => e.toUserNotification()).toList());
-    } else {
-      return Result.error(Exception('getUserNotificationList empty'));
-    }
-  }
-
-  // 알림 업데이트
-  Future updateUserNotification(UserNotification notification) async {
-    // logger.i('updateUserNotification(notification: $notification)');
-    await _dao.updateUserNotification(
-        notification.id ?? '', notification.toUserNotificationEntity());
-  }
-
-  // 알림 삭제
-  Future deleteUserNotification(String id) async {
-    await _dao.deleteUserNotification(id);
-  }
-
-  /// My Weather
+  /// 내가 선택한 날씨 목록
   Future<Result<List<String>?>> getUserMyWeather() async {
     final list = await _dao.getUserMyWeatherIdList();
     if (list != null) {
@@ -440,6 +303,7 @@ class WeatherRepository {
     }
   }
 
+  /// 내가 선택한 날씨 변경
   Future updateUserMyWeather(List<String> idList) async {
     // logger.i('updateUserMyWeather(idList: $idList)');
     idList.removeWhere((element) => element == 'empty');

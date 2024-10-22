@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:hey_weather/pages/address/address_controller.dart';
 import 'package:hey_weather/pages/home/home_controller.dart';
 import 'package:hey_weather/pages/setting/setting_main_controller.dart';
-import 'package:hey_weather/pages/setting/setting_notification_controller.dart';
 
 class HomeBinding implements Bindings {
   @override
@@ -11,6 +10,5 @@ class HomeBinding implements Bindings {
 
     Get.lazyPut(() => AddressController());
     Get.lazyPut(() => SettingMainController());
-    Get.lazyPut(() => SettingNotificationController());
   }
 }

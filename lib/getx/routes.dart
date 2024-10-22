@@ -3,7 +3,6 @@ import 'package:hey_weather/getx/bindings/home_binding.dart';
 import 'package:hey_weather/pages/address/address_page.dart';
 import 'package:hey_weather/pages/home/home_page.dart';
 import 'package:hey_weather/pages/setting/setting_main_page.dart';
-import 'package:hey_weather/pages/setting/setting_notification_page.dart';
 import 'package:hey_weather/pages/splash_page.dart';
 
 class Routes {
@@ -24,10 +23,6 @@ class Routes {
     GetPage(
         name: routeSetting,
         page: () => const SettingMainPage(),
-        binding: HomeBinding()),
-    GetPage(
-        name: routeSettingNotification,
-        page: () => const SettingNotificationPage(),
         binding: HomeBinding()),
   ];
 }

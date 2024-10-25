@@ -16,7 +16,6 @@ class SplashController extends GetxController {
 
   _requestPermissions() async {
     await _checkPermissionStatus(Permission.location);
-    await _checkPermissionStatus(Permission.notification);
     Get.offAllNamed('/home');
   }
 

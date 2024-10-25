@@ -82,7 +82,9 @@ class WeatherRepository {
   }
 
   /// 좌표로 주소 검색 (KAKAO)
-  Future<Result<Address>> getUpdateAddressWithCoordinate(String currentAddressId, {String? addressName}) async {
+  Future<Result<Address>> getUpdateAddressWithCoordinate(
+      String currentAddressId,
+      {String? addressName}) async {
     Position? position;
     final current = await _dao.getUserAddressWithId(currentAddressId);
     if (current != null) {
@@ -189,7 +191,8 @@ class WeatherRepository {
   }
 
   /// 주소로 좌표 검색 (KAKAO)
-  Future<Result<List<SearchAddressResult>>> getSearchAddress(String query) async {
+  Future<Result<List<SearchAddressResult>>> getSearchAddress(
+      String query) async {
     // 카카오 주소 검색
     try {
       final response = await _addressApi.getSearchAddress(query);

@@ -1,20 +1,20 @@
+import 'package:hey_weather/repository/soruce/remote/model/weather_category.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:sweater/repository/source/remote/model/weather_category.dart';
 
-part 'weather_response.g.dart';
+part 'live_ultra_short_term_response.g.dart';
 
 @JsonSerializable()
-class WeatherResponse {
+class LiveUltraShortTermResponse {
   final ResponseData response;
 
-  WeatherResponse({
+  LiveUltraShortTermResponse({
     required this.response,
   });
 
-  factory WeatherResponse.fromJson(Map<String, dynamic> json) =>
-      _$WeatherResponseFromJson(json);
+  factory LiveUltraShortTermResponse.fromJson(Map<String, dynamic> json) =>
+      _$LiveUltraShortTermResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => _$WeatherResponseToJson(this);
+  Map<String, dynamic> toJson() => _$LiveUltraShortTermResponseToJson(this);
 }
 
 @JsonSerializable()
@@ -73,7 +73,7 @@ class ResponseBody {
 
 @JsonSerializable()
 class Items {
-  final List<WeatherItem>? item;
+  final List<LiveUltraShortTerm>? item;
 
   Items({
     this.item,
@@ -85,32 +85,26 @@ class Items {
 }
 
 @JsonSerializable()
-class WeatherItem {
+class LiveUltraShortTerm {
   String? baseDate;
   String? baseTime;
   String? category;
   int? nx;
   int? ny;
   String? obsrValue;
-  String? fcstDate;
-  String? fcstTime;
-  String? fcstValue;
   WeatherCategory? weatherCategory;
 
-  WeatherItem({
+  LiveUltraShortTerm({
     this.baseDate,
     this.baseTime,
     this.category,
     this.nx,
     this.ny,
     this.obsrValue,
-    this.fcstDate,
-    this.fcstTime,
-    this.fcstValue,
   });
 
-  factory WeatherItem.fromJson(Map<String, dynamic> json) =>
-      _$WeatherItemFromJson(json);
+  factory LiveUltraShortTerm.fromJson(Map<String, dynamic> json) =>
+      _$LiveUltraShortTermFromJson(json);
 
-  Map<String, dynamic> toJson() => _$WeatherItemToJson(this);
+  Map<String, dynamic> toJson() => _$LiveUltraShortTermToJson(this);
 }

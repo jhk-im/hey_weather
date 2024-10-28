@@ -3,52 +3,27 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 
 class WeatherApi {
-  // static const kakaoUrl = "dapi.kakao.com";
-  // static final kakaoApiKey = dotenv.env['KAKAO_API_KEY'];
-  //
-  // // 좌표로 주소 검색
-  // Future<http.Response> getAddressWithCoordinate(double x, double y) async {
-  //   var url = Uri.https(kakaoUrl, '/v2/local/geo/coord2regioncode.json', {
-  //     'x': '$x',
-  //     'y': '$y',
-  //   });
-  //   var headers = <String, String>{
-  //     'Authorization': 'KakaoAK $kakaoApiKey',
-  //   };
-  //   return await http.get(url, headers: headers);
-  // }
-  //
-  // // 주소로 좌표 검색
-  // Future<http.Response> getSearchAddress(String query) async {
-  //   var url = Uri.https(kakaoUrl, '/v2/local/search/address.json', {
-  //     'query': query,
-  //   });
-  //   var headers = <String, String>{
-  //     'Authorization': 'KakaoAK $kakaoApiKey',
-  //   };
-  //   return await http.get(url, headers: headers);
-  // }
 
   static const weatherUrl = "apis.data.go.kr";
-  static final serviceKey = dotenv.env['SERVICE_KEY'];
+  static final serviceKey = dotenv.env['WEATHER_SERVICE_KEY'];
 
   // 초단기 실황
   // 기온, 습도, 강수량, 강수 형태, 풍속, 풍향
-  Future<http.Response> getUltraShortTerm(
-      String date, String time, int x, int y) async {
-    var url = Uri.https(
-        weatherUrl, '/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst', {
-      'dataType': 'JSON',
-      'serviceKey': serviceKey ?? '',
-      'numOfRows': '10',
-      'pageNo': '1',
-      'base_date': date,
-      'base_time': time,
-      'nx': '$x',
-      'ny': '$y',
-    });
-    return await http.get(url);
-  }
+  // Future<http.Response> getUltraShortTerm(
+  //     String date, String time, int x, int y) async {
+  //   var url = Uri.https(
+  //       weatherUrl, '/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst', {
+  //     'dataType': 'JSON',
+  //     'serviceKey': serviceKey ?? '',
+  //     'numOfRows': '10',
+  //     'pageNo': '1',
+  //     'base_date': date,
+  //     'base_time': time,
+  //     'nx': '$x',
+  //     'ny': '$y',
+  //   });
+  //   return await http.get(url);
+  // }
 
   // 초단기 예보
   Future<http.Response> getUltraShortTermSixTime(int x, int y) async {

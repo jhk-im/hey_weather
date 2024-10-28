@@ -1,9 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:intl/intl.dart';
 
 class WeatherApi {
-
   static const weatherUrl = "apis.data.go.kr";
   static final serviceKey = dotenv.env['WEATHER_SERVICE_KEY'];
 
@@ -26,42 +24,42 @@ class WeatherApi {
   // }
 
   // 초단기 예보
-  Future<http.Response> getUltraShortTermSixTime(int x, int y) async {
-    DateTime now = DateTime.now();
-    DateTime oneHourBefore = now.subtract(const Duration(hours: 1));
-    String formattedDate = DateFormat('yyyyMMdd HHmm').format(oneHourBefore);
-    List<String> formatted = formattedDate.split(' ');
-
-    var url = Uri.https(
-        weatherUrl, '/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst', {
-      'dataType': 'JSON',
-      'serviceKey': serviceKey ?? '',
-      'numOfRows': '60',
-      'pageNo': '1',
-      'base_date': formatted[0],
-      'base_time': formatted[1],
-      'nx': '$x',
-      'ny': '$y',
-    });
-    return await http.get(url);
-  }
+  // Future<http.Response> getUltraShortTermSixTime(int x, int y) async {
+  //   DateTime now = DateTime.now();
+  //   DateTime oneHourBefore = now.subtract(const Duration(hours: 1));
+  //   String formattedDate = DateFormat('yyyyMMdd HHmm').format(oneHourBefore);
+  //   List<String> formatted = formattedDate.split(' ');
+  //
+  //   var url = Uri.https(
+  //       weatherUrl, '/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst', {
+  //     'dataType': 'JSON',
+  //     'serviceKey': serviceKey ?? '',
+  //     'numOfRows': '60',
+  //     'pageNo': '1',
+  //     'base_date': formatted[0],
+  //     'base_time': formatted[1],
+  //     'nx': '$x',
+  //     'ny': '$y',
+  //   });
+  //   return await http.get(url);
+  // }
 
   // 단기 예보
-  Future<http.Response> getShortTerm(String date, String time, int x, int y,
-      {String numberOfRows = '600'}) async {
-    var url = Uri.https(
-        weatherUrl, '/1360000/VilageFcstInfoService_2.0/getVilageFcst', {
-      'dataType': 'JSON',
-      'serviceKey': serviceKey ?? '',
-      'numOfRows': numberOfRows,
-      'pageNo': '1',
-      'base_date': date,
-      'base_time': time,
-      'nx': '$x',
-      'ny': '$y',
-    });
-    return await http.get(url);
-  }
+  // Future<http.Response> getShortTerm(String date, String time, int x, int y,
+  //     {String numberOfRows = '600'}) async {
+  //   var url = Uri.https(
+  //       weatherUrl, '/1360000/VilageFcstInfoService_2.0/getVilageFcst', {
+  //     'dataType': 'JSON',
+  //     'serviceKey': serviceKey ?? '',
+  //     'numOfRows': numberOfRows,
+  //     'pageNo': '1',
+  //     'base_date': date,
+  //     'base_time': time,
+  //     'nx': '$x',
+  //     'ny': '$y',
+  //   });
+  //   return await http.get(url);
+  // }
 
   // 중기 기온 예보
   Future<http.Response> getMidTermTemperature(String tmFc, String regId) async {

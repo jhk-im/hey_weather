@@ -6,7 +6,7 @@ import 'package:hey_weather/common/utils.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_term_land.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_term_temperature.dart';
-import 'package:hey_weather/repository/soruce/remote/model/short_term.dart';
+import 'package:hey_weather/repository/soruce/remote/model/short_term_response.dart';
 import 'package:hey_weather/widgets/buttons/hey_custom_button.dart';
 import 'package:hey_weather/widgets/buttons/hey_elevated_button.dart';
 import 'package:hey_weather/widgets/buttons/hey_weather_address_button.dart';

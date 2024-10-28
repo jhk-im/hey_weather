@@ -10,7 +10,7 @@ import 'package:hey_weather/getx/routes.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_term_land.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_term_temperature.dart';
-import 'package:hey_weather/repository/soruce/remote/model/short_term.dart';
+import 'package:hey_weather/repository/soruce/remote/model/short_term_response.dart';
 import 'package:hey_weather/repository/soruce/weather_repository.dart';
 import 'package:logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -460,7 +460,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     double latitude = address.y ?? 0;
     String addressId = address.id ?? '';
     var getUltraShortTerm =
-        await _repository.getUltraShortTermList(addressId, longitude, latitude);
+        await _repository.getLiveShortTermList(addressId, longitude, latitude);
     getUltraShortTerm.when(success: (ultraShortTermList) async {
       // logger.i('HomeController.getUltraShortTermList success');
 
@@ -492,7 +492,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     double latitude = address.y ?? 0;
     String addressId = address.id ?? '';
 
-    var getUltraShortTermSixTime = await _repository.getUltraShortTermSixTime(
+    var getUltraShortTermSixTime = await _repository.getSixTimeShortTermList(
         addressId, longitude, latitude);
     getUltraShortTermSixTime.when(success: (ultraSixTime) async {
       // logger.i('HomeController.getUltraShortTermSixTime success');

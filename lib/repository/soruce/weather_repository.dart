@@ -13,14 +13,14 @@ import 'package:hey_weather/repository/soruce/mapper/weather_mapper.dart';
 import 'package:hey_weather/repository/soruce/remote/address_api_service.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
 import 'package:hey_weather/repository/soruce/remote/model/fine_dust.dart';
-import 'package:hey_weather/repository/soruce/remote/model/live_ultra_short_term_response.dart';
+import 'package:hey_weather/repository/soruce/remote/model/live_short_term_response.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_code.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_term_land.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_term_temperature.dart';
 import 'package:hey_weather/repository/soruce/remote/model/observatory.dart';
 import 'package:hey_weather/repository/soruce/remote/model/search_address_response.dart';
-import 'package:hey_weather/repository/soruce/remote/model/short_term.dart';
 import 'package:hey_weather/repository/soruce/remote/model/sun_rise_set.dart';
+import 'package:hey_weather/repository/soruce/remote/model/short_term_response.dart';
 import 'package:hey_weather/repository/soruce/remote/model/ultraviolet.dart';
 import 'package:hey_weather/repository/soruce/remote/model/weather_category.dart';
 import 'package:hey_weather/repository/soruce/remote/result/result.dart';
@@ -36,7 +36,7 @@ class WeatherRepository {
   final WeatherApi _api;
   final WeatherDao _dao;
 
-  WeatherRepository(this._addressApi,this._weatherApi, this._api, this._dao);
+  WeatherRepository(this._addressApi, this._weatherApi, this._api, this._dao);
 
   var logger = Logger();
 
@@ -316,25 +316,24 @@ class WeatherRepository {
   }
 
   /// Weather API
-  // 날씨 category 에 따른 정보 (초단기, 단기)
+  /// 날씨 category 에 따른 정보 (초단기, 단기)
   Future<WeatherCategory> getWeatherCode(String category) async {
     final jsonString = await rootBundle.loadString('assets/data/code.json');
     final jsonObject = jsonDecode(jsonString);
     return WeatherCategory.fromJson(jsonObject[category]);
   }
 
-  // 초단기 실황
-  Future<Result<List<LiveUltraShortTerm>>> getUltraShortTermList(
+  /// 초단기 실황
+  Future<Result<List<LiveShortTerm>>> getLiveShortTermList(
       String id, double longitude, double latitude) async {
-    final ultraShortTemperature =
-        await _dao.getWeatherUltraShortTemperature(id);
-    final ultraShortHumidity = await _dao.getWeatherUltraShortHumidity(id);
-    final ultraShortRain = await _dao.getWeatherUltraShortRain(id);
-    final ultraShortRainStatus = await _dao.getWeatherUltraShortRainStatus(id);
-    final ultraShortWindSpeed = await _dao.getWeatherUltraShortWindSpeed(id);
+    final ultraShortTemperature = await _dao.getLiveShortTermTemperature(id);
+    final ultraShortHumidity = await _dao.getLiveShortTermHumidity(id);
+    final ultraShortRain = await _dao.getLiveShortTermRain(id);
+    final ultraShortRainStatus = await _dao.getLiveShortTermRainStatus(id);
+    final ultraShortWindSpeed = await _dao.getLiveShortTermWindSpeed(id);
     final ultraShortWindDirection =
-        await _dao.getWeatherUltraShortWindDirection(id);
-    List<LiveUltraShortTerm> result = [];
+        await _dao.getLiveShortTermWindDirection(id);
+    List<LiveShortTerm> result = [];
 
     // 시간 기준 업데이트
     DateTime dateTime = DateTime.now();
@@ -357,21 +356,21 @@ class WeatherRepository {
           'getLiveUltraShortTermList() local return check -> currentDateTime = $currentDate$currentTime, localDateTime = $localDate$localTime');
       if (currentDate == localDate) {
         if (currentTime == localTime) {
-          result.add(ultraShortTemperature.toLiveUltraShortTerm());
+          result.add(ultraShortTemperature.toLiveShortTerm());
           if (ultraShortHumidity != null) {
-            result.add(ultraShortHumidity.toLiveUltraShortTerm());
+            result.add(ultraShortHumidity.toLiveShortTerm());
           }
           if (ultraShortRain != null) {
-            result.add(ultraShortRain.toLiveUltraShortTerm());
+            result.add(ultraShortRain.toLiveShortTerm());
           }
           if (ultraShortRainStatus != null) {
-            result.add(ultraShortRainStatus.toLiveUltraShortTerm());
+            result.add(ultraShortRainStatus.toLiveShortTerm());
           }
           if (ultraShortWindSpeed != null) {
-            result.add(ultraShortWindSpeed.toLiveUltraShortTerm());
+            result.add(ultraShortWindSpeed.toLiveShortTerm());
           }
           if (ultraShortWindDirection != null) {
-            result.add(ultraShortWindDirection.toLiveUltraShortTerm());
+            result.add(ultraShortWindDirection.toLiveShortTerm());
           }
           return Result.success(result);
         }
@@ -385,7 +384,8 @@ class WeatherRepository {
 
     // remote
     try {
-      final response = await _weatherApi.getLiveUltraShortTerm('10', '1',currentDate, time, x, y);
+      final response = await _weatherApi.getLiveShortTerm(
+          '10', '1', currentDate, time, x, y);
       if (response.response.body?.items?.item != null) {
         for (var item in response.response.body!.items!.item!) {
           String category = item.category ?? '';
@@ -396,23 +396,23 @@ class WeatherRepository {
           if (id != kCreateWidgetId) {
             switch (category) {
               case kWeatherCategoryTemperature:
-                await _dao.updateWeatherUltraShortTemperature(
-                    id, item.toWeatherUltraShortTermEntity());
+                await _dao.updateLiveShortTermTemperature(
+                    id, item.toLiveShortTermEntity());
               case kWeatherCategoryHumidity:
-                await _dao.updateWeatherUltraShortHumidity(
-                    id, item.toWeatherUltraShortTermEntity());
+                await _dao.updateLiveShortTermHumidity(
+                    id, item.toLiveShortTermEntity());
               case kWeatherCategoryRain:
-                await _dao.updateWeatherUltraShortRain(
-                    id, item.toWeatherUltraShortTermEntity());
+                await _dao.updateLiveShortTermRain(
+                    id, item.toLiveShortTermEntity());
               case kWeatherCategoryRainStatus:
-                await _dao.updateWeatherUltraShortRainStatus(
-                    id, item.toWeatherUltraShortTermEntity());
+                await _dao.updateLiveShortTermRainStatus(
+                    id, item.toLiveShortTermEntity());
               case kWeatherCategoryWindSpeed:
-                await _dao.updateWeatherUltraShortWindSpeed(
-                    id, item.toWeatherUltraShortTermEntity());
+                await _dao.updateLiveShortTermWindSpeed(
+                    id, item.toLiveShortTermEntity());
               case kWeatherCategoryWindDirection:
-                await _dao.updateWeatherUltraShortWindDirection(
-                    id, item.toWeatherUltraShortTermEntity());
+                await _dao.updateLiveShortTermWindDirection(
+                    id, item.toLiveShortTermEntity());
             }
           }
         }
@@ -425,10 +425,10 @@ class WeatherRepository {
     }
   }
 
-  // 초단기 예보 (현재 시각 - 6시간)
-  Future<Result<List<ShortTerm>>> getUltraShortTermSixTime(
+  /// 초단기 예보 (현재 시각 - 6시간)
+  Future<Result<List<ShortTerm>>> getSixTimeShortTermList(
       String id, double longitude, double latitude) async {
-    final shortTermSixTime = await _dao.getWeatherShortListSixTime(id);
+    final shortTermSixTime = await _dao.getSixTimeShortTermList(id);
 
     // 시간 기준 업데이트
     DateTime dateTime = DateTime.now();
@@ -447,7 +447,7 @@ class WeatherRepository {
       String localDate = shortTermSixTime.items![0].baseDate ?? '';
 
       logger.d(
-          'getUltraShortTermSixTime() local return check -> currentDateTime = $currentDate$currentTime, localDateTime = $localDate$localTime');
+          'getSixTimeUltraShortTerm() local return check -> currentDateTime = $currentDate$currentTime, localDateTime = $localDate$localTime');
       if (currentDate == localDate) {
         if (currentTime == localTime) {
           var result =
@@ -464,14 +464,11 @@ class WeatherRepository {
 
     // remote
     try {
-      // logger.i('getUltraShortTermSixTime(x: $x, y: $y)');
-      final response = await _api.getUltraShortTermSixTime(x, y);
-      final jsonResult = jsonDecode(response.body);
-      ShortTermList list =
-          ShortTermList.fromJson(jsonResult['response']['body']);
+      final response = await _weatherApi.getSixTimeShortTerm(
+          '60', '1', currentDate, '${currentTime}00', x, y);
       List<ShortTerm> result = [];
-      if (list.items?.item != null) {
-        for (var item in list.items!.item!) {
+      if (response.response.body?.items?.item != null) {
+        for (var item in response.response.body!.items!.item!) {
           item.weatherCategory = await getWeatherCode(item.category ?? '');
           result.add(item);
         }
@@ -479,21 +476,21 @@ class WeatherRepository {
 
       // local update
       if (result.isNotEmpty && id != kCreateWidgetId) {
-        _dao.updateWeatherShortListSixTime(id, result);
+        _dao.updateSixTimeShortTermList(id, result);
       }
 
-      logger.d('getUltraShortTermSixTime() api return');
+      logger.d('getSixTimeUltraShortTerm() api return');
       return Result.success(result);
     } catch (e) {
       return Result.error(
-          Exception('getUltraShortTermSixTime failed: ${e.toString()}'));
+          Exception('getSixTimeUltraShortTerm() failed: ${e.toString()}'));
     }
   }
 
-  // 단기 예보 (오늘, 내일)
+  /// 단기 예보 (오늘, 내일)
   Future<Result<List<ShortTerm>>> getShortTermList(
       String id, double longitude, double latitude) async {
-    final shortTermList = await _dao.getWeatherShortListTemperature(id);
+    final shortTermList = await _dao.getShortTermListTemperature(id);
 
     DateTime dateTime = DateTime.now();
     String dt = DateTime(dateTime.year, dateTime.month, dateTime.day - 1)
@@ -535,14 +532,12 @@ class WeatherRepository {
 
     // remote
     try {
-      // logger.i('getShortTermList(date: $currentDate, time: 2300, x: $x, y: $y)');
-      final response = await _api.getShortTerm(currentDate, '2300', x, y);
-      final jsonResult = jsonDecode(response.body);
-      ShortTermList list =
-          ShortTermList.fromJson(jsonResult['response']['body']);
+      final response =
+          await _weatherApi.getShortTerm('600', '1', currentDate, '2300', x, y);
+
       List<ShortTerm> result = [];
-      if (list.items?.item != null) {
-        for (var item in list.items!.item!) {
+      if (response.response.body?.items?.item != null) {
+        for (var item in response.response.body!.items!.item!) {
           item.weatherCategory = await getWeatherCode(item.category ?? '');
           result.add(item);
         }
@@ -550,7 +545,7 @@ class WeatherRepository {
 
       // local update
       if (result.isNotEmpty && id != kCreateWidgetId) {
-        _dao.updateWeatherShortListTemperature(id, result);
+        _dao.updateShortTermListTemperature(id, result);
       }
       _updateOthers(result);
       var filterList = result.where((item) {
@@ -567,22 +562,21 @@ class WeatherRepository {
     }
   }
 
-  // 단기 예보 (어제)
+  /// 단기 예보 (어제)
   Future<Result<List<ShortTerm>>> getYesterdayShortTermList(
       String id, double longitude, double latitude) async {
-    final shortTermList =
-        await _dao.getWeatherYesterdayShortListTemperature(id);
+    final shortTermList = await _dao.getYesterdayShortTermListTemperature(id);
 
     DateTime dateTime = DateTime.now();
-    String dt = DateTime(dateTime.year, dateTime.month, dateTime.day - 1)
-        .toString()
-        .replaceAll(RegExp("[^0-9\\s]"), "")
-        .replaceAll(" ", "");
+    String dt =
+        DateTime(dateTime.year, dateTime.month, dateTime.day - 1, dateTime.hour)
+            .toString()
+            .replaceAll(RegExp("[^0-9\\s]"), "")
+            .replaceAll(" ", "");
     String currentDate = dt.substring(0, 8);
-
-    // filter
-    // DateTime currentDateTime = DateTime(dateTime.year, dateTime.month, dateTime.day, dateTime.hour - 1);
-    // var twelveHoursLater = currentDateTime.add(const Duration(hours: 13));
+    String checkTime = dt.substring(8, 10);
+    int checkTimeIndex = int.parse(checkTime);
+    String currentTime = kBaseTimeList[checkTimeIndex];
 
     // local
     if (shortTermList != null &&
@@ -591,7 +585,7 @@ class WeatherRepository {
         shortTermList.items![0].baseTime != null) {
       String localDate = shortTermList.items![0].baseDate ?? '';
       logger.d(
-          'getYesterdayShortTermList() local return check -> currentDate = $currentDate, localDate = $localDate');
+          'getYesterdayShortTermList() local return check -> currentDate = $currentDate, currentTime = $currentTime');
       if (currentDate == localDate) {
         var result = shortTermList.items!.map((e) => e.toShortTerm()).toList();
         _updateOthers(result, isYesterday: true);
@@ -607,16 +601,11 @@ class WeatherRepository {
 
     // remote
     try {
-      // logger.i('getYesterdayShortTermList(date: $currentDate, time: 0200, x: $x, y: $y, numberOfRows: 300)');
-      final response = await _api.getShortTerm(currentDate, '0200', x, y,
-          numberOfRows: '300');
-      final jsonResult = jsonDecode(response.body);
-      ShortTermList list =
-          ShortTermList.fromJson(jsonResult['response']['body']);
-
+      final response = await _weatherApi.getShortTerm(
+          '300', '1', currentDate, currentTime, x, y);
       List<ShortTerm> result = [];
-      if (list.items?.item != null) {
-        for (var item in list.items!.item!) {
+      if (response.response.body?.items?.item != null) {
+        for (var item in response.response.body!.items!.item!) {
           item.weatherCategory = await getWeatherCode(item.category ?? '');
           result.add(item);
         }
@@ -624,8 +613,9 @@ class WeatherRepository {
 
       // local update
       if (result.isNotEmpty && id != kCreateWidgetId) {
-        _dao.updateWeatherYesterdayShortListTemperature(id, result);
+        _dao.updateYesterdayShortTermListTemperature(id, result);
       }
+
       _updateOthers(result, isYesterday: true);
       var filterList = result.sublist(0, 288);
       logger.d('getYesterdayShortTermList() api return');
@@ -640,7 +630,7 @@ class WeatherRepository {
     if (isYesterday) {
       DateTime dateTime = DateTime.now();
       DateTime yesterdayDateTime =
-          DateTime(dateTime.year, dateTime.month, dateTime.day - 2, 23);
+          DateTime(dateTime.year, dateTime.month, dateTime.day - 1);
       var yesterdayTwentyFourHoursLater =
           yesterdayDateTime.add(const Duration(hours: 25));
 
@@ -699,8 +689,6 @@ class WeatherRepository {
           .reduce((value, element) => value < element ? value : element);
       SharedPreferencesUtil().setInt(kTodayMaxTemperature, maxValue);
       SharedPreferencesUtil().setInt(kTodayMinTemperature, minValue);
-      // print('todayTemperatureList -> ${todayTemperatureList.length}');
-      // todayTemperatureList.forEach((element) {print(element);});
 
       // 오늘 체감 온도 업데이트
       int feelMax = 100;
@@ -736,8 +724,6 @@ class WeatherRepository {
       int amMaxValue = amTempList
           .reduce((value, element) => value > element ? value : element);
       SharedPreferencesUtil().setInt(kTodayAmRainPercentage, amMaxValue);
-      // print('amList -> ${amList.length}');
-      // amList.forEach((element) {print(element);});
 
       var pmList = todayRainPercentageList.sublist(12, 24);
       var pmTempList =
@@ -745,8 +731,6 @@ class WeatherRepository {
       int pmMaxValue = pmTempList
           .reduce((value, element) => value > element ? value : element);
       SharedPreferencesUtil().setInt(kTodayPmRainPercentage, pmMaxValue);
-      // print('pmList -> ${pmList.length}');
-      // pmList.forEach((element) {print(element);});
 
       // 오늘 오전-오후 강수,하늘 상태
       var statusList = result
@@ -776,9 +760,6 @@ class WeatherRepository {
       int amStatusMaxValue = amStatusTempList
           .reduce((value, element) => value > element ? value : element);
       SharedPreferencesUtil().setInt(kTodayAmStatus, amStatusMaxValue);
-      // print('amStatusMaxValue -> $amStatusMaxValue');
-      // print('amStatusTempList -> ${amStatusTempList.length}');
-      // amStatusTempList.forEach((element) {print(element);});
 
       var pmStatusList = statusList.sublist(24, 48);
       var pmStatusTempList = pmStatusList.map((e) {
@@ -801,9 +782,6 @@ class WeatherRepository {
       int pmStatusMaxValue = pmStatusTempList
           .reduce((value, element) => value > element ? value : element);
       SharedPreferencesUtil().setInt(kTodayPmStatus, pmStatusMaxValue);
-      // print('pmStatusMaxValue -> $pmStatusMaxValue');
-      // print('pmStatusTempList -> ${pmStatusTempList.length}');
-      // pmStatusTempList.forEach((element) {print(element);});
 
       DateTime tomorrowDateTime =
           DateTime(dateTime.year, dateTime.month, dateTime.day, 23);
@@ -817,8 +795,6 @@ class WeatherRepository {
         return forecastDateTime.isAfter(tomorrowDateTime) &&
             forecastDateTime.isBefore(tomorrowTwentyFourHoursLater);
       }).toList();
-      // print('tomorrowTemperatureList -> ${tomorrowTemperatureList.length}');
-      // tomorrowTemperatureList.forEach((element) {print(element);});
 
       var tomorrowTempList = tomorrowTemperatureList
           .map((e) => int.parse(e.fcstValue ?? '0'))
@@ -844,8 +820,6 @@ class WeatherRepository {
           .reduce((value, element) => value > element ? value : element);
       SharedPreferencesUtil()
           .setInt(kTomorrowAmRainPercentage, tomorrowAmMaxValue);
-      // print('tomorrowAmList -> ${tomorrowAmList.length}');
-      // tomorrowAmList.forEach((element) {print(element);});
 
       var tomorrowPmList = tomorrowRainPercentageList.sublist(12, 24);
       var tomorrowPmTempList =
@@ -854,8 +828,6 @@ class WeatherRepository {
           .reduce((value, element) => value > element ? value : element);
       SharedPreferencesUtil()
           .setInt(kTomorrowPmRainPercentage, tomorrowPmMaxValue);
-      // print('tomorrowPmList -> ${tomorrowPmList.length}');
-      // tomorrowPmList.forEach((element) {print(element);});
     }
   }
 

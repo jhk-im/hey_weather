@@ -369,7 +369,7 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     double latitude = address.y ?? 0;
     String addressId = address.id ?? '';
     var getUltraShortTerm =
-        await _repository.getUltraShortTermList(addressId, longitude, latitude);
+        await _repository.getLiveShortTermList(addressId, longitude, latitude);
     getUltraShortTerm.when(success: (ultraShortTermList) async {
       //logger.i('AddressController.getUltraShortTermList success');
 
@@ -401,7 +401,7 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     double latitude = address.y ?? 0;
     String addressId = address.id ?? '';
 
-    var getUltraShortTermSixTime = await _repository.getUltraShortTermSixTime(
+    var getUltraShortTermSixTime = await _repository.getSixTimeShortTermList(
         addressId, longitude, latitude);
     getUltraShortTermSixTime.when(success: (ultraSixTime) async {
       //logger.i('AddressController.getUltraShortTermSixTime success');

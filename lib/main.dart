@@ -15,10 +15,10 @@ import 'package:hey_weather/repository/soruce/local/entity/weather_fine_dust_ent
 import 'package:hey_weather/repository/soruce/local/entity/weather_mid_code_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_mid_term_land_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_mid_term_temperature_entity.dart';
-import 'package:hey_weather/repository/soruce/local/entity/weather_short_term_entity.dart';
-import 'package:hey_weather/repository/soruce/local/entity/weather_short_term_list_entity.dart';
+import 'package:hey_weather/repository/soruce/local/entity/short_term_entity.dart';
+import 'package:hey_weather/repository/soruce/local/entity/short_term_list_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_sun_rise_set_entity.dart';
-import 'package:hey_weather/repository/soruce/local/entity/weather_ultra_short_term_entity.dart';
+import 'package:hey_weather/repository/soruce/local/entity/live_short_term_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_ultraviolet_entity.dart';
 import 'package:hey_weather/repository/soruce/local/weather_dao.dart';
 import 'package:hey_weather/repository/soruce/remote/address_api_service.dart';
@@ -38,13 +38,13 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(AddressEntityAdapter());
   Hive.registerAdapter(ObservatoryEntityAdapter());
-  Hive.registerAdapter(LiveUltraShortTermEntityAdapter());
+  Hive.registerAdapter(LiveShortTermEntityAdapter());
+  Hive.registerAdapter(ShortTermEntityAdapter());
+  Hive.registerAdapter(ShortTermListEntityAdapter());
 
   Hive.registerAdapter(WeatherUltravioletEntityAdapter());
   Hive.registerAdapter(WeatherSunRiseSetEntityAdapter());
   Hive.registerAdapter(WeatherFineDustEntityAdapter());
-  Hive.registerAdapter(WeatherShortTermEntityAdapter());
-  Hive.registerAdapter(WeatherShortTermListEntityAdapter());
   Hive.registerAdapter(WeatherMidCodeEntityAdapter());
   Hive.registerAdapter(WeatherMidTermLandEntityAdapter());
   Hive.registerAdapter(WeatherMidTermTemperatureEntityAdapter());
@@ -53,11 +53,11 @@ void main() async {
   addressDio.options.headers['Authorization'] = 'KakaoAK $kakaoApiKey';
   final addressApi =
       AddressApiService(addressDio, baseUrl: "https://dapi.kakao.com");
-  addressDio.interceptors.add(LogInterceptor(
-    responseBody: true, // 응답 바디 로그 출력
-    error: true, // 오류 로그 출력
-    logPrint: (obj) => print(obj), // 로그 출력 방식 설정 (콘솔 출력)
-  ));
+  // addressDio.interceptors.add(LogInterceptor(
+  //   responseBody: true, // 응답 바디 로그 출력
+  //   error: true, // 오류 로그 출력
+  //   logPrint: (obj) => print(obj), // 로그 출력 방식 설정 (콘솔 출력)
+  // ));
 
   final weatherDio = Dio();
   weatherDio.interceptors.add(InterceptorsWrapper(
@@ -68,13 +68,14 @@ void main() async {
     },
   ));
   weatherDio.interceptors.add(LogInterceptor(
-    responseBody: true,       // 응답 바디 로그 출력
-    error: true,              // 오류 로그 출력
-    logPrint: (obj) => print(obj),  // 로그 출력 방식 설정 (콘솔 출력)
+    responseBody: true, // 응답 바디 로그 출력
+    error: true, // 오류 로그 출력
+    logPrint: (obj) => print(obj), // 로그 출력 방식 설정 (콘솔 출력)
   ));
   final weatherApi =
-  WeatherApiService(weatherDio, baseUrl: "https://apis.data.go.kr");
-  final repository = WeatherRepository(addressApi, weatherApi, WeatherApi(), WeatherDao());
+      WeatherApiService(weatherDio, baseUrl: "https://apis.data.go.kr");
+  final repository =
+      WeatherRepository(addressApi, weatherApi, WeatherApi(), WeatherDao());
   GetIt.instance.registerSingleton<WeatherRepository>(repository);
 
   await SharedPreferencesUtil().initialize();

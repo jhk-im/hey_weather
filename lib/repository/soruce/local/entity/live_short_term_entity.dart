@@ -1,9 +1,9 @@
 import 'package:hive/hive.dart';
 
-part 'weather_ultra_short_term_entity.g.dart';
+part 'live_short_term_entity.g.dart';
 
 @HiveType(typeId: 6)
-class LiveUltraShortTermEntity extends HiveObject {
+class LiveShortTermEntity extends HiveObject {
   @HiveField(0)
   String category;
   @HiveField(1)
@@ -22,7 +22,7 @@ class LiveUltraShortTermEntity extends HiveObject {
   int? nx;
   @HiveField(8)
   int? ny;
-  LiveUltraShortTermEntity({
+  LiveShortTermEntity({
     required this.category,
     required this.obsrValue,
   });

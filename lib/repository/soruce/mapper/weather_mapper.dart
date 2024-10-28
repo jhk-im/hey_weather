@@ -4,25 +4,25 @@ import 'package:hey_weather/repository/soruce/local/entity/weather_fine_dust_ent
 import 'package:hey_weather/repository/soruce/local/entity/weather_mid_code_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_mid_term_land_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_mid_term_temperature_entity.dart';
-import 'package:hey_weather/repository/soruce/local/entity/weather_short_term_entity.dart';
+import 'package:hey_weather/repository/soruce/local/entity/short_term_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_sun_rise_set_entity.dart';
-import 'package:hey_weather/repository/soruce/local/entity/weather_ultra_short_term_entity.dart';
+import 'package:hey_weather/repository/soruce/local/entity/live_short_term_entity.dart';
 import 'package:hey_weather/repository/soruce/local/entity/weather_ultraviolet_entity.dart';
 import 'package:hey_weather/repository/soruce/remote/dto/mid_code_dto.dart';
 import 'package:hey_weather/repository/soruce/remote/dto/observatory_dto.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
 import 'package:hey_weather/repository/soruce/remote/model/fine_dust.dart';
-import 'package:hey_weather/repository/soruce/remote/model/live_ultra_short_term_response.dart';
+import 'package:hey_weather/repository/soruce/remote/model/live_short_term_response.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_code.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_term_land.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_term_temperature.dart';
 import 'package:hey_weather/repository/soruce/remote/model/observatory.dart';
-import 'package:hey_weather/repository/soruce/remote/model/short_term.dart';
 import 'package:hey_weather/repository/soruce/remote/model/sun_rise_set.dart';
+import 'package:hey_weather/repository/soruce/remote/model/short_term_response.dart';
 import 'package:hey_weather/repository/soruce/remote/model/ultraviolet.dart';
 import 'package:hey_weather/repository/soruce/remote/model/weather_category.dart';
 
-// 주소
+/// 주소
 extension ToAddressEntity on Address {
   AddressEntity toAddressEntity() {
     var entity = AddressEntity();
@@ -59,10 +59,10 @@ extension ToAddress on AddressEntity {
   }
 }
 
-// 초단기 실황
-extension ToUltraShortTerm on LiveUltraShortTermEntity {
-  LiveUltraShortTerm toLiveUltraShortTerm() {
-    var model = LiveUltraShortTerm(
+/// 초단기 실황
+extension ToLiveShortTerm on LiveShortTermEntity {
+  LiveShortTerm toLiveShortTerm() {
+    var model = LiveShortTerm(
       baseDate: baseDate,
       baseTime: baseTime,
       category: category,
@@ -76,9 +76,9 @@ extension ToUltraShortTerm on LiveUltraShortTermEntity {
   }
 }
 
-extension ToLiveUltraShortTermEntity on LiveUltraShortTerm {
-  LiveUltraShortTermEntity toWeatherUltraShortTermEntity() {
-    var entity = LiveUltraShortTermEntity(
+extension ToLiveShortTermEntity on LiveShortTerm {
+  LiveShortTermEntity toLiveShortTermEntity() {
+    var entity = LiveShortTermEntity(
       category: category ?? '',
       obsrValue: obsrValue ?? '',
     );
@@ -93,8 +93,8 @@ extension ToLiveUltraShortTermEntity on LiveUltraShortTerm {
   }
 }
 
-// 단기 예보
-extension ToShortTerm on WeatherShortTermEntity {
+/// 초단기, 단기 예보
+extension ToShortTerm on ShortTermEntity {
   ShortTerm toShortTerm() {
     var model = ShortTerm(
       baseDate: baseDate,
@@ -113,9 +113,9 @@ extension ToShortTerm on WeatherShortTermEntity {
 }
 
 extension ToShortTermEntity on ShortTerm {
-  WeatherShortTermEntity toShortTermEntity() {
-    var entity = WeatherShortTermEntity(
-        category: category ?? '', fcstValue: fcstValue ?? '');
+  ShortTermEntity toShortTermEntity() {
+    var entity =
+        ShortTermEntity(category: category ?? '', fcstValue: fcstValue ?? '');
     entity.baseTime = baseTime;
     entity.baseDate = baseDate;
     entity.fcstTime = fcstTime;

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:hey_weather/repository/soruce/remote/model/live_ultra_short_term_response.dart';
+import 'package:hey_weather/repository/soruce/remote/model/live_short_term_response.dart';
+import 'package:hey_weather/repository/soruce/remote/model/short_term_response.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'weather_api_service.g.dart';
@@ -13,7 +14,27 @@ abstract class WeatherApiService {
   /// 초단기 실황
   /// 기온, 습도, 강수량, 강수 형태, 풍속, 풍향
   @GET("/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst")
-  Future<LiveUltraShortTermResponse> getLiveUltraShortTerm(
+  Future<LiveShortTermResponse> getLiveShortTerm(
+      @Query('numOfRows') String numOfRows,
+      @Query('pageNo') String pageNo,
+      @Query('base_date') String date,
+      @Query('base_time') String time,
+      @Query('nx') int x,
+      @Query('ny') int y);
+
+  /// 초단기 예보 (현재 시각 - 6시간)
+  @GET("/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst")
+  Future<ShortTermResponse> getSixTimeShortTerm(
+      @Query('numOfRows') String numOfRows,
+      @Query('pageNo') String pageNo,
+      @Query('base_date') String date,
+      @Query('base_time') String time,
+      @Query('nx') int x,
+      @Query('ny') int y);
+
+  /// 단기 예보 (어제, 오늘, 내일)
+  @GET("/1360000/VilageFcstInfoService_2.0/getVilageFcst")
+  Future<ShortTermResponse> getShortTerm(
       @Query('numOfRows') String numOfRows,
       @Query('pageNo') String pageNo,
       @Query('base_date') String date,

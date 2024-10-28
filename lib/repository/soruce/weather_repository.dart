@@ -447,7 +447,7 @@ class WeatherRepository {
       String localDate = shortTermSixTime.items![0].baseDate ?? '';
 
       logger.d(
-          'getSixTimeUltraShortTerm() local return check -> currentDateTime = $currentDate$currentTime, localDateTime = $localDate$localTime');
+          'getSixTimeShortTermList() local return check -> currentDateTime = $currentDate$currentTime, localDateTime = $localDate$localTime');
       if (currentDate == localDate) {
         if (currentTime == localTime) {
           var result =
@@ -479,11 +479,11 @@ class WeatherRepository {
         _dao.updateSixTimeShortTermList(id, result);
       }
 
-      logger.d('getSixTimeUltraShortTerm() api return');
+      logger.d('getSixTimeShortTermList() api return');
       return Result.success(result);
     } catch (e) {
       return Result.error(
-          Exception('getSixTimeUltraShortTerm() failed: ${e.toString()}'));
+          Exception('getSixTimeShortTermList() failed: ${e.toString()}'));
     }
   }
 
@@ -558,7 +558,7 @@ class WeatherRepository {
       return Result.success(filterList);
     } catch (e) {
       return Result.error(
-          Exception('getShortTermList failed: ${e.toString()}'));
+          Exception('getShortTermList() failed: ${e.toString()}'));
     }
   }
 
@@ -622,7 +622,7 @@ class WeatherRepository {
       return Result.success(filterList);
     } catch (e) {
       return Result.error(
-          Exception('getYesterdayShortTermList failed: ${e.toString()}'));
+          Exception('getYesterdayShortTermList() failed: ${e.toString()}'));
     }
   }
 
@@ -644,8 +644,7 @@ class WeatherRepository {
         return forecastDateTime.isAfter(yesterdayDateTime) &&
             forecastDateTime.isBefore(yesterdayTwentyFourHoursLater);
       }).toList();
-      // print('yesterdayFilterList -> ${yesterdayFilterList.length}');
-      // yesterdayFilterList.forEach((element) {print(element);});
+
       int humidity = yesterdayFilterList
           .map((e) => int.parse(e.fcstValue ?? '0'))
           .reduce((value, element) => value + element);

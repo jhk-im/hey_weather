@@ -1,8 +1,8 @@
 import 'package:csv/csv.dart';
-import 'package:hey_weather/repository/soruce/local/csv/csv_parser.dart';
-import 'package:hey_weather/repository/soruce/mapper/weather_mapper.dart';
-import 'package:hey_weather/repository/soruce/remote/dto/mid_code_dto.dart';
-import 'package:hey_weather/repository/soruce/remote/model/mid_code.dart';
+import 'package:hey_weather/repository/remote/dto/mid_code_dto.dart';
+import 'package:hey_weather/repository/remote/model/mid_code.dart';
+import 'package:hey_weather/repository/local/csv/csv_parser.dart';
+import 'package:hey_weather/repository/mapper/weather_mapper.dart';
 
 class MidCodeParser implements CsvParser<MidCode> {
   @override

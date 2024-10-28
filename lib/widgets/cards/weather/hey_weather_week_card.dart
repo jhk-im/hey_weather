@@ -6,8 +6,8 @@ import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:hey_weather/common/svg_utils.dart';
 import 'package:hey_weather/common/utils.dart';
-import 'package:hey_weather/repository/soruce/remote/model/mid_term_land.dart';
-import 'package:hey_weather/repository/soruce/remote/model/mid_term_temperature.dart';
+import 'package:hey_weather/repository/remote/model/mid_term_land.dart';
+import 'package:hey_weather/repository/remote/model/mid_term_temperature.dart';
 import 'package:intl/intl.dart';
 
 class HeyWeatherWeekCard extends StatefulWidget {

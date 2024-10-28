@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:hey_weather/repository/soruce/remote/model/live_short_term_response.dart';
-import 'package:hey_weather/repository/soruce/remote/model/short_term_response.dart';
 import 'package:retrofit/retrofit.dart';
+
+import 'model/live_short_term_response.dart';
+import 'model/short_term_response.dart';
 
 part 'weather_api_service.g.dart';
 

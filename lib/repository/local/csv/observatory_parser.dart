@@ -1,8 +1,8 @@
 import 'package:csv/csv.dart';
-import 'package:hey_weather/repository/soruce/local/csv/csv_parser.dart';
-import 'package:hey_weather/repository/soruce/mapper/weather_mapper.dart';
-import 'package:hey_weather/repository/soruce/remote/dto/observatory_dto.dart';
-import 'package:hey_weather/repository/soruce/remote/model/observatory.dart';
+import 'package:hey_weather/repository/remote/dto/observatory_dto.dart';
+import 'package:hey_weather/repository/remote/model/observatory.dart';
+import 'package:hey_weather/repository/local/csv/csv_parser.dart';
+import 'package:hey_weather/repository/mapper/weather_mapper.dart';
 
 class ObservatoryParser implements CsvParser<Observatory> {
   @override

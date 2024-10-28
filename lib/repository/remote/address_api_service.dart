@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:hey_weather/repository/soruce/remote/model/address_response.dart';
-import 'package:hey_weather/repository/soruce/remote/model/search_address_response.dart';
+import 'package:hey_weather/repository/remote/model/address_response.dart';
 import 'package:retrofit/retrofit.dart';
+
+import 'model/search_address_response.dart';
 
 part 'address_api_service.g.dart';
 

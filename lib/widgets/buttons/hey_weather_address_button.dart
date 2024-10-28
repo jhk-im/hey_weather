@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hey_weather/common/constants.dart';
 import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/svg_utils.dart';
-import 'package:hey_weather/repository/soruce/remote/model/address.dart';
+import 'package:hey_weather/repository/remote/model/address.dart';
 
 class HeyWeatherAddressButton extends StatefulWidget {
   const HeyWeatherAddressButton({

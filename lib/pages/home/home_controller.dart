@@ -7,11 +7,11 @@ import 'package:hey_weather/common/hey_dialog.dart';
 import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:hey_weather/common/utils.dart';
 import 'package:hey_weather/getx/routes.dart';
-import 'package:hey_weather/repository/soruce/remote/model/address.dart';
-import 'package:hey_weather/repository/soruce/remote/model/mid_term_land.dart';
-import 'package:hey_weather/repository/soruce/remote/model/mid_term_temperature.dart';
-import 'package:hey_weather/repository/soruce/remote/model/short_term_response.dart';
-import 'package:hey_weather/repository/soruce/weather_repository.dart';
+import 'package:hey_weather/repository/remote/model/address.dart';
+import 'package:hey_weather/repository/remote/model/mid_term_land.dart';
+import 'package:hey_weather/repository/remote/model/mid_term_temperature.dart';
+import 'package:hey_weather/repository/remote/model/short_term_response.dart';
+import 'package:hey_weather/repository/weather_repository.dart';
 import 'package:logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
 

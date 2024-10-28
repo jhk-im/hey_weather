@@ -1,4 +1,4 @@
-import 'package:hey_weather/repository/soruce/local/entity/short_term_entity.dart';
+import 'package:hey_weather/repository/local/entity/short_term_entity.dart';
 import 'package:hive/hive.dart';
 
 part 'short_term_list_entity.g.dart';

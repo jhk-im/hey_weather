@@ -1,15 +1,15 @@
-import 'package:hey_weather/repository/soruce/local/entity/address_entity.dart';
-import 'package:hey_weather/repository/soruce/local/entity/observatory_entity.dart';
-import 'package:hey_weather/repository/soruce/local/entity/weather_fine_dust_entity.dart';
-import 'package:hey_weather/repository/soruce/local/entity/weather_mid_code_entity.dart';
-import 'package:hey_weather/repository/soruce/local/entity/weather_mid_term_land_entity.dart';
-import 'package:hey_weather/repository/soruce/local/entity/weather_mid_term_temperature_entity.dart';
-import 'package:hey_weather/repository/soruce/local/entity/short_term_list_entity.dart';
-import 'package:hey_weather/repository/soruce/local/entity/weather_sun_rise_set_entity.dart';
-import 'package:hey_weather/repository/soruce/local/entity/live_short_term_entity.dart';
-import 'package:hey_weather/repository/soruce/local/entity/weather_ultraviolet_entity.dart';
-import 'package:hey_weather/repository/soruce/mapper/weather_mapper.dart';
-import 'package:hey_weather/repository/soruce/remote/model/short_term_response.dart';
+import 'package:hey_weather/repository/remote/model/short_term_response.dart';
+import 'package:hey_weather/repository/local/entity/address_entity.dart';
+import 'package:hey_weather/repository/local/entity/observatory_entity.dart';
+import 'package:hey_weather/repository/local/entity/weather_fine_dust_entity.dart';
+import 'package:hey_weather/repository/local/entity/weather_mid_code_entity.dart';
+import 'package:hey_weather/repository/local/entity/weather_mid_term_land_entity.dart';
+import 'package:hey_weather/repository/local/entity/weather_mid_term_temperature_entity.dart';
+import 'package:hey_weather/repository/local/entity/short_term_list_entity.dart';
+import 'package:hey_weather/repository/local/entity/weather_sun_rise_set_entity.dart';
+import 'package:hey_weather/repository/local/entity/live_short_term_entity.dart';
+import 'package:hey_weather/repository/local/entity/weather_ultraviolet_entity.dart';
+import 'package:hey_weather/repository/mapper/weather_mapper.dart';
 import 'package:hive/hive.dart';
 
 class WeatherDao {

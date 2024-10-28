@@ -5,7 +5,8 @@ import 'package:hey_weather/common/hey_text.dart';
 import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:hey_weather/common/svg_utils.dart';
 import 'package:hey_weather/common/utils.dart';
-import 'package:hey_weather/repository/soruce/remote/model/address.dart';
+import 'package:hey_weather/repository/remote/model/address.dart';
+
 import 'package:hey_weather/widgets/buttons/hey_custom_button.dart';
 
 class HeyWeatherAddressCard extends StatefulWidget {

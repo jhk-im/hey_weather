@@ -8,13 +8,14 @@ import 'package:hey_weather/common/hey_snackbar.dart';
 import 'package:hey_weather/common/shared_preferences_util.dart';
 import 'package:hey_weather/common/utils.dart';
 import 'package:hey_weather/getx/routes.dart';
-import 'package:hey_weather/repository/soruce/remote/model/address.dart';
-import 'package:hey_weather/repository/soruce/remote/model/search_address_response.dart';
-import 'package:hey_weather/repository/soruce/weather_repository.dart';
+import 'package:hey_weather/repository/remote/model/address.dart';
+import 'package:hey_weather/repository/weather_repository.dart';
 import 'package:logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uuid/uuid.dart';
+
+import '../../repository/remote/model/search_address_response.dart';
 
 class AddressController extends GetxController with WidgetsBindingObserver {
   final WeatherRepository _repository = GetIt.I<WeatherRepository>();

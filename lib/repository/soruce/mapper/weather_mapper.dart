@@ -12,13 +12,13 @@ import 'package:hey_weather/repository/soruce/remote/dto/mid_code_dto.dart';
 import 'package:hey_weather/repository/soruce/remote/dto/observatory_dto.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
 import 'package:hey_weather/repository/soruce/remote/model/fine_dust.dart';
+import 'package:hey_weather/repository/soruce/remote/model/live_ultra_short_term_response.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_code.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_term_land.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_term_temperature.dart';
 import 'package:hey_weather/repository/soruce/remote/model/observatory.dart';
 import 'package:hey_weather/repository/soruce/remote/model/short_term.dart';
 import 'package:hey_weather/repository/soruce/remote/model/sun_rise_set.dart';
-import 'package:hey_weather/repository/soruce/remote/model/ultra_short_term.dart';
 import 'package:hey_weather/repository/soruce/remote/model/ultraviolet.dart';
 import 'package:hey_weather/repository/soruce/remote/model/weather_category.dart';
 
@@ -60,9 +60,9 @@ extension ToAddress on AddressEntity {
 }
 
 // 초단기 실황
-extension ToUltraShortTerm on WeatherUltraShortTermEntity {
-  UltraShortTerm toUltraShortTerm() {
-    var model = UltraShortTerm(
+extension ToUltraShortTerm on LiveUltraShortTermEntity {
+  LiveUltraShortTerm toLiveUltraShortTerm() {
+    var model = LiveUltraShortTerm(
       baseDate: baseDate,
       baseTime: baseTime,
       category: category,
@@ -76,9 +76,9 @@ extension ToUltraShortTerm on WeatherUltraShortTermEntity {
   }
 }
 
-extension ToUltraShortTermEntity on UltraShortTerm {
-  WeatherUltraShortTermEntity toWeatherUltraShortTermEntity() {
-    var entity = WeatherUltraShortTermEntity(
+extension ToLiveUltraShortTermEntity on LiveUltraShortTerm {
+  LiveUltraShortTermEntity toWeatherUltraShortTermEntity() {
+    var entity = LiveUltraShortTermEntity(
       category: category ?? '',
       obsrValue: obsrValue ?? '',
     );

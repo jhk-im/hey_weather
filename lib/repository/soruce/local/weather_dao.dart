@@ -160,105 +160,105 @@ class WeatherDao {
 
   static const weatherUltraShortTemperature = 'weather_ultra_short_temperature';
   Future updateWeatherUltraShortTemperature(String id,
-      WeatherUltraShortTermEntity weatherUltraShortTermEntity) async {
-    final box = await Hive.openBox<WeatherUltraShortTermEntity>(
+      LiveUltraShortTermEntity weatherUltraShortTermEntity) async {
+    final box = await Hive.openBox<LiveUltraShortTermEntity>(
         weatherUltraShortTemperature);
     await box.put(id, weatherUltraShortTermEntity);
   }
 
   Future deleteWeatherUltraShortTemperature(String id) async {
-    final box = await Hive.openBox<WeatherUltraShortTermEntity>(
+    final box = await Hive.openBox<LiveUltraShortTermEntity>(
         weatherUltraShortTemperature);
     return box.delete(id);
   }
 
-  Future<WeatherUltraShortTermEntity?> getWeatherUltraShortTemperature(
+  Future<LiveUltraShortTermEntity?> getWeatherUltraShortTemperature(
       String id) async {
-    final box = await Hive.openBox<WeatherUltraShortTermEntity>(
+    final box = await Hive.openBox<LiveUltraShortTermEntity>(
         weatherUltraShortTemperature);
     return box.get(id);
   }
 
   static const weatherUltraShortHumidity = 'weather_ultra_short_humidity';
   Future updateWeatherUltraShortHumidity(String id,
-      WeatherUltraShortTermEntity weatherUltraShortTermEntity) async {
-    final box = await Hive.openBox<WeatherUltraShortTermEntity>(
+      LiveUltraShortTermEntity weatherUltraShortTermEntity) async {
+    final box = await Hive.openBox<LiveUltraShortTermEntity>(
         weatherUltraShortHumidity);
     await box.put(id, weatherUltraShortTermEntity);
   }
 
   Future deleteWeatherUltraShortHumidity(String id) async {
-    final box = await Hive.openBox<WeatherUltraShortTermEntity>(
+    final box = await Hive.openBox<LiveUltraShortTermEntity>(
         weatherUltraShortHumidity);
     return box.delete(id);
   }
 
-  Future<WeatherUltraShortTermEntity?> getWeatherUltraShortHumidity(
+  Future<LiveUltraShortTermEntity?> getWeatherUltraShortHumidity(
       String id) async {
-    final box = await Hive.openBox<WeatherUltraShortTermEntity>(
+    final box = await Hive.openBox<LiveUltraShortTermEntity>(
         weatherUltraShortHumidity);
     return box.get(id);
   }
 
   static const weatherUltraShortRain = 'weather_ultra_short_rain';
   Future updateWeatherUltraShortRain(String id,
-      WeatherUltraShortTermEntity weatherUltraShortTermEntity) async {
+      LiveUltraShortTermEntity weatherUltraShortTermEntity) async {
     final box =
-        await Hive.openBox<WeatherUltraShortTermEntity>(weatherUltraShortRain);
+        await Hive.openBox<LiveUltraShortTermEntity>(weatherUltraShortRain);
     await box.put(id, weatherUltraShortTermEntity);
   }
 
   Future deleteWeatherUltraShortRain(String id) async {
     final box =
-        await Hive.openBox<WeatherUltraShortTermEntity>(weatherUltraShortRain);
+        await Hive.openBox<LiveUltraShortTermEntity>(weatherUltraShortRain);
     return box.delete(id);
   }
 
-  Future<WeatherUltraShortTermEntity?> getWeatherUltraShortRain(
+  Future<LiveUltraShortTermEntity?> getWeatherUltraShortRain(
       String id) async {
     final box =
-        await Hive.openBox<WeatherUltraShortTermEntity>(weatherUltraShortRain);
+        await Hive.openBox<LiveUltraShortTermEntity>(weatherUltraShortRain);
     return box.get(id);
   }
 
   static const weatherUltraShortRainStatus = 'weather_ultra_short_rain_status';
   Future updateWeatherUltraShortRainStatus(String id,
-      WeatherUltraShortTermEntity weatherUltraShortTermEntity) async {
-    final box = await Hive.openBox<WeatherUltraShortTermEntity>(
+      LiveUltraShortTermEntity weatherUltraShortTermEntity) async {
+    final box = await Hive.openBox<LiveUltraShortTermEntity>(
         weatherUltraShortRainStatus);
     await box.put(id, weatherUltraShortTermEntity);
   }
 
   Future deleteWeatherUltraShortRainStatus(String id) async {
-    final box = await Hive.openBox<WeatherUltraShortTermEntity>(
+    final box = await Hive.openBox<LiveUltraShortTermEntity>(
         weatherUltraShortRainStatus);
     return box.delete(id);
   }
 
-  Future<WeatherUltraShortTermEntity?> getWeatherUltraShortRainStatus(
+  Future<LiveUltraShortTermEntity?> getWeatherUltraShortRainStatus(
       String id) async {
-    final box = await Hive.openBox<WeatherUltraShortTermEntity>(
+    final box = await Hive.openBox<LiveUltraShortTermEntity>(
         weatherUltraShortRainStatus);
     return box.get(id);
   }
 
   static const weatherUltraShortWindSpeed = 'weatherUltraShortWindSpeed';
   Future updateWeatherUltraShortWindSpeed(String id,
-      WeatherUltraShortTermEntity weatherUltraShortTermEntity) async {
-    final box = await Hive.openBox<WeatherUltraShortTermEntity>(
+      LiveUltraShortTermEntity weatherUltraShortTermEntity) async {
+    final box = await Hive.openBox<LiveUltraShortTermEntity>(
         weatherUltraShortWindSpeed);
     await box.put(id, weatherUltraShortTermEntity);
   }
 
   Future deleteWeatherUltraShortWindSpeed(String id) async {
-    final box = await Hive.openBox<WeatherUltraShortTermEntity>(
+    final box = await Hive.openBox<LiveUltraShortTermEntity>(
         weatherUltraShortWindSpeed);
     return box.delete(id);
   }
 
-  Future<WeatherUltraShortTermEntity?> getWeatherUltraShortWindSpeed(
+  Future<LiveUltraShortTermEntity?> getWeatherUltraShortWindSpeed(
       String id) async {
-    final box = await Hive.openBox<WeatherUltraShortTermEntity>(
+    final box = await Hive.openBox<LiveUltraShortTermEntity>(
         weatherUltraShortWindSpeed);
     return box.get(id);
   }
@@ -266,21 +266,21 @@ class WeatherDao {
   static const weatherUltraShortWindDirection =
       'weatherUltraShortWindDirection';
   Future updateWeatherUltraShortWindDirection(String id,
-      WeatherUltraShortTermEntity weatherUltraShortTermEntity) async {
-    final box = await Hive.openBox<WeatherUltraShortTermEntity>(
+      LiveUltraShortTermEntity weatherUltraShortTermEntity) async {
+    final box = await Hive.openBox<LiveUltraShortTermEntity>(
         weatherUltraShortWindDirection);
     await box.put(id, weatherUltraShortTermEntity);
   }
 
   Future deleteWeatherUltraShortWindDirection(String id) async {
-    final box = await Hive.openBox<WeatherUltraShortTermEntity>(
+    final box = await Hive.openBox<LiveUltraShortTermEntity>(
         weatherUltraShortWindDirection);
     return box.delete(id);
   }
 
-  Future<WeatherUltraShortTermEntity?> getWeatherUltraShortWindDirection(
+  Future<LiveUltraShortTermEntity?> getWeatherUltraShortWindDirection(
       String id) async {
-    final box = await Hive.openBox<WeatherUltraShortTermEntity>(
+    final box = await Hive.openBox<LiveUltraShortTermEntity>(
         weatherUltraShortWindDirection);
     return box.get(id);
   }

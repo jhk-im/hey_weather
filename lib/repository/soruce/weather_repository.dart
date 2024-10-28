@@ -13,6 +13,7 @@ import 'package:hey_weather/repository/soruce/mapper/weather_mapper.dart';
 import 'package:hey_weather/repository/soruce/remote/address_api_service.dart';
 import 'package:hey_weather/repository/soruce/remote/model/address.dart';
 import 'package:hey_weather/repository/soruce/remote/model/fine_dust.dart';
+import 'package:hey_weather/repository/soruce/remote/model/live_ultra_short_term_response.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_code.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_term_land.dart';
 import 'package:hey_weather/repository/soruce/remote/model/mid_term_temperature.dart';
@@ -20,21 +21,22 @@ import 'package:hey_weather/repository/soruce/remote/model/observatory.dart';
 import 'package:hey_weather/repository/soruce/remote/model/search_address_response.dart';
 import 'package:hey_weather/repository/soruce/remote/model/short_term.dart';
 import 'package:hey_weather/repository/soruce/remote/model/sun_rise_set.dart';
-import 'package:hey_weather/repository/soruce/remote/model/ultra_short_term.dart';
 import 'package:hey_weather/repository/soruce/remote/model/ultraviolet.dart';
 import 'package:hey_weather/repository/soruce/remote/model/weather_category.dart';
 import 'package:hey_weather/repository/soruce/remote/result/result.dart';
 import 'package:hey_weather/repository/soruce/remote/weather_api.dart';
+import 'package:hey_weather/repository/soruce/remote/weather_api_service.dart';
 import 'package:logger/logger.dart';
 import 'package:xml/xml.dart';
 import 'package:xml2json/xml2json.dart';
 
 class WeatherRepository {
   final AddressApiService _addressApi;
+  final WeatherApiService _weatherApi;
   final WeatherApi _api;
   final WeatherDao _dao;
 
-  WeatherRepository(this._addressApi, this._api, this._dao);
+  WeatherRepository(this._addressApi,this._weatherApi, this._api, this._dao);
 
   var logger = Logger();
 
@@ -322,7 +324,7 @@ class WeatherRepository {
   }
 
   // 초단기 실황
-  Future<Result<List<UltraShortTerm>>> getUltraShortTermList(
+  Future<Result<List<LiveUltraShortTerm>>> getUltraShortTermList(
       String id, double longitude, double latitude) async {
     final ultraShortTemperature =
         await _dao.getWeatherUltraShortTemperature(id);
@@ -332,7 +334,7 @@ class WeatherRepository {
     final ultraShortWindSpeed = await _dao.getWeatherUltraShortWindSpeed(id);
     final ultraShortWindDirection =
         await _dao.getWeatherUltraShortWindDirection(id);
-    List<UltraShortTerm> result = [];
+    List<LiveUltraShortTerm> result = [];
 
     // 시간 기준 업데이트
     DateTime dateTime = DateTime.now();
@@ -352,24 +354,24 @@ class WeatherRepository {
       String localTime = ultraShortTemperature.baseTime!.substring(0, 2);
       String localDate = ultraShortTemperature.baseDate ?? '';
       logger.d(
-          'getShortTermList() local return check -> currentDateTime = $currentDate$currentTime, localDateTime = $localDate$localTime');
+          'getLiveUltraShortTermList() local return check -> currentDateTime = $currentDate$currentTime, localDateTime = $localDate$localTime');
       if (currentDate == localDate) {
         if (currentTime == localTime) {
-          result.add(ultraShortTemperature.toUltraShortTerm());
+          result.add(ultraShortTemperature.toLiveUltraShortTerm());
           if (ultraShortHumidity != null) {
-            result.add(ultraShortHumidity.toUltraShortTerm());
+            result.add(ultraShortHumidity.toLiveUltraShortTerm());
           }
           if (ultraShortRain != null) {
-            result.add(ultraShortRain.toUltraShortTerm());
+            result.add(ultraShortRain.toLiveUltraShortTerm());
           }
           if (ultraShortRainStatus != null) {
-            result.add(ultraShortRainStatus.toUltraShortTerm());
+            result.add(ultraShortRainStatus.toLiveUltraShortTerm());
           }
           if (ultraShortWindSpeed != null) {
-            result.add(ultraShortWindSpeed.toUltraShortTerm());
+            result.add(ultraShortWindSpeed.toLiveUltraShortTerm());
           }
           if (ultraShortWindDirection != null) {
-            result.add(ultraShortWindDirection.toUltraShortTerm());
+            result.add(ultraShortWindDirection.toLiveUltraShortTerm());
           }
           return Result.success(result);
         }
@@ -383,12 +385,9 @@ class WeatherRepository {
 
     // remote
     try {
-      final response = await _api.getUltraShortTerm(currentDate, time, x, y);
-      final jsonResult = jsonDecode(response.body);
-      UltraShortTermList list =
-          UltraShortTermList.fromJson(jsonResult['response']['body']);
-      if (list.items?.item != null) {
-        for (var item in list.items!.item!) {
+      final response = await _weatherApi.getLiveUltraShortTerm('10', '1',currentDate, time, x, y);
+      if (response.response.body?.items?.item != null) {
+        for (var item in response.response.body!.items!.item!) {
           String category = item.category ?? '';
           item.weatherCategory = await getWeatherCode(category);
           result.add(item);
@@ -417,12 +416,12 @@ class WeatherRepository {
             }
           }
         }
+        logger.d('getLiveUltraShortTermList() api return');
       }
-      logger.d('getUltraShortTermList() api return');
       return Result.success(result);
     } catch (e) {
       return Result.error(
-          Exception('getUltraShortTermList failed: ${e.toString()}'));
+          Exception('getLiveUltraShortTermList failed: ${e.toString()}'));
     }
   }
 

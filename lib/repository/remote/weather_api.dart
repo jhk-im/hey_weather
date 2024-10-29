@@ -103,18 +103,18 @@ class WeatherApi {
   }
 
   // 좌표로 출몰시간 조회 (XML)
-  Future<http.Response> getRiseSetInfoWithCoordinate(
-      String locdate, double longitude, double latitude) async {
-    var url = Uri.https(weatherUrl,
-        '/B090041/openapi/service/RiseSetInfoService/getLCRiseSetInfo', {
-      'serviceKey': serviceKey ?? '',
-      'locdate': locdate,
-      'longitude': '$longitude',
-      'latitude': '$latitude',
-      'dnYn': 'Y',
-    });
-    return await http.get(url);
-  }
+  // Future<http.Response> getRiseSetInfoWithCoordinate(
+  //     String locdate, double longitude, double latitude) async {
+  //   var url = Uri.https(weatherUrl,
+  //       '/B090041/openapi/service/RiseSetInfoService/getLCRiseSetInfo', {
+  //     'serviceKey': serviceKey ?? '',
+  //     'locdate': locdate,
+  //     'longitude': '$longitude',
+  //     'latitude': '$latitude',
+  //     'dnYn': 'Y',
+  //   });
+  //   return await http.get(url);
+  // }
 
   // 측정소별 실시간 대기오염 측정정보 조회
   /*Future<http.Response> getFineDust(String sName) async {

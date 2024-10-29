@@ -19,7 +19,7 @@ import 'package:hey_weather/repository/remote/model/mid_term_land.dart';
 import 'package:hey_weather/repository/remote/model/mid_term_temperature.dart';
 import 'package:hey_weather/repository/remote/model/observatory.dart';
 import 'package:hey_weather/repository/remote/model/search_address_response.dart';
-import 'package:hey_weather/repository/remote/model/sun_rise_set.dart';
+import 'package:hey_weather/repository/remote/model/sun_rise.dart';
 import 'package:hey_weather/repository/remote/model/short_term_response.dart';
 import 'package:hey_weather/repository/remote/model/ultraviolet.dart';
 import 'package:hey_weather/repository/remote/model/weather_category.dart';
@@ -1007,7 +1007,7 @@ class WeatherRepository {
   }
 
   // 일출 일몰
-  Future<Result<SunRiseSet>> getSunRiseSetWithCoordinate(
+  Future<Result<SunRise>> getSunRiseWithCoordinate(
       String id, double longitude, double latitude) async {
     final sunRiseSet = await _dao.getWeatherSunRiseSet(id);
 
@@ -1019,30 +1019,28 @@ class WeatherRepository {
 
     // 로컬에 있고 날짜가 변경 되지 않은 경우
     logger.d(
-        'getSunRiseSetWithCoordinate() local return check -> currentDate = $currentDate, localDate = ${sunRiseSet?.locdate}');
+        'getSunRiseWithCoordinate() local return check -> currentDate = $currentDate, localDate = ${sunRiseSet?.locdate}');
     if (sunRiseSet != null && currentDate == sunRiseSet.locdate) {
-      return Result.success(sunRiseSet.toSunRiseSet());
+      return Result.success(sunRiseSet.toSunRise());
     }
 
     // remote
     try {
-      final response = await _api.getRiseSetInfoWithCoordinate(
-          currentDate, longitude, latitude);
+      final response =
+          await _weatherApi.getSunRise(currentDate, longitude, latitude, 'Y');
 
-      final xmlResult = XmlDocument.parse(utf8.decode(response.bodyBytes))
-          .findAllElements('item');
-
-      final jsonTransformer = Xml2Json();
-      jsonTransformer.parse(xmlResult.toString());
-      var json = jsonDecode(jsonTransformer.toParker());
-
-      SunRiseSet result = SunRiseSet.fromJson(json['item']);
+      final xml2json = Xml2Json();
+      xml2json.parse(response);
+      final jsonString = xml2json.toParker();
+      final Map<String, dynamic> jsonData = jsonDecode(jsonString);
+      SunRise result =
+          SunRise.fromJson(jsonData['response']['body']['items']['item']);
 
       // 로컬 업데이트
       if (result.locdate != null && id != kCreateWidgetId) {
-        _dao.updateWeatherSunRiseSet(id, result.toSunRiseSetEntity());
+        _dao.updateWeatherSunRiseSet(id, result.toSunRiseEntity());
       }
-      logger.d('getRiseSetWithCoordinate() api return');
+      logger.d('getSunRiseWithCoordinate() api return');
       return Result.success(result);
     } catch (e) {
       return Result.error(

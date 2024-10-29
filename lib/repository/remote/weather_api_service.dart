@@ -42,4 +42,11 @@ abstract class WeatherApiService {
       @Query('base_time') String time,
       @Query('nx') int x,
       @Query('ny') int y);
+
+  @GET("/B090041/openapi/service/RiseSetInfoService/getLCRiseSetInfo")
+  Future<String> getSunRise(
+      @Query('locdate') String locdate,
+      @Query('longitude') double longitude,
+      @Query('latitude') double latitude,
+      @Query('dnYn') String stationName);
 }

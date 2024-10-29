@@ -326,7 +326,7 @@ class AddressController extends GetxController with WidgetsBindingObserver {
     double longitude = address.x ?? 0;
     double latitude = address.y ?? 0;
     // 일출 일몰
-    var getSunRiseSet = await _repository.getSunRiseSetWithCoordinate(
+    var getSunRiseSet = await _repository.getSunRiseWithCoordinate(
         addressId, longitude, latitude);
     getSunRiseSet.when(success: (sunRiseSet) {
       // logger.i('HomeController.getSunRiseSetWithCoordinate success');

@@ -1,5 +1,5 @@
-class SunRiseSet {
-  SunRiseSet({
+class SunRise {
+  SunRise({
     this.locdate,
     this.location,
     this.sunrise,
@@ -18,7 +18,7 @@ class SunRiseSet {
   String? longitudeNum;
   String? latitudeNum;
 
-  factory SunRiseSet.fromJson(Map<String, dynamic> json) => SunRiseSet(
+  factory SunRise.fromJson(Map<String, dynamic> json) => SunRise(
         locdate:
             json["locdate"].toString().replaceAll(" ", "").replaceAll("-", ""),
         location:

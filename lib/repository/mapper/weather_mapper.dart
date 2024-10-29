@@ -5,7 +5,7 @@ import 'package:hey_weather/repository/local/entity/weather_mid_code_entity.dart
 import 'package:hey_weather/repository/local/entity/weather_mid_term_land_entity.dart';
 import 'package:hey_weather/repository/local/entity/weather_mid_term_temperature_entity.dart';
 import 'package:hey_weather/repository/local/entity/short_term_entity.dart';
-import 'package:hey_weather/repository/local/entity/weather_sun_rise_set_entity.dart';
+import 'package:hey_weather/repository/local/entity/sun_rise_entity.dart';
 import 'package:hey_weather/repository/local/entity/live_short_term_entity.dart';
 import 'package:hey_weather/repository/local/entity/weather_ultraviolet_entity.dart';
 import 'package:hey_weather/repository/remote/dto/mid_code_dto.dart';
@@ -17,7 +17,7 @@ import 'package:hey_weather/repository/remote/model/mid_code.dart';
 import 'package:hey_weather/repository/remote/model/mid_term_land.dart';
 import 'package:hey_weather/repository/remote/model/mid_term_temperature.dart';
 import 'package:hey_weather/repository/remote/model/observatory.dart';
-import 'package:hey_weather/repository/remote/model/sun_rise_set.dart';
+import 'package:hey_weather/repository/remote/model/sun_rise.dart';
 import 'package:hey_weather/repository/remote/model/short_term_response.dart';
 import 'package:hey_weather/repository/remote/model/ultraviolet.dart';
 import 'package:hey_weather/repository/remote/model/weather_category.dart';
@@ -55,6 +55,70 @@ extension ToAddress on AddressEntity {
       code: code,
       regionType: regionType,
       createDateTime: createDateTime,
+    );
+  }
+}
+
+/// 관측소
+extension ToObservatory on ObservatoryDto {
+  Observatory toObservatory() {
+    return Observatory(
+      code: code,
+      depth1: depth1,
+      depth2: depth2,
+      depth3: depth3,
+      gridX: gridX,
+      gridY: gridY,
+      lonHour: lonHour,
+      lonMin: lonMin,
+      lonSec: lonSec,
+      latHour: latHour,
+      latMin: latMin,
+      latSec: latSec,
+      longitude: longitude,
+      latitude: latitude,
+    );
+  }
+}
+
+extension ToObservatoryEntity on Observatory {
+  ObservatoryEntity toObservatoryEntity() {
+    var entity = ObservatoryEntity();
+    entity.code = code;
+    entity.depth1 = depth1;
+    entity.depth2 = depth2;
+    entity.depth3 = depth3;
+    entity.gridX = gridX;
+    entity.gridY = gridY;
+    entity.lonHour = lonHour;
+    entity.lonMin = lonMin;
+    entity.lonSec = lonSec;
+    entity.latHour = latHour;
+    entity.latMin = latMin;
+    entity.latSec = latSec;
+    entity.longitude = longitude;
+    entity.latitude = latitude;
+    return entity;
+  }
+}
+
+extension ToObservatoryFromEntity on ObservatoryEntity {
+  Observatory toObservatory() {
+    return Observatory(
+      code: code,
+      depth1: depth1,
+      depth2: depth2,
+      depth3: depth3,
+      gridX: gridX,
+      gridY: gridY,
+      lonHour: lonHour,
+      lonMin: lonMin,
+      lonSec: lonSec,
+      latHour: latHour,
+      latMin: latMin,
+      latSec: latSec,
+      longitude: longitude,
+      latitude: latitude,
     );
   }
 }
@@ -281,70 +345,6 @@ extension ToMidTermLandEntity on MidTermLand {
   }
 }
 
-// 관측소
-extension ToObservatory on ObservatoryDto {
-  Observatory toObservatory() {
-    return Observatory(
-      code: code,
-      depth1: depth1,
-      depth2: depth2,
-      depth3: depth3,
-      gridX: gridX,
-      gridY: gridY,
-      lonHour: lonHour,
-      lonMin: lonMin,
-      lonSec: lonSec,
-      latHour: latHour,
-      latMin: latMin,
-      latSec: latSec,
-      longitude: longitude,
-      latitude: latitude,
-    );
-  }
-}
-
-extension ToObservatoryEntity on Observatory {
-  ObservatoryEntity toObservatoryEntity() {
-    var entity = ObservatoryEntity();
-    entity.code = code;
-    entity.depth1 = depth1;
-    entity.depth2 = depth2;
-    entity.depth3 = depth3;
-    entity.gridX = gridX;
-    entity.gridY = gridY;
-    entity.lonHour = lonHour;
-    entity.lonMin = lonMin;
-    entity.lonSec = lonSec;
-    entity.latHour = latHour;
-    entity.latMin = latMin;
-    entity.latSec = latSec;
-    entity.longitude = longitude;
-    entity.latitude = latitude;
-    return entity;
-  }
-}
-
-extension ToObservatoryFromEntity on ObservatoryEntity {
-  Observatory toObservatory() {
-    return Observatory(
-      code: code,
-      depth1: depth1,
-      depth2: depth2,
-      depth3: depth3,
-      gridX: gridX,
-      gridY: gridY,
-      lonHour: lonHour,
-      lonMin: lonMin,
-      lonSec: lonSec,
-      latHour: latHour,
-      latMin: latMin,
-      latSec: latSec,
-      longitude: longitude,
-      latitude: latitude,
-    );
-  }
-}
-
 // 자외선
 extension ToWeatherUltravioletEntity on Ultraviolet {
   WeatherUltravioletEntity toWeatherUltravioletEntity() {
@@ -384,10 +384,10 @@ extension ToUltraviolet on WeatherUltravioletEntity {
   }
 }
 
-// 일출 일몰
-extension ToWeatherSunRiseSetEntity on SunRiseSet {
-  WeatherSunRiseSetEntity toSunRiseSetEntity() {
-    var entity = WeatherSunRiseSetEntity();
+/// 일출 일몰
+extension ToSunRiseEntity on SunRise {
+  SunRiseEntity toSunRiseEntity() {
+    var entity = SunRiseEntity();
     entity.locdate = locdate;
     entity.location = location;
     entity.sunrise = sunrise;
@@ -400,9 +400,9 @@ extension ToWeatherSunRiseSetEntity on SunRiseSet {
   }
 }
 
-extension ToSunRiseSet on WeatherSunRiseSetEntity {
-  SunRiseSet toSunRiseSet() {
-    return SunRiseSet(
+extension ToSunRise on SunRiseEntity {
+  SunRise toSunRise() {
+    return SunRise(
       locdate: locdate,
       location: location,
       sunrise: sunrise,

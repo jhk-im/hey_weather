@@ -20,7 +20,7 @@ import 'package:hey_weather/repository/local/entity/weather_mid_term_land_entity
 import 'package:hey_weather/repository/local/entity/weather_mid_term_temperature_entity.dart';
 import 'package:hey_weather/repository/local/entity/short_term_entity.dart';
 import 'package:hey_weather/repository/local/entity/short_term_list_entity.dart';
-import 'package:hey_weather/repository/local/entity/weather_sun_rise_set_entity.dart';
+import 'package:hey_weather/repository/local/entity/sun_rise_entity.dart';
 import 'package:hey_weather/repository/local/entity/live_short_term_entity.dart';
 import 'package:hey_weather/repository/local/entity/weather_ultraviolet_entity.dart';
 import 'package:hey_weather/repository/local/weather_dao.dart';
@@ -41,9 +41,9 @@ void main() async {
   Hive.registerAdapter(LiveShortTermEntityAdapter());
   Hive.registerAdapter(ShortTermEntityAdapter());
   Hive.registerAdapter(ShortTermListEntityAdapter());
+  Hive.registerAdapter(SunRiseEntityAdapter());
 
   Hive.registerAdapter(WeatherUltravioletEntityAdapter());
-  Hive.registerAdapter(WeatherSunRiseSetEntityAdapter());
   Hive.registerAdapter(WeatherFineDustEntityAdapter());
   Hive.registerAdapter(WeatherMidCodeEntityAdapter());
   Hive.registerAdapter(WeatherMidTermLandEntityAdapter());

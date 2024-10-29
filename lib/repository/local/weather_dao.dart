@@ -6,7 +6,7 @@ import 'package:hey_weather/repository/local/entity/weather_mid_code_entity.dart
 import 'package:hey_weather/repository/local/entity/weather_mid_term_land_entity.dart';
 import 'package:hey_weather/repository/local/entity/weather_mid_term_temperature_entity.dart';
 import 'package:hey_weather/repository/local/entity/short_term_list_entity.dart';
-import 'package:hey_weather/repository/local/entity/weather_sun_rise_set_entity.dart';
+import 'package:hey_weather/repository/local/entity/sun_rise_entity.dart';
 import 'package:hey_weather/repository/local/entity/live_short_term_entity.dart';
 import 'package:hey_weather/repository/local/entity/weather_ultraviolet_entity.dart';
 import 'package:hey_weather/repository/mapper/weather_mapper.dart';
@@ -291,18 +291,18 @@ class WeatherDao {
 
   static const weatherSunRiseSet = 'weather_sun_rise_set';
   Future updateWeatherSunRiseSet(
-      String id, WeatherSunRiseSetEntity sunRiseSetEntity) async {
-    final box = await Hive.openBox<WeatherSunRiseSetEntity>(weatherSunRiseSet);
+      String id, SunRiseEntity sunRiseSetEntity) async {
+    final box = await Hive.openBox<SunRiseEntity>(weatherSunRiseSet);
     await box.put(id, sunRiseSetEntity);
   }
 
   Future deleteWeatherSunRiseSet(String id) async {
-    final box = await Hive.openBox<WeatherSunRiseSetEntity>(weatherSunRiseSet);
+    final box = await Hive.openBox<SunRiseEntity>(weatherSunRiseSet);
     return box.delete(id);
   }
 
-  Future<WeatherSunRiseSetEntity?> getWeatherSunRiseSet(String id) async {
-    final box = await Hive.openBox<WeatherSunRiseSetEntity>(weatherSunRiseSet);
+  Future<SunRiseEntity?> getWeatherSunRiseSet(String id) async {
+    final box = await Hive.openBox<SunRiseEntity>(weatherSunRiseSet);
     return box.get(id);
   }
 

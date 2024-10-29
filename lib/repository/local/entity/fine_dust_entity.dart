@@ -1,9 +1,9 @@
 import 'package:hive/hive.dart';
 
-part 'weather_fine_dust_entity.g.dart';
+part 'fine_dust_entity.g.dart';
 
 @HiveType(typeId: 5)
-class WeatherFineDustEntity extends HiveObject {
+class FineDustEntity extends HiveObject {
   @HiveField(0)
   String? so2Grade; // 아황산가스
   @HiveField(1)
@@ -46,4 +46,6 @@ class WeatherFineDustEntity extends HiveObject {
   String? pm25Value24; // 초미세먼지 24시간
   @HiveField(20)
   String? pm10Value24; // 미세먼지 24시간
+  @HiveField(21)
+  String? cityName;
 }

@@ -12,7 +12,7 @@ import 'package:hey_weather/repository/local/weather_dao.dart';
 import 'package:hey_weather/repository/mapper/weather_mapper.dart';
 import 'package:hey_weather/repository/remote/address_api_service.dart';
 import 'package:hey_weather/repository/remote/model/address.dart';
-import 'package:hey_weather/repository/remote/model/fine_dust.dart';
+import 'package:hey_weather/repository/remote/model/fine_dust_response.dart';
 import 'package:hey_weather/repository/remote/model/live_short_term_response.dart';
 import 'package:hey_weather/repository/remote/model/mid_code.dart';
 import 'package:hey_weather/repository/remote/model/mid_term_land.dart';
@@ -1053,6 +1053,7 @@ class WeatherRepository {
     final fineDust = await _dao.getWeatherFineDust(id);
 
     final cityName = _getCityName(depth1);
+    logger.d('getFineDustWithCity() -> depth1 = $depth1');
     logger.d('getFineDustWithCity() -> cityName = $cityName');
 
     // local
@@ -1073,25 +1074,28 @@ class WeatherRepository {
 
       logger.d(
           'getFineDustWithCity() local return check -> currentDateTime = $currentDateTime, localDateTime = $localDateTime, timeDifference = $timeDifference');
-      if (timeDifference.inHours.abs() <= 3) {
+      if (timeDifference.inHours.abs() <= 3 && fineDust.cityName == cityName) {
         return Result.success(fineDust.toFineDust());
       }
     }
 
     // remote
     try {
-      final response = await _api.getFineDustWithCity(cityName);
-      final jsonResult = jsonDecode(response.body);
-      FineDustList list = FineDustList.fromJson(jsonResult['response']['body']);
-      var fineDust = FineDust();
+      // final response = await _api.getFineDustWithCity(cityName);
+      final response =
+          await _weatherApi.getFineDust('JSON', '1', '1', cityName, '1.1');
+
       var isUpdate = false;
-      if (list.items != null) {
+      var fineDust = FineDust();
+      if (response.response.body?.items != null) {
         isUpdate = true;
-        fineDust = list.items![0];
+        fineDust = response.response.body!.items!.first;
+        fineDust.cityName = cityName;
       }
+
       // local update
       if (isUpdate && id != kCreateWidgetId) {
-        _dao.updateWeatherFineDust(id, fineDust.toWeatherFineDustEntity());
+        _dao.updateWeatherFineDust(id, fineDust.toFineDustEntity());
       }
       logger.d('getFineDustWithCity() api return');
       return Result.success(fineDust);

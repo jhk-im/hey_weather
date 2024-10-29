@@ -1,6 +1,6 @@
 import 'package:hey_weather/repository/local/entity/address_entity.dart';
 import 'package:hey_weather/repository/local/entity/observatory_entity.dart';
-import 'package:hey_weather/repository/local/entity/weather_fine_dust_entity.dart';
+import 'package:hey_weather/repository/local/entity/fine_dust_entity.dart';
 import 'package:hey_weather/repository/local/entity/weather_mid_code_entity.dart';
 import 'package:hey_weather/repository/local/entity/weather_mid_term_land_entity.dart';
 import 'package:hey_weather/repository/local/entity/weather_mid_term_temperature_entity.dart';
@@ -11,7 +11,7 @@ import 'package:hey_weather/repository/local/entity/weather_ultraviolet_entity.d
 import 'package:hey_weather/repository/remote/dto/mid_code_dto.dart';
 import 'package:hey_weather/repository/remote/dto/observatory_dto.dart';
 import 'package:hey_weather/repository/remote/model/address.dart';
-import 'package:hey_weather/repository/remote/model/fine_dust.dart';
+import 'package:hey_weather/repository/remote/model/fine_dust_response.dart';
 import 'package:hey_weather/repository/remote/model/live_short_term_response.dart';
 import 'package:hey_weather/repository/remote/model/mid_code.dart';
 import 'package:hey_weather/repository/remote/model/mid_term_land.dart';
@@ -416,7 +416,7 @@ extension ToSunRise on SunRiseEntity {
 }
 
 // 미세먼지
-extension ToFineDust on WeatherFineDustEntity {
+extension ToFineDust on FineDustEntity {
   FineDust toFineDust() {
     return FineDust(
       so2Grade: so2Grade,
@@ -444,9 +444,9 @@ extension ToFineDust on WeatherFineDustEntity {
   }
 }
 
-extension ToWeatherFineDustEntity on FineDust {
-  WeatherFineDustEntity toWeatherFineDustEntity() {
-    var entity = WeatherFineDustEntity();
+extension ToFineDustEntity on FineDust {
+  FineDustEntity toFineDustEntity() {
+    var entity = FineDustEntity();
     entity.so2Grade = so2Grade;
     entity.coFlag = coFlag;
     entity.khaiValue = khaiValue;

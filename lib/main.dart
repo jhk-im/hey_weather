@@ -14,7 +14,7 @@ import 'package:hey_weather/repository/remote/weather_api.dart';
 import 'package:hey_weather/repository/remote/weather_api_service.dart';
 import 'package:hey_weather/repository/local/entity/address_entity.dart';
 import 'package:hey_weather/repository/local/entity/observatory_entity.dart';
-import 'package:hey_weather/repository/local/entity/weather_fine_dust_entity.dart';
+import 'package:hey_weather/repository/local/entity/fine_dust_entity.dart';
 import 'package:hey_weather/repository/local/entity/weather_mid_code_entity.dart';
 import 'package:hey_weather/repository/local/entity/weather_mid_term_land_entity.dart';
 import 'package:hey_weather/repository/local/entity/weather_mid_term_temperature_entity.dart';
@@ -42,9 +42,9 @@ void main() async {
   Hive.registerAdapter(ShortTermEntityAdapter());
   Hive.registerAdapter(ShortTermListEntityAdapter());
   Hive.registerAdapter(SunRiseEntityAdapter());
+  Hive.registerAdapter(FineDustEntityAdapter());
 
   Hive.registerAdapter(WeatherUltravioletEntityAdapter());
-  Hive.registerAdapter(WeatherFineDustEntityAdapter());
   Hive.registerAdapter(WeatherMidCodeEntityAdapter());
   Hive.registerAdapter(WeatherMidTermLandEntityAdapter());
   Hive.registerAdapter(WeatherMidTermTemperatureEntityAdapter());

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:hey_weather/repository/remote/model/fine_dust_response.dart';
 import 'package:retrofit/retrofit.dart';
 
 import 'model/live_short_term_response.dart';
@@ -49,4 +50,12 @@ abstract class WeatherApiService {
       @Query('longitude') double longitude,
       @Query('latitude') double latitude,
       @Query('dnYn') String stationName);
+
+  @GET("/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty")
+  Future<FineDustResponse> getFineDust(
+      @Query('returnType') String returnType,
+      @Query('numOfRows') String numOfRows,
+      @Query('pageNo') String pageNo,
+      @Query('sidoName') String stationName,
+      @Query('ver') String version);
 }

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:hey_weather/repository/remote/model/fine_dust_response.dart';
+import 'package:hey_weather/repository/remote/model/ultraviolet_response.dart';
 import 'package:retrofit/retrofit.dart';
 
 import 'model/live_short_term_response.dart';
@@ -58,4 +59,11 @@ abstract class WeatherApiService {
       @Query('pageNo') String pageNo,
       @Query('sidoName') String stationName,
       @Query('ver') String version);
+
+  @GET("/1360000/LivingWthrIdxServiceV4/getUVIdxV4")
+  Future<UltravioletResponse> getUltraviolet(
+      @Query('numOfRows') String numOfRows,
+      @Query('pageNo') String pageNo,
+      @Query('time') String time,
+      @Query('areaNo') String areaNo);
 }

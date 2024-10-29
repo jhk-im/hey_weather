@@ -7,7 +7,7 @@ import 'package:hey_weather/repository/local/entity/weather_mid_term_temperature
 import 'package:hey_weather/repository/local/entity/short_term_entity.dart';
 import 'package:hey_weather/repository/local/entity/sun_rise_entity.dart';
 import 'package:hey_weather/repository/local/entity/live_short_term_entity.dart';
-import 'package:hey_weather/repository/local/entity/weather_ultraviolet_entity.dart';
+import 'package:hey_weather/repository/local/entity/ultraviolet_entity.dart';
 import 'package:hey_weather/repository/remote/dto/mid_code_dto.dart';
 import 'package:hey_weather/repository/remote/dto/observatory_dto.dart';
 import 'package:hey_weather/repository/remote/model/address.dart';
@@ -19,7 +19,7 @@ import 'package:hey_weather/repository/remote/model/mid_term_temperature.dart';
 import 'package:hey_weather/repository/remote/model/observatory.dart';
 import 'package:hey_weather/repository/remote/model/sun_rise.dart';
 import 'package:hey_weather/repository/remote/model/short_term_response.dart';
-import 'package:hey_weather/repository/remote/model/ultraviolet.dart';
+import 'package:hey_weather/repository/remote/model/ultraviolet_response.dart';
 import 'package:hey_weather/repository/remote/model/weather_category.dart';
 
 /// 주소
@@ -346,9 +346,9 @@ extension ToMidTermLandEntity on MidTermLand {
 }
 
 // 자외선
-extension ToWeatherUltravioletEntity on Ultraviolet {
-  WeatherUltravioletEntity toWeatherUltravioletEntity() {
-    var entity = WeatherUltravioletEntity();
+extension ToUltravioletEntity on Ultraviolet {
+  UltravioletEntity toUltravioletEntity() {
+    var entity = UltravioletEntity();
     entity.code = code;
     entity.areaNo = areaNo;
     entity.date = date;
@@ -365,7 +365,7 @@ extension ToWeatherUltravioletEntity on Ultraviolet {
   }
 }
 
-extension ToUltraviolet on WeatherUltravioletEntity {
+extension ToUltraviolet on UltravioletEntity {
   Ultraviolet toUltraviolet() {
     return Ultraviolet(
       code: code,

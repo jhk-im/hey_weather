@@ -21,13 +21,12 @@ import 'package:hey_weather/repository/remote/model/observatory.dart';
 import 'package:hey_weather/repository/remote/model/search_address_response.dart';
 import 'package:hey_weather/repository/remote/model/sun_rise.dart';
 import 'package:hey_weather/repository/remote/model/short_term_response.dart';
-import 'package:hey_weather/repository/remote/model/ultraviolet.dart';
+import 'package:hey_weather/repository/remote/model/ultraviolet_response.dart';
 import 'package:hey_weather/repository/remote/model/weather_category.dart';
 import 'package:hey_weather/repository/remote/result/result.dart';
 import 'package:hey_weather/repository/remote/weather_api.dart';
 import 'package:hey_weather/repository/remote/weather_api_service.dart';
 import 'package:logger/logger.dart';
-import 'package:xml/xml.dart';
 import 'package:xml2json/xml2json.dart';
 
 class WeatherRepository {
@@ -1009,7 +1008,7 @@ class WeatherRepository {
   // 일출 일몰
   Future<Result<SunRise>> getSunRiseWithCoordinate(
       String id, double longitude, double latitude) async {
-    final sunRiseSet = await _dao.getWeatherSunRiseSet(id);
+    final sunRiseSet = await _dao.getSunRise(id);
 
     String dateTime = DateTime.now()
         .toString()
@@ -1038,7 +1037,7 @@ class WeatherRepository {
 
       // 로컬 업데이트
       if (result.locdate != null && id != kCreateWidgetId) {
-        _dao.updateWeatherSunRiseSet(id, result.toSunRiseEntity());
+        _dao.updateSunRise(id, result.toSunRiseEntity());
       }
       logger.d('getSunRiseWithCoordinate() api return');
       return Result.success(result);
@@ -1050,7 +1049,7 @@ class WeatherRepository {
 
   // 미세 먼지
   Future<Result<FineDust>> getFineDustWithCity(String id, String depth1) async {
-    final fineDust = await _dao.getWeatherFineDust(id);
+    final fineDust = await _dao.getFineDust(id);
 
     final cityName = _getCityName(depth1);
     logger.d('getFineDustWithCity() -> depth1 = $depth1');
@@ -1095,7 +1094,7 @@ class WeatherRepository {
 
       // local update
       if (isUpdate && id != kCreateWidgetId) {
-        _dao.updateWeatherFineDust(id, fineDust.toFineDustEntity());
+        _dao.updateFineDust(id, fineDust.toFineDustEntity());
       }
       logger.d('getFineDustWithCity() api return');
       return Result.success(fineDust);
@@ -1151,7 +1150,7 @@ class WeatherRepository {
 
   // 자외선
   Future<Result<Ultraviolet>> getUltraviolet(String id, String areaNo) async {
-    final ultraviolet = await _dao.getWeatherUltraviolet(id);
+    final ultraviolet = await _dao.getUltraviolet(id);
 
     // 시간 기준 업데이트
     String dt = DateTime.now()
@@ -1169,21 +1168,16 @@ class WeatherRepository {
     // remote
     Ultraviolet result = Ultraviolet();
     try {
-      final response = await _api.getUltraviolet(currentDateTime, areaNo);
-      final jsonResult = jsonDecode(response.body);
-      UltravioletList list =
-          UltravioletList.fromJson(jsonResult['response']['body']);
-      if (list.items != null) {
-        if (list.items!.item != null) {
-          result = list.items!.item![0];
-          // 로컬 업데이트
-          if (result.code != null && id != kCreateWidgetId) {
-            for (Ultraviolet uv in list.items!.item!) {
-              uv.date = currentDateTime;
-            }
-            _dao.updateWeatherUltraviolet(
-                id, result.toWeatherUltravioletEntity());
+      final response =
+          await _weatherApi.getUltraviolet('10', '1', currentDateTime, areaNo);
+      if (response.response.body?.items?.item != null) {
+        result = response.response.body!.items!.item!.first;
+        // 로컬 업데이트
+        if (result.code != null && id != kCreateWidgetId) {
+          for (Ultraviolet uv in response.response.body!.items!.item!) {
+            uv.date = currentDateTime;
           }
+          _dao.updateUltraviolet(id, result.toUltravioletEntity());
         }
       }
     } catch (e) {

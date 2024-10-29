@@ -1,9 +1,9 @@
 import 'package:hive/hive.dart';
 
-part 'weather_ultraviolet_entity.g.dart';
+part 'ultraviolet_entity.g.dart';
 
 @HiveType(typeId: 2)
-class WeatherUltravioletEntity extends HiveObject {
+class UltravioletEntity extends HiveObject {
   @HiveField(0)
   String? code;
   @HiveField(1)

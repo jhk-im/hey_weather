@@ -15,8 +15,8 @@ import 'package:hey_weather/repository/remote/model/address.dart';
 import 'package:hey_weather/repository/remote/model/fine_dust_response.dart';
 import 'package:hey_weather/repository/remote/model/live_short_term_response.dart';
 import 'package:hey_weather/repository/remote/model/mid_code.dart';
-import 'package:hey_weather/repository/remote/model/mid_term_land.dart';
-import 'package:hey_weather/repository/remote/model/mid_term_temperature.dart';
+import 'package:hey_weather/repository/remote/model/mid_term_land_response.dart';
+import 'package:hey_weather/repository/remote/model/mid_term_temperature_response.dart';
 import 'package:hey_weather/repository/remote/model/observatory.dart';
 import 'package:hey_weather/repository/remote/model/search_address_response.dart';
 import 'package:hey_weather/repository/remote/model/sun_rise.dart';
@@ -24,7 +24,6 @@ import 'package:hey_weather/repository/remote/model/short_term_response.dart';
 import 'package:hey_weather/repository/remote/model/ultraviolet_response.dart';
 import 'package:hey_weather/repository/remote/model/weather_category.dart';
 import 'package:hey_weather/repository/remote/result/result.dart';
-import 'package:hey_weather/repository/remote/weather_api.dart';
 import 'package:hey_weather/repository/remote/weather_api_service.dart';
 import 'package:logger/logger.dart';
 import 'package:xml2json/xml2json.dart';
@@ -32,10 +31,9 @@ import 'package:xml2json/xml2json.dart';
 class WeatherRepository {
   final AddressApiService _addressApi;
   final WeatherApiService _weatherApi;
-  final WeatherApi _api;
   final WeatherDao _dao;
 
-  WeatherRepository(this._addressApi, this._weatherApi, this._api, this._dao);
+  WeatherRepository(this._addressApi, this._weatherApi, this._dao);
 
   var logger = Logger();
 
@@ -942,13 +940,11 @@ class WeatherRepository {
     // remote
     MidTermTemperature result = MidTermTemperature();
     try {
-      final response = await _api.getMidTermTemperature(tmFc, regId);
-      final jsonResult = jsonDecode(response.body);
-      MidTermTemperatureList list =
-          MidTermTemperatureList.fromJson(jsonResult['response']['body']);
+      final response =
+          await _weatherApi.getMidTermTemperature('10', '1', tmFc, regId);
 
-      if (list.items?.item != null) {
-        for (var item in list.items!.item!) {
+      if (response.response.body?.items?.item != null) {
+        for (var item in response.response.body!.items!.item!) {
           item.date = tmFc;
           result = item;
         }
@@ -983,17 +979,15 @@ class WeatherRepository {
     // remote
     MidTermLand result = MidTermLand();
     try {
-      final response = await _api.getMidTermLand(tmFc, regId);
-      final jsonResult = jsonDecode(response.body);
-      MidTermLandList list =
-          MidTermLandList.fromJson(jsonResult['response']['body']);
+      final response = await _weatherApi.getMidTermLand('10', '1', tmFc, regId);
 
-      if (list.items?.item != null) {
-        for (var item in list.items!.item!) {
+      if (response.response.body?.items?.item != null) {
+        for (var item in response.response.body!.items!.item!) {
           item.date = tmFc;
           result = item;
         }
       }
+
       // local update
       if (id != kCreateWidgetId) {
         _dao.updateWeatherMidTermLand(id, result.toMidTermLandEntity());

@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:hey_weather/repository/remote/model/fine_dust_response.dart';
+import 'package:hey_weather/repository/remote/model/mid_term_land_response.dart';
+import 'package:hey_weather/repository/remote/model/mid_term_temperature_response.dart';
 import 'package:hey_weather/repository/remote/model/ultraviolet_response.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -45,6 +47,23 @@ abstract class WeatherApiService {
       @Query('nx') int x,
       @Query('ny') int y);
 
+  /// 중기 육상 예보
+  @GET("/1360000/MidFcstInfoService/getMidLandFcst")
+  Future<MidTermLandResponse> getMidTermLand(
+      @Query('numOfRows') String numOfRows,
+      @Query('pageNo') String pageNo,
+      @Query('tmFc') String tmFc,
+      @Query('regId') String regId);
+
+  /// 중기 기온 예보
+  @GET("/1360000/MidFcstInfoService/getMidTa")
+  Future<MidTermTemperatureResponse> getMidTermTemperature(
+      @Query('numOfRows') String numOfRows,
+      @Query('pageNo') String pageNo,
+      @Query('tmFc') String tmFc,
+      @Query('regId') String regId);
+
+  /// 일출, 일몰
   @GET("/B090041/openapi/service/RiseSetInfoService/getLCRiseSetInfo")
   Future<String> getSunRise(
       @Query('locdate') String locdate,
@@ -52,6 +71,7 @@ abstract class WeatherApiService {
       @Query('latitude') double latitude,
       @Query('dnYn') String stationName);
 
+  /// 대기질
   @GET("/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty")
   Future<FineDustResponse> getFineDust(
       @Query('returnType') String returnType,
@@ -60,6 +80,7 @@ abstract class WeatherApiService {
       @Query('sidoName') String stationName,
       @Query('ver') String version);
 
+  /// 자외선
   @GET("/1360000/LivingWthrIdxServiceV4/getUVIdxV4")
   Future<UltravioletResponse> getUltraviolet(
       @Query('numOfRows') String numOfRows,

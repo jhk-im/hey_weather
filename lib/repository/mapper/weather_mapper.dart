@@ -1,9 +1,9 @@
 import 'package:hey_weather/repository/local/entity/address_entity.dart';
 import 'package:hey_weather/repository/local/entity/observatory_entity.dart';
 import 'package:hey_weather/repository/local/entity/fine_dust_entity.dart';
-import 'package:hey_weather/repository/local/entity/weather_mid_code_entity.dart';
-import 'package:hey_weather/repository/local/entity/weather_mid_term_land_entity.dart';
-import 'package:hey_weather/repository/local/entity/weather_mid_term_temperature_entity.dart';
+import 'package:hey_weather/repository/local/entity/mid_code_entity.dart';
+import 'package:hey_weather/repository/local/entity/mid_term_land_entity.dart';
+import 'package:hey_weather/repository/local/entity/mid_term_temperature_entity.dart';
 import 'package:hey_weather/repository/local/entity/short_term_entity.dart';
 import 'package:hey_weather/repository/local/entity/sun_rise_entity.dart';
 import 'package:hey_weather/repository/local/entity/live_short_term_entity.dart';
@@ -14,8 +14,8 @@ import 'package:hey_weather/repository/remote/model/address.dart';
 import 'package:hey_weather/repository/remote/model/fine_dust_response.dart';
 import 'package:hey_weather/repository/remote/model/live_short_term_response.dart';
 import 'package:hey_weather/repository/remote/model/mid_code.dart';
-import 'package:hey_weather/repository/remote/model/mid_term_land.dart';
-import 'package:hey_weather/repository/remote/model/mid_term_temperature.dart';
+import 'package:hey_weather/repository/remote/model/mid_term_land_response.dart';
+import 'package:hey_weather/repository/remote/model/mid_term_temperature_response.dart';
 import 'package:hey_weather/repository/remote/model/observatory.dart';
 import 'package:hey_weather/repository/remote/model/sun_rise.dart';
 import 'package:hey_weather/repository/remote/model/short_term_response.dart';
@@ -203,7 +203,7 @@ extension ToMidCodeFromDto on MidCodeDto {
   }
 }
 
-extension ToMidCode on WeatherMidCodeEntity {
+extension ToMidCode on MidCodeEntity {
   MidCode toMidCode() {
     return MidCode(
       city: city,
@@ -213,15 +213,15 @@ extension ToMidCode on WeatherMidCodeEntity {
 }
 
 extension ToMidCodeEntity on MidCode {
-  WeatherMidCodeEntity toMidCodeEntity() {
-    var entity = WeatherMidCodeEntity();
+  MidCodeEntity toMidCodeEntity() {
+    var entity = MidCodeEntity();
     entity.city = city;
     entity.code = code;
     return entity;
   }
 }
 
-extension ToMidTermTemperature on WeatherMidTermTemperatureEntity {
+extension ToMidTermTemperature on MidTermTemperatureEntity {
   MidTermTemperature toMidTermTemperature() {
     MidTermTemperature model = MidTermTemperature(
       regId: regId,
@@ -248,8 +248,8 @@ extension ToMidTermTemperature on WeatherMidTermTemperatureEntity {
 }
 
 extension ToMidTermTemperatureEntity on MidTermTemperature {
-  WeatherMidTermTemperatureEntity toMidTermTemperatureEntity() {
-    var entity = WeatherMidTermTemperatureEntity();
+  MidTermTemperatureEntity toMidTermTemperatureEntity() {
+    var entity = MidTermTemperatureEntity();
     entity.regId = regId;
     entity.taMin3 = taMin3;
     entity.taMax3 = taMax3;
@@ -274,7 +274,7 @@ extension ToMidTermTemperatureEntity on MidTermTemperature {
   }
 }
 
-extension ToMidTermLand on WeatherMidTermLandEntity {
+extension ToMidTermLand on MidTermLandEntity {
   MidTermLand toMidTermLand() {
     MidTermLand model = MidTermLand(
       regId: regId,
@@ -311,8 +311,8 @@ extension ToMidTermLand on WeatherMidTermLandEntity {
 }
 
 extension ToMidTermLandEntity on MidTermLand {
-  WeatherMidTermLandEntity toMidTermLandEntity() {
-    var entity = WeatherMidTermLandEntity();
+  MidTermLandEntity toMidTermLandEntity() {
+    var entity = MidTermLandEntity();
     entity.regId = regId;
     entity.rnSt3Am = rnSt3Am;
     entity.rnSt3Pm = rnSt3Pm;

@@ -1,9 +1,9 @@
 import 'package:hive/hive.dart';
 
-part 'weather_mid_code_entity.g.dart';
+part 'mid_code_entity.g.dart';
 
 @HiveType(typeId: 9)
-class WeatherMidCodeEntity extends HiveObject {
+class MidCodeEntity extends HiveObject {
   @HiveField(0)
   String? city;
   @HiveField(1)

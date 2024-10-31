@@ -5,17 +5,17 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 <p>  
-  <img src="assets/readme/readme01.png" width="150"/>
-  <img src="assets/readme/readme02.png" width="150"/>
-  <img src="assets/readme/readme03.png" width="150"/>
-  <img src="assets/readme/readme04.png" width="150"/>
+  <img src="assets/readme/readme01.png" width="180"/>
+  <img src="assets/readme/readme02.png" width="180"/>
+  <img src="assets/readme/readme03.png" width="180"/>
+  <img src="assets/readme/readme04.png" width="180"/>
 </p>
 
 <p>
-  <img src="assets/readme/readme05.png" width="150"/>
-  <img src="assets/readme/readme06.png" width="150"/>
-  <img src="assets/readme/readme07.png" width="150"/>
-  <img src="assets/readme/readme08.png" width="150"/>
+  <img src="assets/readme/readme05.png" width="180"/>
+  <img src="assets/readme/readme06.png" width="180"/>
+  <img src="assets/readme/readme07.png" width="180"/>
+  <img src="assets/readme/readme08.png" width="180"/>
 </p>
 
 </br>

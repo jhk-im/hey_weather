@@ -16,9 +16,10 @@ jobs:
 
       # 2. Flutter 설치
       - name: Install Flutter
-        uses: subosito/flutter-action@v2.4.0
+        uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          channel: stable
+          flutter-version: 3.19.0
 
       # 3. 의존성 설치
       - name: Install dependencies

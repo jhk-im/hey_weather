@@ -19,7 +19,8 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.19.0
+          flutter-version-file: pubspec.yaml # path to pubspec.yaml
+        run: flutter --version
 
       # 3. 의존성 설치
       - name: Install dependencies

@@ -1,0 +1,34 @@
+name: Flutter CI
+
+on:
+  pull_request: # PR 생성 및 업데이트 시 실행
+    branches:
+      - main
+
+jobs:
+  flutter-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 코드 체크아웃
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Flutter 설치
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "stable"
+
+      # 3. 의존성 설치
+      - name: Install dependencies
+        run: flutter pub get
+
+      # 4. 코드 포맷 확인
+      - name: Check code format
+        run: |
+          dart format --set-exit-if-changed .
+
+      # 5. 테스트 실행
+      - name: Run tests
+        run: flutter test
